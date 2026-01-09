@@ -10,4 +10,18 @@
         <maven.compiler.release>25</maven.compiler.release>
         <exec.mainClass>com.mycompany.tourmanagement.TourManagement</exec.mainClass>
     </properties>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>13.2.1.jre11</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+        </dependency>
+    </dependencies>
 </project>
