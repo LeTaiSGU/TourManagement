@@ -37,49 +37,12 @@ public class MainGUI extends javax.swing.JFrame {
      * Progressive scaling cho kết quả tốt hơn khi scale down nhiều
      */
 
-
     public MainGUI() {
         initComponents();
         // Scale logo sau khi UI được init
         SwingUtilities.invokeLater(() -> {
-            setHighQualityIcon(logo, "/image/icon/Untitled design (2).png");
+            //
         });
-    }
-
-    /**
-     * Đặt icon cho một {@link JLabel} với chất lượng cao, áp dụng cho mọi ảnh.
-     * Ảnh sẽ được scale theo kích thước hiện tại của label (hoặc preferredSize nếu width/height đang = 0).
-     * Lưu ý: ảnh gốc nên có kích thước >= kích thước hiển thị để không bị vỡ nét.
-     */
-    private void setHighQualityIcon(JLabel label, String resourcePath) {
-        java.net.URL imgUrl = getClass().getResource(resourcePath);
-        if (imgUrl == null) {
-            logger.warning("Không tìm thấy resource ảnh: " + resourcePath);
-            return;
-        }
-
-        ImageIcon originalIcon = new ImageIcon(imgUrl);
-        Image originalImage = originalIcon.getImage();
-
-        int targetWidth = label.getWidth() > 0 ? label.getWidth() : label.getPreferredSize().width;
-        int targetHeight = label.getHeight() > 0 ? label.getHeight() : label.getPreferredSize().height;
-
-        if (targetWidth <= 0 || targetHeight <= 0) {
-            // Không có kích thước hợp lệ, gán icon gốc
-            label.setIcon(originalIcon);
-            return;
-        }
-
-        // Tạo ảnh mới với BufferedImage và Graphics2D để scale chất lượng cao
-        BufferedImage scaledImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = scaledImage.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-        g2d.dispose();
-
-        label.setIcon(new ImageIcon(scaledImage));
     }
 
     /**
@@ -90,7 +53,8 @@ public class MainGUI extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -124,13 +88,11 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout leftSideLayout = new javax.swing.GroupLayout(leftSide);
         leftSide.setLayout(leftSideLayout);
         leftSideLayout.setHorizontalGroup(
-            leftSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 248, Short.MAX_VALUE)
-        );
+                leftSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 248, Short.MAX_VALUE));
         leftSideLayout.setVerticalGroup(
-            leftSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1426, Short.MAX_VALUE)
-        );
+                leftSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1426, Short.MAX_VALUE));
 
         jPanel1.add(leftSide, java.awt.BorderLayout.CENTER);
 
@@ -146,26 +108,22 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout topSideLayout = new javax.swing.GroupLayout(topSide);
         topSide.setLayout(topSideLayout);
         topSideLayout.setHorizontalGroup(
-            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1394, Short.MAX_VALUE)
-        );
+                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1394, Short.MAX_VALUE));
         topSideLayout.setVerticalGroup(
-            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 78, Short.MAX_VALUE)
-        );
+                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 78, Short.MAX_VALUE));
 
         jPanel2.add(topSide, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
         mainSide.setLayout(mainSideLayout);
         mainSideLayout.setHorizontalGroup(
-            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1396, Short.MAX_VALUE)
-        );
+                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1396, Short.MAX_VALUE));
         mainSideLayout.setVerticalGroup(
-            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1596, Short.MAX_VALUE)
-        );
+                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1596, Short.MAX_VALUE));
 
         jPanel2.add(mainSide, java.awt.BorderLayout.CENTER);
 
@@ -192,13 +150,12 @@ public class MainGUI extends javax.swing.JFrame {
          * For details see
          * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-         try {
-                UIManager.setLookAndFeel(
-                UIManager.getSystemLookAndFeelClassName()
-            );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // </editor-fold>
         // try {
         // UIManager.setLookAndFeel( new FlatMacLightLaf() );
