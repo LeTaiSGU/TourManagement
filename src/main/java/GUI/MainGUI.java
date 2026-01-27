@@ -42,8 +42,44 @@ public class MainGUI extends javax.swing.JFrame {
         initComponents();
         // Scale logo sau khi UI được init
         SwingUtilities.invokeLater(() -> {
-//            
+            setHighQualityIcon(logo, "/image/icon/Untitled design (2).png");
         });
+    }
+
+    /**
+     * Đặt icon cho một {@link JLabel} với chất lượng cao, áp dụng cho mọi ảnh.
+     * Ảnh sẽ được scale theo kích thước hiện tại của label (hoặc preferredSize nếu width/height đang = 0).
+     * Lưu ý: ảnh gốc nên có kích thước >= kích thước hiển thị để không bị vỡ nét.
+     */
+    private void setHighQualityIcon(JLabel label, String resourcePath) {
+        java.net.URL imgUrl = getClass().getResource(resourcePath);
+        if (imgUrl == null) {
+            logger.warning("Không tìm thấy resource ảnh: " + resourcePath);
+            return;
+        }
+
+        ImageIcon originalIcon = new ImageIcon(imgUrl);
+        Image originalImage = originalIcon.getImage();
+
+        int targetWidth = label.getWidth() > 0 ? label.getWidth() : label.getPreferredSize().width;
+        int targetHeight = label.getHeight() > 0 ? label.getHeight() : label.getPreferredSize().height;
+
+        if (targetWidth <= 0 || targetHeight <= 0) {
+            // Không có kích thước hợp lệ, gán icon gốc
+            label.setIcon(originalIcon);
+            return;
+        }
+
+        // Tạo ảnh mới với BufferedImage và Graphics2D để scale chất lượng cao
+        BufferedImage scaledImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+        g2d.dispose();
+
+        label.setIcon(new ImageIcon(scaledImage));
     }
 
     /**
