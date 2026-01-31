@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  * @author letan
  */
 public class Model_Menu {
-      public String getIcon() {
+    public String getIcon() {
         return icon;
     }
 

@@ -1,7 +1,7 @@
-    /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+/*
+* Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+* Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+*/
 package GUI.Menu;
 
 import java.awt.Component;
@@ -15,19 +15,21 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import java.util.List;
 import javax.swing.SwingUtilities;
+
 /**
  *
  * @author letan
  */
 public class ListMenu<E extends Object> extends JList<E> {
-    
-    public void addEventSelectedMenu(EventMenuSelected event){
+
+    public void addEventSelectedMenu(EventMenuSelected event) {
         events.add(event);
     }
+
     private final DefaultListModel model;
     private final List<EventMenuSelected> events;
     private int selectedIndex = -1;
-    
+
     public ListMenu() {
         model = new DefaultListModel();
         events = new ArrayList<>();
@@ -56,24 +58,26 @@ public class ListMenu<E extends Object> extends JList<E> {
             }
         });
     }
-    
+
     private void runEvent(int indexChange) {
         for (EventMenuSelected event : events) {
             event.menuSelected(indexChange, new EventMenuCallBack() {
                 @Override
                 public void call(int index) {
-                    //  This call back event run when animation done
+                    // This call back event run when animation done
                     selectedIndex = index;
                     repaint();
                 }
             });
         }
     }
+
     @Override
     public ListCellRenderer<? super E> getCellRenderer() {
-        return new DefaultListCellRenderer(){
+        return new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> jlist, Object o, int index, boolean selected, boolean focus) {
+            public Component getListCellRendererComponent(JList<?> jlist, Object o, int index, boolean selected,
+                    boolean focus) {
                 Model_Menu data;
                 if (o instanceof Model_Menu) {
                     data = (Model_Menu) o;
@@ -87,7 +91,7 @@ public class ListMenu<E extends Object> extends JList<E> {
 
         };
     }
-    
+
     @Override
     public void setModel(ListModel<E> lm) {
         for (int i = 0; i < lm.getSize(); i++) {

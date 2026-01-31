@@ -28,6 +28,10 @@ public class Menu extends javax.swing.JPanel {
         this.event = event;
     }
 
+    public Model_Menu getMenuItem(int index) {
+        return (Model_Menu) listMenu.getModel().getElementAt(index);
+    }
+
     private int selectedIndex = -1;
     private final Timer timer;
     private boolean toUp; // Thời gian chuyển động đi lên
@@ -112,6 +116,7 @@ public class Menu extends javax.swing.JPanel {
         listMenu.addItem(new Model_Menu("8", "Hóa đơn", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("9", "Khuyến mãi", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("10", "Phân quyền", Model_Menu.MenuType.MENU));
+        listMenu.addItem(new Model_Menu("10", "Custome", Model_Menu.MenuType.MENU));
 
     }
 
@@ -178,6 +183,6 @@ public class Menu extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lbLogo;
-    private GUI.Menu.ListMenu<String> listMenu;
+    private GUI.Menu.ListMenu<Model_Menu> listMenu;
     // End of variables declaration//GEN-END:variables
 }
