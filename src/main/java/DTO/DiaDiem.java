@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class DiaDiem {
     private String maDiaDiem;
     private String tenDiaDiem;

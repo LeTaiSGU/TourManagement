@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class NhanVien {
     private String maNhanVien;
     private String tenNhanVien;
