@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class LoaiTour {
     private String maLoaiTour;
     private String tenLoai;

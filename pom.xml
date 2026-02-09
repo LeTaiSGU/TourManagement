@@ -29,13 +29,7 @@
             <version>1.5.6</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>
-            <groupId>net.java.timingframework</groupId>
-            <artifactId>timingframework-swing</artifactId>
-            <version>4.1.0</version>
-            <scope>compile</scope>
-        </dependency>-->
-        <!-- Source: https://mvnrepository.com/artifact/org.bidib.net.java.timingframework/timingframework-swing -->
+
         <dependency>
             <groupId>org.bidib.net.java.timingframework</groupId>
             <artifactId>timingframework-swing</artifactId>

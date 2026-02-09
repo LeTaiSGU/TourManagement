@@ -16,6 +16,7 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,15 +187,15 @@ public class MainGUI extends javax.swing.JFrame {
     private void initTopSideMoving() {
         topSide.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                x = e.getX();
-                y = e.getY();
+            public void mousePressed(MouseEvent e) {
+                x = e.getX() + 6;
+                y = e.getY() + 6;
             }
         });
 
         topSide.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             @Override
-            public void mouseDragged(java.awt.event.MouseEvent e) {
+            public void mouseDragged(MouseEvent e) {
                 setCursor(new Cursor(Cursor.HAND_CURSOR));
                 setLocation(e.getXOnScreen() - x, e.getYOnScreen() - y);
             }

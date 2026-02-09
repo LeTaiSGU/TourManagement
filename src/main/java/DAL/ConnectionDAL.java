@@ -14,44 +14,23 @@ import java.sql.Statement;
  * @author letan
  */
 public class ConnectionDAL {
+    private static Connection conn;
     private static String url = "jdbc:sqlserver://localhost:1433;"
-            + "databaseName=;"
+            + "databaseName=QLSV;"
             + "encrypt=true;" 
-            +  "trustServerCertificate=true;";
+            + "trustServerCertificate=true;";
     private static String user = "sa";
-    private static String password = "";
+    private static String password = "letaiken9a4";
     
-     public static Connection getConnection(String dbURL, String userName, 
-            String password) {
-        Connection conn = null;
+    public static Connection getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(dbURL, userName, password);
+            conn = DriverManager.getConnection(url, user, password);
             System.out.println("connect successfully!");
         } catch (Exception ex) {
             System.out.println("connect failure!");
             ex.printStackTrace();
         }
         return conn;
-    }
-     
-    public static void main(String args[]) {
-        try {
-            // connnect to database 'testdb'
-            Connection conn = getConnection(url, user, password);
-            // crate statement
-            Statement stmt = conn.createStatement();
-            // get data from table 'student'
-            ResultSet rs = stmt.executeQuery("select * from SinhVien");
-            // show data
-            while (rs.next()) {
-                System.out.println(rs.getInt(1) + "  " + rs.getString(2) 
-                        + "  " + rs.getString(3));
-            }
-            // close connection
-            conn.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+    }  
 }
