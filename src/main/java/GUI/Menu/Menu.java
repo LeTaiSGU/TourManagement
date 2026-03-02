@@ -58,7 +58,7 @@ public class Menu extends javax.swing.JPanel {
                         speed = selectedIndex - index;
                         if (speed < 0) {
                             speed *= -1;
-                            // If speed valus <0 change it to <0 Ex : -1 to 1
+                            
                         }
                     }
                     speed++; // Add 1 speed
@@ -113,11 +113,10 @@ public class Menu extends javax.swing.JPanel {
         listMenu.addItem(new Model_Menu("5", "Hướng dẫn viên", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("6", "Nhân viên", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("7", "Khách hàng", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("8", "Hóa đơn", Model_Menu.MenuType.MENU));
+        listMenu.addItem(new Model_Menu("8", "Đặt vé", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("9", "Khuyến mãi", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("10", "Phân quyền", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("10", "Custome", Model_Menu.MenuType.MENU));
-
     }
 
     @Override

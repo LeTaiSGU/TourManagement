@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package GUI.Menu;
 
 import java.awt.Color;
 import javax.swing.JTabbedPane;
 
-/**
- *
- * @author letan
- */
 public class TabbedPaneCustom extends JTabbedPane {
     public Color getSelectedColor() {
         return selectedColor;
@@ -35,7 +28,7 @@ public class TabbedPaneCustom extends JTabbedPane {
 
     public TabbedPaneCustom() {
         setBackground(new Color(250, 250, 250));
-        setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        setTabLayoutPolicy(javax.swing.JTabbedPane.WRAP_TAB_LAYOUT);
         setUI(new TabbedPaneCustomUI(this));
     }
 }

@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class TaiKhoan {
-    private String tenDangNhap;
+    private String maNhanVien;
     private String maNhomQuyen;
     private String matKhau;
     private Boolean trangThai;
