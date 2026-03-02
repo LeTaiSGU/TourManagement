@@ -10,6 +10,7 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.tourmanagement.TourManagement</exec.mainClass>
     </properties>
+    
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
         <dependency>
@@ -18,12 +19,14 @@
             <version>13.2.1.jre11</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
@@ -37,15 +40,28 @@
             <version>7.4.3</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
             <version>3.7.4</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-core</artifactId>
+            <version>9.4.0</version>
+            <type>pom</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
-     <build>
-        <plugins>
+    <build>
+       <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -63,4 +79,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

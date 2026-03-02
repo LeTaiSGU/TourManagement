@@ -102,6 +102,7 @@ public class MainGUI extends javax.swing.JFrame {
             // return new PhuongTienPanel();
             // case 4:
             // return new HuongDanVienPanel();
+            // ... và tiếp tục
             default:
                 return null;
         }
@@ -365,6 +366,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -443,7 +445,7 @@ public class MainGUI extends javax.swing.JFrame {
                                 .addComponent(lbMenuDrop)
                                 .addGap(18, 18, 18)
                                 .addComponent(lbCN)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1179,
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1176,
                                         Short.MAX_VALUE)
                                 .addComponent(btnMinimize)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -474,9 +476,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         mainSide.setBackground(new java.awt.Color(255, 255, 255));
         mainSide.setName(""); // NOI18N
-
-        txtTest.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtTest.setText("jLabel1");
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
         mainSide.setLayout(mainSideLayout);

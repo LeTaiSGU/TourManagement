@@ -14,13 +14,13 @@ public class HoaDon {
     private String maHoaDon;
     private String maNhanVien;
     private String maKhachHang;
+    private String tenKhachHang;
+    private String sdt;
     private LocalDate ngayLapHD;
-    private int soLuongVe;
     private double tongTien;    
     private String maKhuyenMai;
-    private static double thue;
+    private float thue;
     private String HTTT;
-    private int trangThaiTT;
-    private int trangThaiHD;
+    private boolean trangThaiTT;
     
 }

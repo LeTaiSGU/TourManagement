@@ -23,5 +23,5 @@ public class Tour {
     private int soLuongMin;
     private Boolean trangThai;
     private Boolean khoiHanh;
-    
+    private int soChoCon;
 }

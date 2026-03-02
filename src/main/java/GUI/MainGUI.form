@@ -109,7 +109,7 @@
                       <Component id="lbMenuDrop" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="lbCN" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="1179" max="32767" attributes="0"/>
+                      <EmptySpace pref="1176" max="32767" attributes="0"/>
                       <Component id="btnMinimize" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="btnFullscreen" min="-2" max="-2" attributes="0"/>
@@ -212,6 +212,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="name" type="java.lang.String" value="" noResource="true"/>
+            <Property name="requestFocusEnabled" type="boolean" value="false"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

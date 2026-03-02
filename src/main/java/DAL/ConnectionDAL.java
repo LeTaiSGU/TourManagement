@@ -9,19 +9,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-/**
- *
- * @author letan
- */
 public class ConnectionDAL {
     private static Connection conn;
     private static String url = "jdbc:sqlserver://localhost:1433;"
-            + "databaseName=tour_management;"
-            + "encrypt=true;" 
-            + "trustServerCertificate=true;";
+            + "databaseName = tour_management;"
+            + "encrypt = true;"
+            + "trustServerCertificate = true;";
     private static String user = "sa";
-    private static String password = "letaiken9a4";
-    
+    private static String password = "123456";
+
     public Connection getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -32,5 +28,5 @@ public class ConnectionDAL {
             ex.printStackTrace();
         }
         return conn;
-    }  
+    }
 }
