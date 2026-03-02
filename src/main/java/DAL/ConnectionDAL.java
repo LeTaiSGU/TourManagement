@@ -16,11 +16,11 @@ import java.sql.Statement;
 public class ConnectionDAL {
     private static Connection conn;
     private static String url = "jdbc:sqlserver://localhost:1433;"
-            + "databaseName=QLSV;"
-            + "encrypt=true;" 
-            + "trustServerCertificate=true;";
+            + "databaseName = tour_management;"
+            + "encrypt = true;" 
+            + "trustServerCertificate = true;";
     private static String user = "sa";
-    private static String password = "letaiken9a4";
+    private static String password = "123456";
     
     public static Connection getConnection() {
         try {

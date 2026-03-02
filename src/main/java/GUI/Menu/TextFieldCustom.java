@@ -1,33 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package GUI.Menu;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.JButton;
+import javax.swing.JTextField;
 
-public class ActionButton extends JButton {
+public class TextFieldCustom extends JTextField {
     private Color colorTop = new Color(52, 152, 219);
     private Color colorBottom = new Color(41, 128, 185);
+    
+    private Color colorHoverTop = new Color(93, 173, 226);
+    private Color colorHoverBottom = new Color(52, 152, 219);
+    
     private int radius = 20;
 
     private boolean hover;
     private boolean pressed;
 
-    public ActionButton() {
-        setContentAreaFilled(false);
-        setBorderPainted(false);
-        setFocusPainted(false);
+    public TextFieldCustom() {
         setOpaque(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         setForeground(Color.WHITE);
         setFont(new Font("Segoe UI", Font.BOLD, 14));
         setPreferredSize(new Dimension(120, 40));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         initMouse();
+    }
+    @Override
+    protected void paintBorder(Graphics g) {
+        // không vẽ border mặc định
+    }
+
+    public Color getColorHoverTop() { return colorHoverTop; }
+    public void setColorHoverTop(Color colorHoverTop) { 
+        this.colorHoverTop = colorHoverTop; 
+        repaint(); 
+    }
+
+    public Color getColorHoverBottom() { return colorHoverBottom; }
+    public void setColorHoverBottom(Color colorHoverBottom) { 
+        this.colorHoverBottom = colorHoverBottom; 
+        repaint(); 
     }
 
     private void initMouse() {
@@ -71,8 +85,8 @@ public class ActionButton extends JButton {
             top = top.darker();
             bottom = bottom.darker();
         } else if (hover) {
-            top = top.brighter();
-            bottom = bottom.brighter();
+            top = colorHoverTop;
+            bottom = colorHoverBottom;
         }
 
         // nền

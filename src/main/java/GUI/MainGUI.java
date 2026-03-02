@@ -98,14 +98,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return new TourPanel();
             case 1:
                 return new LichTrinhPanel();
-            // TODO: Thêm case cho các panel khác
             // case 2:
             // return new DiaDiemPanel();
             // case 3:
             // return new PhuongTienPanel();
             // case 4:
             // return new HuongDanVienPanel();
-            // ... và tiếp tục
+            case 7 :
+                return new HoaDonPanel();
             default:
                 return null;
         }
@@ -367,7 +367,7 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -438,52 +438,54 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout topSideLayout = new javax.swing.GroupLayout(topSide);
         topSide.setLayout(topSideLayout);
         topSideLayout.setHorizontalGroup(
-                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(lbMenuDrop)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbCN)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1179,
-                                        Short.MAX_VALUE)
-                                .addComponent(btnMinimize)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnFullscreen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnExit)
-                                .addContainerGap()));
+            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(lbMenuDrop)
+                .addGap(18, 18, 18)
+                .addComponent(lbCN)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1176, Short.MAX_VALUE)
+                .addComponent(btnMinimize)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnFullscreen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExit)
+                .addContainerGap())
+        );
         topSideLayout.setVerticalGroup(
-                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(topSideLayout.createSequentialGroup()
-                                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(topSideLayout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(topSideLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(btnMinimize)
-                                                        .addComponent(btnFullscreen)
-                                                        .addComponent(btnExit)))
-                                        .addGroup(topSideLayout.createSequentialGroup()
-                                                .addGap(28, 28, 28)
-                                                .addGroup(topSideLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(lbCN)
-                                                        .addComponent(lbMenuDrop))))
-                                .addContainerGap(28, Short.MAX_VALUE)));
+            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topSideLayout.createSequentialGroup()
+                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(topSideLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnMinimize)
+                            .addComponent(btnFullscreen)
+                            .addComponent(btnExit)))
+                    .addGroup(topSideLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbCN)
+                            .addComponent(lbMenuDrop))))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
 
         jPanel2.add(topSide, java.awt.BorderLayout.PAGE_START);
 
         mainSide.setBackground(new java.awt.Color(255, 255, 255));
         mainSide.setName(""); // NOI18N
+        mainSide.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
         mainSide.setLayout(mainSideLayout);
         mainSideLayout.setHorizontalGroup(
-                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1350, Short.MAX_VALUE));
+            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1350, Short.MAX_VALUE)
+        );
         mainSideLayout.setVerticalGroup(
-                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 920, Short.MAX_VALUE));
+            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 920, Short.MAX_VALUE)
+        );
 
         jPanel2.add(mainSide, java.awt.BorderLayout.CENTER);
 
