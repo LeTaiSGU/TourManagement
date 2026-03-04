@@ -2,6 +2,7 @@ package BUS;
 
 import DAL.TaiKhoanDAL;
 import DTO.TaiKhoan;
+import DTO.TaiKhoanDTO;
 import Exception.BusException;
 import Exception.DaoException;
 import java.util.List;
@@ -37,5 +38,31 @@ public class TaiKhoanBUS {
         } catch (DaoException e) {
             throw new BusException("Lỗi lấy dữ liệu tài khoản: " + e.getMessage());
         }
+    }
+
+    public Boolean editTaiKhoan(TaiKhoan tk) throws BusException {
+        try {
+            return taikhoanDAL.editTaiKhoan(tk);
+        } catch (DaoException e) {
+            throw new BusException("Lỗi khi lưu dữ liệu: " + e.getMessage());
+        }
+    }
+
+    public Boolean changeStatus(TaiKhoan tk) throws BusException {
+        try {
+            tk.setTrangThai(!tk.getTrangThai());
+            return taikhoanDAL.unblockAccount(tk);
+        } catch (DaoException e) {
+            throw new BusException(e.getMessage());
+        }
+    }
+
+    public List<TaiKhoan> searchTaiKhoan(String maNhanVien, String maNhomQuyen, Boolean trangThai) throws BusException {
+        try {
+            return taikhoanDAL.searchTaiKhoan(maNhanVien, maNhomQuyen, trangThai);
+        } catch (DaoException e) {
+            throw new BusException("Không tìm thấy các tài khoản liên quan: " + e.getMessage());
+        }
+
     }
 }

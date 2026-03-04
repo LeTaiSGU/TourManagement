@@ -16,7 +16,7 @@ public class ConnectionDAL {
             + "encrypt = true;"
             + "trustServerCertificate = true;";
     private static String user = "sa";
-    private static String password = "123456";
+    private static String password = "letaiken9a4";
 
     public Connection getConnection() {
         try {

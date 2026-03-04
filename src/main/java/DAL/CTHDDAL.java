@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CTHDDAL {
+    private ConnectionDAL conn = new ConnectionDAL();
     private CTHD getCTHDObj(ResultSet rs) throws SQLException {
         CTHD cthd = new CTHD();
         cthd.setMaHoaDon(rs.getString("maHoaDon"));
@@ -31,7 +32,7 @@ public class CTHDDAL {
                 + "JOIN TOUR t ON cthd.maTour = t.maTour "
                 + "WHERE cthd.maHoaDon = ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maHD);
             ResultSet rs = ps.executeQuery();
@@ -54,7 +55,7 @@ public class CTHDDAL {
                 + "JOIN TOUR t ON cthd.maTour = t.maTour "
                 + "WHERE cthd.maHoaDon = ? and cthd.maTour = ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maHD);
             ps.setString(2, maTour);
@@ -78,7 +79,7 @@ public class CTHDDAL {
                 + "JOIN TOUR t ON cthd.maTour = t.maTour "
                 + "WHERE cthd.maHoaDon = ? and cthd.trangThai = ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maHD);
             ps.setString(2, "DA_DAT");
@@ -102,7 +103,7 @@ public class CTHDDAL {
                 + "(maHoaDon, maTour, soLuongVe, trangThai) "
                 + "VALUES (?,?,?,?)";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, cthd.getMaHoaDon());
             ps.setString(2, cthd.getMaTour());
@@ -125,7 +126,7 @@ public class CTHDDAL {
                 + "SET trangThai = ?, ghiChu = ? "
                 + "WHERE maHoaDon = ? AND maTour = ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, trangthai);
             ps.setString(2, ghichu);
@@ -148,7 +149,7 @@ public class CTHDDAL {
                 + "JOIN HOADON hd ON hd.maHoaDon = cthd.maHoaDon "
                 + "WHERE hd.trangThaiTT = ? AND DATEADD(DAY, 3, hd.ngayLapHD) < GETDATE() AND cthd.trangThai <> ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "HUY_QUA_HAN");
             ps.setBoolean(2, false);
@@ -170,7 +171,7 @@ public class CTHDDAL {
                 + "JOIN TOUR t ON t.maTour = cthd.maTour "
                 + "WHERE t.trangThai = ? AND cthd.trangThai = ? AND cthd.hoanTien = ? ";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "HUY_DO_CONG_TY");
             ps.setBoolean(2, false);
@@ -195,7 +196,7 @@ public class CTHDDAL {
                 + "WHERE cthd.maHoaDon = ? AND cthd.maTour = ? AND cthd.trangThai = ?  "
                 + "AND cthd.hoanTien = ? AND hd.trangThaiTT = ?";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setBoolean(1, true);
             ps.setString(2, mahd);
@@ -218,7 +219,7 @@ public class CTHDDAL {
                + "JOIN HOADON hd ON hd.maHoaDon = cthd.maHoaDon "
                + "WHERE cthd.trangThai = ? AND cthd.hoanTien = ? AND hd.trangThaiTT = ?";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "HUY_DO_CONG_TY");
             ps.setBoolean(2, false);
