@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TourDAL {
+    private ConnectionDAL conn = new ConnectionDAL();
     public ArrayList<Tour> getAllTour() throws DaoException {
         ArrayList<Tour> dstour = new ArrayList<>();
         String sql = "Select * from TOUR";
         
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -58,7 +59,7 @@ public class TourDAL {
             WHERE t.khoiHanh = 0 and t.trangThai = 1
             """; 
 
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 

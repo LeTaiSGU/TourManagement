@@ -2110,7 +2110,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
             hd.setMaNhanVien(String.valueOf(txtMaNV.getText()));
             hd.setMaKhachHang(String.valueOf(txtMaKH.getText()));
             hd.setNgayLapHD(LocalDate.parse(txtNgayLap.getText()));
-            hd.setTongTien(Double.parseDouble(txtTongThanhToan.getText().replace(".", "")));
+            hd.setTongTien(Double.parseDouble(txtTongThanhToan.getText().replace(",", "")));
             hd.setMaKhuyenMai(String.valueOf(cmboxKM.getSelectedItem()));
             hd.setThue(thue);
             hd.setTrangThaiTT(false);

@@ -121,7 +121,7 @@ public class LoginFrame extends javax.swing.JFrame {
         jLabel2.setText("Mật khẩu");
         jPanel6.add(jLabel2);
 
-        txtMatkhau.setText("12345678");
+        txtMatkhau.setText("12345678q");
         txtMatkhau.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icon/lock.png"))); // NOI18N
         txtMatkhau.setIconGap(15);
         txtMatkhau.addActionListener(this::txtMatkhauActionPerformed);
@@ -180,10 +180,15 @@ public class LoginFrame extends javax.swing.JFrame {
     private void btnDangnhapActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDangnhapActionPerformed
         try {
             TaiKhoan acc = taiKhoanBUS.login(txtTendangnhap.getText(), txtMatkhau.getText());
-            JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
-            GUI.MainGUI main = new GUI.MainGUI(acc);
-            main.setVisible(true);
-            this.dispose();
+            if (!acc.getTrangThai()){
+                JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa. Vui lòng gọi hỗ trợ để mở khóa");
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
+                GUI.MainGUI main = new GUI.MainGUI(acc);
+                main.setVisible(true);
+                this.dispose();
+            }
         } catch (BusException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
