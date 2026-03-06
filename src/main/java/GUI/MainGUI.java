@@ -83,6 +83,20 @@ public class MainGUI extends javax.swing.JFrame {
                 showPanel(index);
             }
         });
+
+        // Click logo → hiển thị Dashboard (ThongKePanel), không thuộc menu item nào
+        menu1.setLogoClickAction(() -> {
+            lbCN.setText("  Dashboard");
+            lbCN.setIcon(null);
+            // Bỏ highlight menu (đặt selection về -1 qua reflection hoặc reload)
+            mainSide.removeAll();
+            mainSide.setLayout(new java.awt.BorderLayout());
+            mainSide.add(new ThongKePanel(), java.awt.BorderLayout.CENTER);
+            mainSide.revalidate();
+            mainSide.repaint();
+            currentPanel = null;
+            currentPanelIndex = -1;
+        });
     }
 
     // Khởi tạo mapping - không cần nữa, sẽ tạo panel động
@@ -91,21 +105,30 @@ public class MainGUI extends javax.swing.JFrame {
         // Sẽ tạo mới mỗi lần click để đảm bảo components được render đúng
     }
 
-    // Tạo panel mới theo index
+    // Tạo panel mới theo index (tương ứng với thứ tự menu trong Menu.java)
     private javax.swing.JPanel createPanel(int index) {
         switch (index) {
             case 0:
+                // Panel quản lý Tour
                 return new TourPanel();
             case 1:
+                // Panel quản lý Lịch trình
                 return new LichTrinhPanel();
-            // TODO: Thêm case cho các panel khác
-            // case 2:
-            // return new DiaDiemPanel();
-            // case 3:
-            // return new PhuongTienPanel();
-            // case 4:
-            // return new HuongDanVienPanel();
-            // ... và tiếp tục
+            // TODO: Thêm case cho các panel chức năng khác khi có
+            // case 2: return new DiaDiemPanel(); // Địa điểm
+            case 3:
+                // Panel quản lý Phương tiện
+                return new PhuongTienPanel();
+            // case 4: return new HuongDanVienPanel(); // Hướng dẫn viên
+            case 5:
+                return new NhanVienPanel();
+            // case 6: return new KhachHangPanel(); // Khách hàng
+            // case 7: return new HoaDonPanel(); // Hóa đơn
+            // case 8: return new KhuyenMaiPanel(); // Khuyến mãi
+            // case 9: return new PhanQuyenPanel(); // Phân quyền
+            case 10:
+                // Module Thống kê & Báo cáo — Dashboard + 5 báo cáo chi tiết + xuất Excel/PDF
+                return new ThongKeBaoCaoPanel();
             default:
                 return null;
         }

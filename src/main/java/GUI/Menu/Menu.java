@@ -116,8 +116,7 @@ public class Menu extends javax.swing.JPanel {
         listMenu.addItem(new Model_Menu("8", "Hóa đơn", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("9", "Khuyến mãi", Model_Menu.MenuType.MENU));
         listMenu.addItem(new Model_Menu("10", "Phân quyền", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("10", "Custome", Model_Menu.MenuType.MENU));
-
+        listMenu.addItem(new Model_Menu("11", "Thống kê & Báo cáo", Model_Menu.MenuType.MENU));
     }
 
     @Override
@@ -159,9 +158,41 @@ public class Menu extends javax.swing.JPanel {
             public void mouseDragged(MouseEvent e) {
                 fram.setLocation(e.getXOnScreen() - x, e.getYOnScreen() - y);
             }
-
         });
+    }
 
+    /**
+     * Đăng ký hành động khi click vào logo.
+     * Con trỏ sẽ đổi thành HAND để báo hiệu có thể click.
+     *
+     * @param onLogoClick Runnable sẽ chạy trên EDT khi logo được click
+     */
+    public void setLogoClickAction(Runnable onLogoClick) {
+        lbLogo.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        lbLogo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                onLogoClick.run();
+            }
+        });
+    }
+
+    /**
+     * Kích hoạt animation trượt menu đến index cho trước (không cần click chuột).
+     * Dùng khi các thành phần khác (logo, shortcut) muốn cơ chế menu có hiệu ứng
+     * đồng bộ.
+     *
+     * @param index Chỉ số menu item (0-based)
+     */
+    public void triggerSelection(int index) {
+        if (index == selectedIndex)
+            return;
+        toUp = selectedIndex > index;
+        speed = selectedIndex < 0 ? 20 : Math.abs(selectedIndex - index) + 1;
+        selectedIndex = index;
+        menuYTarget = selectedIndex * 50 + listMenu.getY();
+        if (!timer.isRunning())
+            timer.start();
     }
 
     @SuppressWarnings("unchecked")
