@@ -1,5 +1,78 @@
 package DAL;
 
+import DTO.DiaDiem;
+import Exception.DaoException;
+import java.sql.*;
+import java.util.ArrayList;
+
 public class DiaDiemDAL {
-    
+    private ConnectionDAL connectionDAL = new ConnectionDAL(); // sử dụng lớp ConnectionDAL để lấy kết nối
+
+    public ArrayList<DiaDiem> getAll() throws DaoException {
+        ArrayList<DiaDiem> list = new ArrayList<>();
+        String sql = "SELECT * FROM DiaDiem";
+
+        try (Connection conn = connectionDAL.getConnection(); 
+             Statement st = conn.createStatement(); 
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                DiaDiem dd = new DiaDiem(
+                    rs.getString("maDiaDiem"),
+                    rs.getString("tenDiaDiem"),
+                    rs.getString("quocGia"),
+                    rs.getString("moTa")
+                );
+                list.add(dd);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi khi truy vấn danh sách địa điểm.", e); 
+        }
+        return list;
+    }
+
+    public void addDiaDiem(DiaDiem diaDiem) throws DaoException {
+        String sql = "INSERT INTO DiaDiem (maDiaDiem, tenDiaDiem, quocGia, moTa) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = connectionDAL.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, diaDiem.getMaDiaDiem());
+            ps.setString(2, diaDiem.getTenDiaDiem());
+            ps.setString(3, diaDiem.getQuocGia());
+            ps.setString(4, diaDiem.getMoTa());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi khi thêm địa điểm.", e); 
+        }
+    }
+
+    public void updateDiaDiem(DiaDiem diaDiem) throws DaoException {
+        String sql = "UPDATE DiaDiem SET tenDiaDiem = ?, quocGia = ?, moTa = ? WHERE maDiaDiem = ?";
+
+        try (Connection conn = connectionDAL.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, diaDiem.getTenDiaDiem());
+            ps.setString(2, diaDiem.getQuocGia());
+            ps.setString(3, diaDiem.getMoTa());
+            ps.setString(4, diaDiem.getMaDiaDiem());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi khi sửa địa điểm.", e); 
+        }
+    }
+
+    public void deleteDiaDiem(String maDiaDiem) throws DaoException {
+        String sql = "DELETE FROM DiaDiem WHERE maDiaDiem = ?";
+
+        try (Connection conn = connectionDAL.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maDiaDiem);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi khi xóa địa điểm.", e); 
+        }
+    }
 }

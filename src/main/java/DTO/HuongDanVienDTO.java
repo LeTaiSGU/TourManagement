@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HuongDanVien {
+public class HuongDanVienDTO {
+
     private String maHDV;
     private String tenHDV;
     private String gioiTinh;
     private int namSinh;
     private String chuyenMon;
     private String soDienThoai;
-    private Boolean trangThai;
+
 }

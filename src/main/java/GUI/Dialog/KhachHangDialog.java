@@ -1,7 +1,7 @@
 package GUI.Dialog;
 
 import BUS.KhachHangBUS;
-import DTO.KhachHang;
+import DTO.KhachHangDTO;
 import Exception.BusException;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -60,10 +60,10 @@ public class KhachHangDialog extends javax.swing.JDialog {
     public void loadKhachHang() {
         try {
             modelkh.setRowCount(0);
-            ArrayList<KhachHang> dskh = new ArrayList<>();
+            ArrayList<KhachHangDTO> dskh = new ArrayList<>();
             dskh = khbus.getAllKhachHang();
 
-            for (KhachHang kh : dskh) {
+            for (KhachHangDTO kh : dskh) {
                 String makh = kh.getMaKhachHang();
                 String maloaikh = kh.getMaLoaiKH();
                 String tenkh = kh.getTenKhachHang();
@@ -72,9 +72,9 @@ public class KhachHangDialog extends javax.swing.JDialog {
                 String diachi = kh.getDiaChi();
                 String sdt = kh.getSoDienThoai();
                 String email = kh.getEmail();
-                boolean tt = kh.getTrangThai();
+                //boolean tt = kh.getTrangThai();
                 
-                Object[] row = {makh, maloaikh, tenkh, gioitinh, namsinh, diachi, sdt, email, tt};
+                Object[] row = {makh, maloaikh, tenkh, gioitinh, namsinh, diachi, sdt, email, /*tt*/};
                 modelkh.addRow(row);
             }
         }

@@ -26,10 +26,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-/**
- *
- * @author letan
- */
 public class MainGUI extends javax.swing.JFrame {
 
     private TaiKhoan account = new TaiKhoan();
@@ -64,6 +60,7 @@ public class MainGUI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         initTopSideMoving();
         initResizable();
+        mainSide.setLayout(new BorderLayout());
         // initMenuDrop();
         
 
@@ -96,8 +93,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return new LichTrinhPanel();
             case 2:
                 return new DiaDiemPanel();
+            case 4:
+                return new HuongDanVienPanel();
+            case 6:
+                return new KhachHangPanel ();
             case 7: 
                 return new HoaDonPanel();
+            case 8:
+                return new KhuyenMaiPanel ();
             case 9:
                 return new PhanQuyenPanel();
             // case 3:

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAL;
 
 import java.sql.Connection;
@@ -16,7 +12,7 @@ public class ConnectionDAL {
             + "encrypt = true;"
             + "trustServerCertificate = true;";
     private static String user = "sa";
-    private static String password = "letaiken9a4";
+    private static String password = "Mysqlserver02";
 
     public Connection getConnection() {
         try {
