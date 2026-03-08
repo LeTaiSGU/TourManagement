@@ -146,6 +146,7 @@ public class PhuongTienPanel extends JPanel {
         this.bus = new PhuongTienBUS();
         xayDungGiaoDien();
         taiDuLieu(null); // Tải toàn bộ danh sách ban đầu
+        resetFormThemMoi(); // Sinh mã PT tự động ngay khi mở panel
     }
 
     // =========================================================
@@ -546,10 +547,14 @@ public class PhuongTienPanel extends JPanel {
         lbl.setForeground(MAU_CHU_PHU);
         gbc.gridx = 0;
         gbc.gridy = row;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(8, 2, 1, 2);
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(8, 2, 1, 6);
         panel.add(lbl, gbc);
         gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weightx = 1.0;
         gbc.gridwidth = 1;
         return row + 1;
     }

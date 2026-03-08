@@ -57,6 +57,9 @@ public class NhanVienPanel extends JPanel {
     /** Danh sách chức vụ đang giữ — để lấy maChucVu từ index combo */
     private List<ChucVu> danhSachChucVu = new ArrayList<>();
 
+    /** Cache toàn bộ danh sách NV đang hiển thị — để lấy diaChi, soDienThoai khi click hàng */
+    private List<NhanVien> danhSachNV = new ArrayList<>();
+
     /** Nhân viên đang được chọn (null = chế độ thêm mới) */
     private NhanVien nvDangChon = null;
 
@@ -99,6 +102,7 @@ public class NhanVienPanel extends JPanel {
         xayDungGiaoDien();
         taiDanhSachChucVu();       // Đổ combo trước
         taiDuLieu(null);            // Rồi tải bảng
+        resetFormThemMoi();         // Sinh mã NV tiếp theo vào form
     }
 
     // =========================================================
@@ -359,15 +363,6 @@ public class NhanVienPanel extends JPanel {
         styleInput(txtSoDienThoai);
         gbc.gridx=1; gbc.gridy=row-1; panelNoiDung.add(txtSoDienThoai, gbc);
 
-        // Separator chức vụ / quyền
-        JLabel lblSep = new JLabel("─── Chức vụ & Quyền ─────────");
-        lblSep.setFont(new Font(FONT, Font.PLAIN, 11));
-        lblSep.setForeground(MAU_CHU_PHU);
-        gbc.gridx=0; gbc.gridy=row++; gbc.gridwidth=2;
-        gbc.insets=new Insets(10,2,4,2);
-        panelNoiDung.add(lblSep, gbc);
-        gbc.insets=new Insets(4,2,4,2); gbc.gridwidth=1;
-
         // Chức vụ
         row = addLabel(panelNoiDung, gbc, row, "Chức vụ *");
         cboChucVu = new JComboBox<>();
@@ -415,15 +410,19 @@ public class NhanVienPanel extends JPanel {
         return panelNgoai;
     }
 
-    /** Thêm dòng label (chiếm toàn chiều rộng) vào form, trả về row tiếp theo. */
+    /** Thêm dòng label (cột trái) vào form, trả về row tiếp theo. */
     private int addLabel(JPanel panel, GridBagConstraints gbc, int row, String ten) {
         JLabel lbl = new JLabel(ten);
         lbl.setFont(new Font(FONT, Font.PLAIN, 12));
         lbl.setForeground(MAU_CHU_PHU);
-        gbc.gridx=0; gbc.gridy=row; gbc.gridwidth=2;
-        gbc.insets=new Insets(8,2,1,2);
+        gbc.gridx=0; gbc.gridy=row; gbc.gridwidth=1;
+        gbc.weightx=0;
+        gbc.anchor=GridBagConstraints.NORTHWEST;
+        gbc.insets=new Insets(8,2,1,6);
         panel.add(lbl, gbc);
-        gbc.insets=new Insets(4,2,4,2); gbc.gridwidth=1;
+        gbc.insets=new Insets(4,2,4,2);
+        gbc.anchor=GridBagConstraints.CENTER;
+        gbc.weightx=1.0; gbc.gridwidth=1;
         return row + 1;
     }
 
@@ -490,6 +489,7 @@ public class NhanVienPanel extends JPanel {
             @Override protected void done() {
                 try {
                     List<NhanVien> ds = get();
+                    danhSachNV = ds;
                     modelBang.setRowCount(0);
                     int stt = 1;
                     for (NhanVien nv : ds) {
@@ -555,6 +555,12 @@ public class NhanVienPanel extends JPanel {
         String tenCV     = (String)  modelBang.getValueAt(row, 5);
         Boolean trangThai= (Boolean) modelBang.getValueAt(row, 6);
 
+        // Lấy đầy đủ từ cache (có diaChi, soDienThoai)
+        NhanVien nvFull = null;
+        for (NhanVien nv : danhSachNV) {
+            if (maNV.equals(nv.getMaNhanVien())) { nvFull = nv; break; }
+        }
+
         // Tìm maChucVu từ tenChucVu
         String maCV = "";
         int idxCV = -1;
@@ -570,6 +576,8 @@ public class NhanVienPanel extends JPanel {
                 .maNhanVien(maNV).tenNhanVien(tenNV)
                 .gioiTinh(gioiTinh)
                 .namSinh(namSinh instanceof Integer ? (Integer)namSinh : 0)
+                .diaChi(nvFull != null ? nvFull.getDiaChi() : "")
+                .soDienThoai(nvFull != null ? nvFull.getSoDienThoai() : "")
                 .maChucVu(maCV)
                 .trangThai(Boolean.TRUE.equals(trangThai))
                 .build();
@@ -579,11 +587,10 @@ public class NhanVienPanel extends JPanel {
         txtTenNV.setText(tenNV);
         cboGioiTinh.setSelectedItem(gioiTinh != null ? gioiTinh : "Nam");
         txtNamSinh.setText(namSinh != null ? namSinh.toString() : "");
-        txtDiaChi.setText("");
-        txtSoDienThoai.setText("");
+        txtDiaChi.setText(nvFull != null && nvFull.getDiaChi() != null ? nvFull.getDiaChi() : "");
+        txtSoDienThoai.setText(nvFull != null && nvFull.getSoDienThoai() != null ? nvFull.getSoDienThoai() : "");
         if (idxCV >= 0) cboChucVu.setSelectedIndex(idxCV);
         chkTrangThai.setSelected(Boolean.TRUE.equals(trangThai));
-        // Chú ý: diaChi và soDienThoai không có trong bảng → để trống (user tự nhập khi cập nhật)
     }
 
     private void resetFormThemMoi() {
@@ -609,6 +616,18 @@ public class NhanVienPanel extends JPanel {
         NhanVien nv = docDuLieuForm();
         if (nv == null) return;
         String tenCV = (String) cboChucVu.getSelectedItem();
+
+        // Hỏi xác nhận trước khi tạo
+        int xacNhan = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có muốn tạo nhân viên với mã \"" + nv.getMaNhanVien() + "\" không?\n"
+                + "Họ tên : " + nv.getTenNhanVien() + "\n"
+                + "Chức vụ: " + (tenCV != null ? tenCV : ""),
+                "Xác nhận thêm nhân viên",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (xacNhan != JOptionPane.YES_OPTION) return;
+
         try {
             bus.them(nv, tenCV != null ? tenCV : "");
             hienThiThongBao("Thêm nhân viên \"" + nv.getTenNhanVien() + "\" thành công.\n"

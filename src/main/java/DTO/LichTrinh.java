@@ -17,4 +17,9 @@ public class LichTrinh {
     private int ngayThu;
     private String noiDung;
     private Boolean trangThai;
+
+    // Trường hiển thị (JOIN từ bảng liên quan, không lưu DB)
+    private String tenTour;
+    private String tenDiaDiem;
+    private String tenPT;
 }

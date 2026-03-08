@@ -24,6 +24,8 @@ import java.io.File;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,11 +90,10 @@ public class ThongKeBaoCaoPanel extends JPanel {
     // THÀNH PHẦN FILTER
     // ─────────────────────────────────────────────────────────
 
-    private JComboBox<String> cboNam;
+    private JSpinner spinTuNgay;
+    private JSpinner spinDenNgay;
     /** Mapping mã loại tour → hiển thị trong cboLoaiTour */
     private JComboBox<String> cboLoaiTour;
-    /** Mapping mã nhân viên → hiển thị trong cboNhanVien */
-    private JComboBox<String> cboNhanVien;
     private JComboBox<String> cboTrangThaiTour;
     private ActionButton btnLoc;
     private ActionButton btnLamMoi;
@@ -101,7 +102,6 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
     /** Map hiển thị → mã thực để tra lại khi lọc */
     private Map<String, String> mapLoaiTour;
-    private Map<String, String> mapNhanVien;
 
     // ─────────────────────────────────────────────────────────
     // CÁC TAB
@@ -129,6 +129,7 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
     // Tab Nhân viên
     private ChartPanel chartNhanVien;
+    private ChartPanel chartNhanVienVe;
     private DefaultTableModel modelNhanVien;
     private JTable bangNhanVien;
 
@@ -138,8 +139,10 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
     public ThongKeBaoCaoPanel() {
         this.bus = new BaoCaoBUS();
+        LocalDate today = LocalDate.now();
         this.filterHienTai = BaoCaoFilterDTO.builder()
-                .nam(LocalDate.now().getYear())
+                .tuNgay(LocalDate.of(today.getYear(), 1, 1))
+                .denNgay(today)
                 .build();
         xayDungGiaoDien();
         khoiTaoFilter();
@@ -208,12 +211,28 @@ public class ThongKeBaoCaoPanel extends JPanel {
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 2));
         row1.setBackground(C_TRANG);
 
-        // Năm
-        row1.add(labelFilter("Năm:"));
-        cboNam = new JComboBox<>();
-        cboNam.setFont(new Font(FONT, Font.PLAIN, 12));
-        cboNam.setPreferredSize(new Dimension(85, 28));
-        row1.add(cboNam);
+        // Từ ngày
+        row1.add(labelFilter("Từ ngày:"));
+        spinTuNgay = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor editorTu = new JSpinner.DateEditor(spinTuNgay, "dd/MM/yyyy");
+        spinTuNgay.setEditor(editorTu);
+        spinTuNgay.setFont(new Font(FONT, Font.PLAIN, 12));
+        spinTuNgay.setPreferredSize(new Dimension(110, 28));
+        // Init to 1st Jan of current year
+        LocalDate today0 = LocalDate.now();
+        spinTuNgay.setValue(Date.from(LocalDate.of(today0.getYear(), 1, 1)
+                .atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        row1.add(spinTuNgay);
+
+        // Đến ngày
+        row1.add(labelFilter("Đến ngày:"));
+        spinDenNgay = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor editorDen = new JSpinner.DateEditor(spinDenNgay, "dd/MM/yyyy");
+        spinDenNgay.setEditor(editorDen);
+        spinDenNgay.setFont(new Font(FONT, Font.PLAIN, 12));
+        spinDenNgay.setPreferredSize(new Dimension(110, 28));
+        spinDenNgay.setValue(Date.from(today0.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        row1.add(spinDenNgay);
 
         row1.add(Sep());
 
@@ -223,15 +242,6 @@ public class ThongKeBaoCaoPanel extends JPanel {
         cboLoaiTour.setFont(new Font(FONT, Font.PLAIN, 12));
         cboLoaiTour.setPreferredSize(new Dimension(155, 28));
         row1.add(cboLoaiTour);
-
-        row1.add(Sep());
-
-        // Nhân viên
-        row1.add(labelFilter("Nhân viên:"));
-        cboNhanVien = new JComboBox<>();
-        cboNhanVien.setFont(new Font(FONT, Font.PLAIN, 12));
-        cboNhanVien.setPreferredSize(new Dimension(165, 28));
-        row1.add(cboNhanVien);
 
         row1.add(Sep());
 
@@ -423,11 +433,13 @@ public class ThongKeBaoCaoPanel extends JPanel {
         p.setBorder(new EmptyBorder(8, 0, 0, 0));
 
         chartNhanVien = taoChartPanelRong();
+        chartNhanVienVe = taoChartPanelRong();
 
-        JPanel panelBieuDo = new JPanel(new BorderLayout());
+        JPanel panelBieuDo = new JPanel(new GridLayout(1, 2, 8, 0));
         panelBieuDo.setBackground(C_NEN);
         panelBieuDo.setPreferredSize(new Dimension(0, 280));
-        panelBieuDo.add(baoChartPanel(chartNhanVien, "Doanh thu theo nhân viên"), BorderLayout.CENTER);
+        panelBieuDo.add(baoChartPanel(chartNhanVien, "Doanh thu theo nhân viên (triệu VND)"));
+        panelBieuDo.add(baoChartPanel(chartNhanVienVe, "Số vé bán theo nhân viên"));
 
         modelNhanVien = taoModelKhongSua(
                 "STT", "Tên nhân viên", "Chức vụ", "Số hóa đơn", "Số tour bán", "Số vé", "Doanh thu (VND)");
@@ -454,17 +466,12 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
     private void khoiTaoFilter() {
         new SwingWorker<Void, Void>() {
-            private List<Integer> dsDanhSachNam;
             private Map<String, String> dsLoaiTour;
-            private Map<String, String> dsNhanVien;
 
             @Override
             protected Void doInBackground() throws Exception {
-                dsDanhSachNam = bus.getDanhSachNam();
                 dsLoaiTour = bus.getDanhSachLoaiTour();
-                dsNhanVien = bus.getDanhSachNhanVien();
                 mapLoaiTour = dsLoaiTour;
-                mapNhanVien = dsNhanVien;
                 return null;
             }
 
@@ -472,26 +479,12 @@ public class ThongKeBaoCaoPanel extends JPanel {
             protected void done() {
                 try {
                     get();
-                    // Điền năm
-                    cboNam.removeAllItems();
-                    for (int n : dsDanhSachNam)
-                        cboNam.addItem(String.valueOf(n));
-                    if (cboNam.getItemCount() > 0)
-                        cboNam.setSelectedIndex(0);
-
                     // Điền loại tour
                     cboLoaiTour.removeAllItems();
                     for (String ten : dsLoaiTour.values())
                         cboLoaiTour.addItem(ten);
-
-                    // Điền nhân viên
-                    cboNhanVien.removeAllItems();
-                    for (String ten : dsNhanVien.values())
-                        cboNhanVien.addItem(ten);
-
                 } catch (Exception ex) {
                     // Filter vẫn hoạt động với dữ liệu mặc định
-                    cboNam.addItem(String.valueOf(LocalDate.now().getYear()));
                 }
             }
         }.execute();
@@ -717,24 +710,29 @@ public class ThongKeBaoCaoPanel extends JPanel {
                 try {
                     get();
 
-                    // Biểu đồ cột nhóm: doanh thu theo NV
-                    DefaultCategoryDataset dsChart = new DefaultCategoryDataset();
+                    // Biểu đồ 1: Doanh thu theo NV
+                    DefaultCategoryDataset dsDoanhThu = new DefaultCategoryDataset();
+                    // Biểu đồ 2: Số vé theo NV
+                    DefaultCategoryDataset dsSoVe = new DefaultCategoryDataset();
                     for (BaoCaoNhanVienRowDTO r : ds) {
                         String ten = r.getTenNhanVien().length() > 18
                                 ? r.getTenNhanVien().substring(0, 16) + "…"
                                 : r.getTenNhanVien();
-                        dsChart.addValue(r.getTongDoanhThu() / 1_000_000.0, "Doanh thu (triệu)", ten);
-                        dsChart.addValue((double) r.getSoHoaDon() * 100_000, "Số HĐ × 100k", ten);
+                        dsDoanhThu.addValue(r.getTongDoanhThu() / 1_000_000.0, "Doanh thu (triệu VND)", ten);
+                        dsSoVe.addValue(r.getSoVe(), "Số vé", ten);
                     }
-                    JFreeChart chart = ChartFactory.createBarChart(
-                            null, null, "Giá trị",
-                            dsChart, PlotOrientation.VERTICAL, true, true, false);
-                    apDungStyleCot(chart, C_CHINH);
-                    CategoryPlot plot = chart.getCategoryPlot();
-                    BarRenderer rdr = (BarRenderer) plot.getRenderer();
-                    for (int i = 0; i < BANG_MAU.length && i < 2; i++)
-                        rdr.setSeriesPaint(i, BANG_MAU[i]);
-                    chartNhanVien.setChart(chart);
+
+                    JFreeChart chartDT = ChartFactory.createBarChart(
+                            null, null, "Triệu VND",
+                            dsDoanhThu, PlotOrientation.VERTICAL, false, true, false);
+                    apDungStyleCot(chartDT, C_CHINH);
+                    chartNhanVien.setChart(chartDT);
+
+                    JFreeChart chartVe = ChartFactory.createBarChart(
+                            null, null, "Số vé",
+                            dsSoVe, PlotOrientation.VERTICAL, false, true, false);
+                    apDungStyleCot(chartVe, C_XANH_LA);
+                    chartNhanVienVe.setChart(chartVe);
 
                     // Bảng
                     modelNhanVien.setRowCount(0);
@@ -757,18 +755,25 @@ public class ThongKeBaoCaoPanel extends JPanel {
     // XỬ LÝ FILTER
     // ─────────────────────────────────────────────────────────
 
-    /** Đọc từ ComboBox, xây BaoCaoFilterDTO, reload tất cả tab */
+    /** Đọc từ spinner ngày, xây BaoCaoFilterDTO, reload tất cả tab */
     private void apDungFilter() {
-        BaoCaoFilterDTO.BaoCaoFilterDTOBuilder b = BaoCaoFilterDTO.builder();
+        // Đọc ngày từ spinner
+        LocalDate tuNgay = ((Date) spinTuNgay.getValue()).toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate denNgay = ((Date) spinDenNgay.getValue()).toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDate();
 
-        // Năm
-        String namStr = (String) cboNam.getSelectedItem();
-        if (namStr != null && !namStr.isBlank()) {
-            try {
-                b.nam(Integer.parseInt(namStr));
-            } catch (NumberFormatException ignored) {
-            }
+        // Validate: ngày đầu phải <= ngày cuối
+        if (tuNgay.isAfter(denNgay)) {
+            JOptionPane.showMessageDialog(this,
+                    "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!",
+                    "Lỗi khoảng ngày", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        BaoCaoFilterDTO.BaoCaoFilterDTOBuilder b = BaoCaoFilterDTO.builder()
+                .tuNgay(tuNgay)
+                .denNgay(denNgay);
 
         // Loại tour — tra ngược trong map để lấy mã
         if (mapLoaiTour != null) {
@@ -776,15 +781,6 @@ public class ThongKeBaoCaoPanel extends JPanel {
             mapLoaiTour.forEach((ma, ten) -> {
                 if (ten.equals(tenChon) && !ma.isBlank())
                     b.maLoaiTour(ma);
-            });
-        }
-
-        // Nhân viên
-        if (mapNhanVien != null) {
-            String tenChon = (String) cboNhanVien.getSelectedItem();
-            mapNhanVien.forEach((ma, ten) -> {
-                if (ten.equals(tenChon) && !ma.isBlank())
-                    b.maNhanVien(ma);
             });
         }
 
@@ -799,17 +795,19 @@ public class ThongKeBaoCaoPanel extends JPanel {
         taiDuLieuTatCa();
     }
 
-    /** Đặt lại filter về mặc định (năm hiện tại, tất cả) */
+    /** Đặt lại filter về mặc định (đầu năm hiện tại → hôm nay, tất cả) */
     private void datLaiFilter() {
-        if (cboNam.getItemCount() > 0)
-            cboNam.setSelectedIndex(0);
+        LocalDate today = LocalDate.now();
+        LocalDate dauNam = LocalDate.of(today.getYear(), 1, 1);
+        spinTuNgay.setValue(Date.from(dauNam.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        spinDenNgay.setValue(Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         if (cboLoaiTour.getItemCount() > 0)
             cboLoaiTour.setSelectedIndex(0);
-        if (cboNhanVien.getItemCount() > 0)
-            cboNhanVien.setSelectedIndex(0);
         cboTrangThaiTour.setSelectedIndex(0);
         filterHienTai = BaoCaoFilterDTO.builder()
-                .nam(LocalDate.now().getYear()).build();
+                .tuNgay(dauNam)
+                .denNgay(today)
+                .build();
         taiDuLieuTatCa();
     }
 
@@ -961,7 +959,8 @@ public class ThongKeBaoCaoPanel extends JPanel {
     /** Áp dụng style đồng bộ cho biểu đồ cột */
     private void apDungStyleCot(JFreeChart chart, Color mauCot) {
         chart.setBackgroundPaint(C_TRANG);
-        chart.getLegend().setBackgroundPaint(C_TRANG);
+        if (chart.getLegend() != null)
+            chart.getLegend().setBackgroundPaint(C_TRANG);
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(C_TRANG);
@@ -1061,9 +1060,9 @@ public class ThongKeBaoCaoPanel extends JPanel {
                 // Cột STT căn giữa
                 if (col == 0)
                     setHorizontalAlignment(CENTER);
-                // Cột chứa "₫" căn phải
+                // Cột chứa "₫" căn giữa
                 else if (v instanceof String && v.toString().contains("₫"))
-                    setHorizontalAlignment(RIGHT);
+                    setHorizontalAlignment(CENTER);
                 else
                     setHorizontalAlignment(LEFT);
 

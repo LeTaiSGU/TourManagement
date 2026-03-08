@@ -225,50 +225,11 @@ public class ThongKePanel extends JPanel {
         panel.setBackground(MAU_NEN);
         panel.setBorder(new EmptyBorder(0, 4, 4, 4));
 
-        // Tiêu đề màn hình bên trái
         JLabel lblTieuDe = new JLabel("TRANG CHỦ");
         lblTieuDe.setFont(new Font(FONT_CHINH, Font.BOLD, 20));
         lblTieuDe.setForeground(MAU_CHU_TOI);
 
-        // Khu vực bên phải: ComboBox năm + Nút làm mới
-        JPanel panelBoLoc = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        panelBoLoc.setBackground(MAU_NEN);
-
-        // Nhãn hướng dẫn trước combo
-        JLabel lblNam = new JLabel("Năm:");
-        lblNam.setFont(new Font(FONT_CHINH, Font.PLAIN, 13));
-        lblNam.setForeground(MAU_CHU_TOI);
-
-        // ComboBox chọn năm — sẽ được điền khi loadData
-        cboNamThongKe = new JComboBox<>();
-        cboNamThongKe.setFont(new Font(FONT_CHINH, Font.PLAIN, 13));
-        cboNamThongKe.setPreferredSize(new Dimension(90, 30));
-        cboNamThongKe.setBackground(MAU_THE);
-        cboNamThongKe.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        // Nút làm mới — dùng ActionButton (component chuẩn của dự án).
-        // ActionButton tự xử lý: gradient #3498DB→#2980B9, hover (brighter),
-        // pressed (darker), cursor HAND, font Segoe UI Bold 14, text trắng.
-        // Không cần set thêm gì ngoài text, kích thước và action.
-        btnLamMoi = new ActionButton();
-        btnLamMoi.setText("⟳  Làm mới");
-        btnLamMoi.setPreferredSize(new Dimension(120, 32));
-
-        // Khi nhấn "Làm mới", tải lại dữ liệu theo năm đang chọn
-        btnLamMoi.addActionListener(e -> {
-            Integer namDaChon = (Integer) cboNamThongKe.getSelectedItem();
-            if (namDaChon != null) {
-                taiVaHienThiDuLieu(namDaChon);
-            }
-        });
-
-        panelBoLoc.add(lblNam);
-        panelBoLoc.add(cboNamThongKe);
-        panelBoLoc.add(btnLamMoi);
-
         panel.add(lblTieuDe, BorderLayout.WEST);
-        panel.add(panelBoLoc, BorderLayout.EAST);
-
         return panel;
     }
 
@@ -431,41 +392,8 @@ public class ThongKePanel extends JPanel {
      */
     private void taiDuLieuLanDau() {
         SwingUtilities.invokeLater(() -> {
-            try {
-                // Lấy danh sách năm từ DB
-                List<Integer> danhSachNam = thuongKeBUS.getDanhSachNam();
-
-                // Điền vào ComboBox (không trigger event trong lúc điền)
-                cboNamThongKe.removeAllItems();
-                for (Integer nam : danhSachNam) {
-                    cboNamThongKe.addItem(nam);
-                }
-
-                // Chọn năm hiện tại nếu có, nếu không lấy phần tử đầu tiên
-                int namHienTai = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
-                boolean timThayNamHienTai = false;
-                for (Integer nam : danhSachNam) {
-                    if (nam == namHienTai) {
-                        cboNamThongKe.setSelectedItem(namHienTai);
-                        timThayNamHienTai = true;
-                        break;
-                    }
-                }
-                if (!timThayNamHienTai && !danhSachNam.isEmpty()) {
-                    cboNamThongKe.setSelectedIndex(0);
-                }
-
-                // Tải dữ liệu theo năm vừa chọn
-                Integer namDuocChon = (Integer) cboNamThongKe.getSelectedItem();
-                if (namDuocChon != null) {
-                    taiVaHienThiDuLieu(namDuocChon);
-                }
-
-            } catch (SQLException e) {
-                hienThiLoi("Không thể kết nối cơ sở dữ liệu.\n" +
-                        "Vui lòng kiểm tra kết nối SQL Server.\n\n" +
-                        "Chi tiết: " + e.getMessage());
-            }
+            int namHienTai = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+            taiVaHienThiDuLieu(namHienTai);
         });
     }
 
@@ -480,10 +408,6 @@ public class ThongKePanel extends JPanel {
      * @param nam Năm cần hiển thị thống kê
      */
     public void taiVaHienThiDuLieu(int nam) {
-        // Hiển thị trạng thái đang tải
-        btnLamMoi.setText("Đang tải...");
-        btnLamMoi.setEnabled(false);
-
         // Chạy query trên background thread để không block UI
         SwingWorker<Void, Void> congViecTai = new SwingWorker<>() {
 
@@ -529,10 +453,6 @@ public class ThongKePanel extends JPanel {
 
                 } catch (Exception e) {
                     hienThiLoi("Lỗi khi tải dữ liệu thống kê:\n" + e.getMessage());
-                } finally {
-                    // Khôi phục nút làm mới
-                    btnLamMoi.setText("⟳  Làm mới");
-                    btnLamMoi.setEnabled(true);
                 }
             }
         };

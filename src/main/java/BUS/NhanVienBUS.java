@@ -67,8 +67,20 @@ public class NhanVienBUS {
      * @param tenChucVu Tên chức vụ (VD: "Quản trị viên")
      */
     public NhomQuyen timNhomQuyenChoChucVu(String tenChucVu) throws SQLException {
-        Connection conn = ConnectionDAL.getConnection();
-        return new NhomQuyenDAL(conn).timTheoTenChucVu(tenChucVu);
+        return resolveNhomQuyen(tenChucVu);
+    }
+
+    /**
+     * Gán nhóm quyền cố định theo chức vụ:
+     * "Quản trị viên" → NQ01 (ADMIN)
+     * Còn lại         → NQ02 (NHANVIEN)
+     */
+    private NhomQuyen resolveNhomQuyen(String tenChucVu) {
+        boolean isAdmin = tenChucVu != null && tenChucVu.equalsIgnoreCase("Quản trị viên");
+        return NhomQuyen.builder()
+                .maNhomQuyen(isAdmin ? "NQ01" : "NQ02")
+                .tenNhomQuyen(isAdmin ? "ADMIN" : "NHANVIEN")
+                .build();
     }
 
     /** Sinh mã nhân viên mới tự động (NV001, NV002, …). */
@@ -108,9 +120,9 @@ public class NhanVienBUS {
             int r = nvDAL.them(nv);
             if (r == 0) throw new SQLException("Thêm nhân viên thất bại.");
 
-            // 2. Xác định nhóm quyền từ tên chức vụ
-            NhomQuyen nq = nqDAL.timTheoTenChucVu(tenChucVu);
-            String maNhomQuyen = nq != null ? nq.getMaNhomQuyen() : null;
+            // 2. Xác định nhóm quyền từ tên chức vụ (gán cố định)
+            NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+            String maNhomQuyen = nq.getMaNhomQuyen();
 
             // 3. Tạo tài khoản
             TaiKhoan tk = TaiKhoan.builder()
@@ -162,8 +174,8 @@ public class NhanVienBUS {
 
             // 2. Cập nhật nhóm quyền trong tài khoản (nếu TK tồn tại)
             if (tkDAL.tonTai(nv.getMaNhanVien())) {
-                NhomQuyen nq = nqDAL.timTheoTenChucVu(tenChucVu);
-                tkDAL.capNhatNhomQuyen(nv.getMaNhanVien(), nq != null ? nq.getMaNhomQuyen() : null);
+                NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+                tkDAL.capNhatNhomQuyen(nv.getMaNhanVien(), nq.getMaNhomQuyen());
             }
 
             conn.commit();
