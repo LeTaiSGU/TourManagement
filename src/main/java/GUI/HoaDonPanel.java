@@ -3,9 +3,11 @@ package GUI;
 import BUS.CTHDBUS;
 import BUS.HoaDonBUS;
 import BUS.TourBUS;
+import BUS.KhuyenMaiBUS;
 import DTO.CTHD;
 import DTO.HoaDon;
 import DTO.Tour;
+import DTO.KhuyenMai;
 import Exception.BusException;
 import GUI.Dialog.KhachHangDialog;
 import GUI.ScrollPane.DesignTable;
@@ -21,6 +23,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
     HoaDonBUS hdbus = new HoaDonBUS();
     CTHDBUS cthdbus = new CTHDBUS();
     TourBUS tbus = new TourBUS();
+    KhuyenMaiBUS kmbus = new KhuyenMaiBUS();
     
     DecimalFormat df = new DecimalFormat("#,###");
     DecimalFormat df2 = new DecimalFormat("#.0");
@@ -30,9 +33,12 @@ public class HoaDonPanel extends javax.swing.JPanel {
     DefaultTableModel modeltour, modelhd, modelcthd, modelcthd2;
     TableRowSorter dshdSorter, dstourSorter;
     
+    private String manv;
+    
     Color headerColor = Color.decode("#18306F");
     
-    public HoaDonPanel() {
+    public HoaDonPanel(String manv) {
+        this.manv = manv;
         initComponents();
         initGUI();
     }
@@ -47,6 +53,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         loadComboboxMaKM();
         loadDataTour();
         
+        cmboxKM.setSelectedIndex(-1);
         cmboxTTTT.addItem("Đã thanh toán");
         cmboxTTTT.addItem("Chưa thanh toán");
         cmboxTTTT.setSelectedIndex(-1);
@@ -62,13 +69,15 @@ public class HoaDonPanel extends javax.swing.JPanel {
         btnXemDSCanHoanTien.setVisible(false);
         autoHuyDatVeDoCongTyHuyTour();
         menuItemHoanTien.setVisible(false);
+        
+        autoXuLyVeDaHoanTat();
     }
     
     public void setTxtEditable() {
         boolean t = false;
         txtMaHD.setEditable(t);
         txtMaKH.setEditable(t);
-        txtMaNV.setText("NV001");
+        txtMaNV.setText(manv);
         txtMaNV.setEditable(t);
         txtNgayLap.setEditable(t);
         txtNgayLap.setText(String.valueOf(LocalDate.now()));
@@ -81,8 +90,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
     public void loadDataTour() {
         try {
             modeltour.setRowCount(0);
-            ArrayList<Tour> dstour = new ArrayList<>();
-            dstour = tbus.getAllTourWithSoChoCon();
+            ArrayList<Tour> dstour = tbus.getAllTourWithSoChoCon();
 
             for (Tour t : dstour) {
                 String matour = t.getMaTour();
@@ -152,31 +160,18 @@ public class HoaDonPanel extends javax.swing.JPanel {
         }
     }
     
-    public void loadTableCTHDCoTheHuy(String mahd) {
+    public void loadComboboxMaKM() {
         try {
-            modelcthd2.setRowCount(0);
-            ArrayList<CTHD> dscthd = new ArrayList<>();
-            dscthd = cthdbus.getDSCTHDCoTheHuy(mahd);
-            
-            for (CTHD cthd : dscthd) {
-                String matour = cthd.getMaTour();
-                String tentour = cthd.getTenTour();
-                int soluongve = cthd.getSoLuongVe();
-                double dongia = cthd.getGiaTour();
-                double thanhtien = dongia * soluongve;
-                String trangthai = cthd.getTrangThai();
-                
-                Object[] row = {mahd, matour, tentour, soluongve, dongia, thanhtien, trangthai};
-                modelcthd2.addRow(row);
+            ArrayList<KhuyenMai> dskm = kmbus.getGiaTriKhuyenMai();
+            for (KhuyenMai km : dskm) {
+                String makm = km.getMaKhuyenMai();
+                String tenkm = km.getTenKhuyenMai();
+                cmboxKM.addItem(makm + " - " + tenkm);
             }
         }
         catch (BusException e) {
             JOptionPane.showMessageDialog(this, e);
         }
-    }
-    
-    public void loadComboboxMaKM() {
-        
     }
     
     public void clearTimKiemInput() {
@@ -200,29 +195,48 @@ public class HoaDonPanel extends javax.swing.JPanel {
     }
     
     public void fillTinhTien(DefaultTableModel model) {
-        double tongtien = 0;
-        double tienthue = 0;
-        double khuyenmai = 0;
-        double tongtt = 0;
-        
-        for (int i = 0; i < model.getRowCount(); i++) {
-            tongtien += Double.parseDouble(String.valueOf(model.getValueAt(i, 4)));
+        try {
+            double tongtien = 0;
+            double tienthue = 0;
+            double khuyenmai = 0;
+            double tongtt = 0;
+
+            for (int i = 0; i < model.getRowCount(); i++) {
+                tongtien += Double.parseDouble(String.valueOf(model.getValueAt(i, 4)));
+            }
+
+            if (cmboxKM.getSelectedIndex() != -1) {
+                String cmboxkm = String.valueOf(cmboxKM.getSelectedItem());
+                String[] partscmboxmakm = cmboxkm.split("-");
+                String makm = String.valueOf(partscmboxmakm[0].trim());
+                double giatrikm = kmbus.getGiaTriKMByMaKM(makm);
+                if (giatrikm <= 1) 
+                    khuyenmai = tongtien * giatrikm;
+                else 
+                    khuyenmai = giatrikm;
+            }
+            else 
+                khuyenmai = 0;
+
+
+            tienthue = tongtien * thue;
+            tongtt = tongtien + tienthue - khuyenmai;
+
+            if (tabbedPaneQLDatVe.getSelectedIndex() == 0) {
+                txtTongTien.setText(String.valueOf(df.format(tongtien)));
+                txtThue.setText(String.valueOf(df.format(tienthue)));
+                txtKhuyenMai.setText(String.valueOf(df.format(khuyenmai)));
+                txtTongThanhToan.setText(String.valueOf(df.format(tongtt)));
+            }
+            if (tabbedPaneQLDatVe.getSelectedIndex() == 1) {
+                txtMaHDTT.setText(String.valueOf(df.format(tongtien)));
+                txtMaKHTT.setText(String.valueOf(df.format(tienthue)));
+                txtSDTTT.setText(String.valueOf(df.format(khuyenmai)));
+                txtTongThanhToan2.setText(String.valueOf(df.format(tongtt)));
+            }
         }
-        tienthue = tongtien * thue;
-        khuyenmai = tongtien * 0;
-        tongtt = tongtien + tienthue - khuyenmai;
-        
-        if (tabbedPaneQLDatVe.getSelectedIndex() == 0) {
-            txtTongTien.setText(String.valueOf(df.format(tongtien)));
-            txtThue.setText(String.valueOf(df.format(tienthue)));
-            txtKhuyenMai.setText(String.valueOf(df.format(khuyenmai)));
-            txtTongThanhToan.setText(String.valueOf(df.format(tongtt)));
-        }
-        if (tabbedPaneQLDatVe.getSelectedIndex() == 1) {
-            txtMaHDTT.setText(String.valueOf(df.format(tongtien)));
-            txtMaKHTT.setText(String.valueOf(df.format(tienthue)));
-            txtSDTTT.setText(String.valueOf(df.format(khuyenmai)));
-            txtTongThanhToan2.setText(String.valueOf(df.format(tongtt)));
+        catch (BusException e) {
+            JOptionPane.showMessageDialog(this, e);
         }
     }
     
@@ -252,8 +266,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
             tienhoan = tienhoan + tienhoan*thue;
             txtSoTienHoan.setText(df.format(tienhoan));
         } 
-        catch (BusException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+        catch (BusException e) {
+            JOptionPane.showMessageDialog(this, e);
         }
     }
     
@@ -288,6 +302,14 @@ public class HoaDonPanel extends javax.swing.JPanel {
         }
     } 
     
+    private void autoXuLyVeDaHoanTat() {
+        try {
+            cthdbus.xuLyVeDaHoanTat();
+        }
+        catch (BusException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -679,7 +701,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         txtTongTien.setBackground(new java.awt.Color(228, 241, 255));
         txtTongTien.setFont(new java.awt.Font("Segoe UI Semibold", 1, 20)); // NOI18N
         txtTongTien.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtTongTien.setText("0đ");
+        txtTongTien.setText("0");
         txtTongTien.setBorder(null);
         txtTongTien.setMaximumSize(new java.awt.Dimension(390, 35));
         txtTongTien.setMinimumSize(new java.awt.Dimension(390, 35));
@@ -696,7 +718,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         txtThue.setBackground(new java.awt.Color(228, 241, 255));
         txtThue.setFont(new java.awt.Font("Segoe UI Semibold", 1, 20)); // NOI18N
         txtThue.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtThue.setText("0đ");
+        txtThue.setText("0");
         txtThue.setBorder(null);
         txtThue.setMaximumSize(new java.awt.Dimension(390, 35));
         txtThue.setMinimumSize(new java.awt.Dimension(390, 35));
@@ -714,14 +736,19 @@ public class HoaDonPanel extends javax.swing.JPanel {
         txtKhuyenMai.setFont(new java.awt.Font("Segoe UI Semibold", 1, 20)); // NOI18N
         txtKhuyenMai.setForeground(new java.awt.Color(51, 204, 0));
         txtKhuyenMai.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtKhuyenMai.setText("- 0đ");
+        txtKhuyenMai.setText("- 0");
         txtKhuyenMai.setBorder(null);
         txtKhuyenMai.setMaximumSize(new java.awt.Dimension(390, 35));
         txtKhuyenMai.setMinimumSize(new java.awt.Dimension(390, 35));
         txtKhuyenMai.setPreferredSize(new java.awt.Dimension(390, 35));
         panelTamTinh.add(txtKhuyenMai);
 
-        cmboxKM.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        cmboxKM.setFont(new java.awt.Font("Segoe UI Semibold", 0, 18)); // NOI18N
+        cmboxKM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmboxKMActionPerformed(evt);
+            }
+        });
         panelTamTinh.add(cmboxKM);
         panelTamTinh.add(jLabel1);
 
@@ -736,7 +763,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         txtTongThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 28)); // NOI18N
         txtTongThanhToan.setForeground(new java.awt.Color(0, 102, 204));
         txtTongThanhToan.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtTongThanhToan.setText("0đ");
+        txtTongThanhToan.setText("0");
         txtTongThanhToan.setBorder(null);
         txtTongThanhToan.setMaximumSize(new java.awt.Dimension(390, 35));
         txtTongThanhToan.setMinimumSize(new java.awt.Dimension(390, 35));
@@ -2106,12 +2133,16 @@ public class HoaDonPanel extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn tour!");
                 return;
             }
+            String cmboxkm = String.valueOf(cmboxKM.getSelectedItem());
+            String[] partscmboxmakm = cmboxkm.split("-");
+            String makm = String.valueOf(partscmboxmakm[0].trim());
+            
             HoaDon hd = new HoaDon();
             hd.setMaNhanVien(String.valueOf(txtMaNV.getText()));
             hd.setMaKhachHang(String.valueOf(txtMaKH.getText()));
             hd.setNgayLapHD(LocalDate.parse(txtNgayLap.getText()));
             hd.setTongTien(Double.parseDouble(txtTongThanhToan.getText().replace(".", "")));
-            hd.setMaKhuyenMai(String.valueOf(cmboxKM.getSelectedItem()));
+            hd.setMaKhuyenMai(makm);
             hd.setThue(thue);
             hd.setTrangThaiTT(false);
 
@@ -2196,9 +2227,9 @@ public class HoaDonPanel extends javax.swing.JPanel {
             double tongtien = Double.parseDouble(String.valueOf(tableDSHD.getValueAt(tableDSHD.getSelectedRow(), 5)));
             txtTongThanhToan2.setText(String.valueOf(df.format(tongtien)));
 
-            String mahdhuy = String.valueOf(tableDSHD.getValueAt(tableDSHD.getSelectedRow(), 0));
-            loadTableCTHDCoTheHuy(mahdhuy);
-            txtMaHDHuy.setText(mahdhuy);
+            String mahd = String.valueOf(tableDSHD.getValueAt(tableDSHD.getSelectedRow(), 0));
+            loadTableCTHD2(mahd);
+            txtMaHDHuy.setText(mahd);
             
         }
     }//GEN-LAST:event_tableDSHDMouseClicked
@@ -2523,6 +2554,37 @@ public class HoaDonPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, e);
         }
     }//GEN-LAST:event_btnXemDSCanHoanTienActionPerformed
+
+    private void cmboxKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboxKMActionPerformed
+        try {
+            double tongtien = Double.parseDouble(String.valueOf(txtTongTien.getText()).replace(".", ""));
+            double tienthue = Double.parseDouble(String.valueOf(txtThue.getText()).replace(".", ""));
+            double khuyenmai = 0;
+            double tongtt = 0;
+
+            if (cmboxKM.getSelectedIndex() >= 0) {
+                String cmboxkm = String.valueOf(cmboxKM.getSelectedItem());
+                String[] partscmboxmakm = cmboxkm.split("-");
+                String makm = String.valueOf(partscmboxmakm[0].trim());
+                double giatrikm = kmbus.getGiaTriKMByMaKM(makm);
+                if (giatrikm <= 1) 
+                    khuyenmai = tongtien * giatrikm;
+                else 
+                    khuyenmai = giatrikm;
+            }
+            else 
+                khuyenmai = 0;
+
+            tienthue = tongtien * thue;
+            tongtt = tongtien + tienthue - khuyenmai;
+
+            txtKhuyenMai.setText(String.valueOf(df.format(khuyenmai)));
+            txtTongThanhToan.setText(String.valueOf(df.format(tongtt)));
+        }
+        catch (BusException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }//GEN-LAST:event_cmboxKMActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelTrong2;

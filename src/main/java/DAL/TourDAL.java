@@ -9,35 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TourDAL {
-    public ArrayList<Tour> getAllTour() throws DaoException {
-        ArrayList<Tour> dstour = new ArrayList<>();
-        String sql = "Select * from TOUR";
-        
-        try (Connection con = ConnectionDAL.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Tour t = new Tour();
-                t.setMaTour(rs.getString("maTour"));
-                t.setMaLoaiTour(rs.getString("maLoaiTour"));
-                t.setTenTour(rs.getString("tenTour"));
-                t.setNoiKhoiHanh(rs.getString("noiKhoiHanh"));
-                t.setTgKhoiHanh(rs.getDate("tgKhoiHanh").toLocalDate());
-                t.setGiaTour(rs.getDouble("giaTour"));
-                t.setSoLuongVe(rs.getInt("soLuongVe"));
-                t.setSoLuongMin(rs.getInt("soLuongMin"));
-                t.setTrangThai(rs.getBoolean("trangThai"));
-                t.setKhoiHanh(rs.getBoolean("khoiHanh"));
-                
-                dstour.add(t);
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            throw new DaoException("Lỗi truy vấn tour");
-        }
-        return dstour;
-    }
+        private ConnectionDAL conn = new ConnectionDAL();
     
     public ArrayList<Tour> getAllTourWithSoChoCon() throws DaoException {
         ArrayList<Tour> dstour = new ArrayList<>();
@@ -58,7 +30,7 @@ public class TourDAL {
             WHERE t.khoiHanh = 0 and t.trangThai = 1
             """; 
 
-        try (Connection con = ConnectionDAL.getConnection();
+        try (Connection con = conn.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 

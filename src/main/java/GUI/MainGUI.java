@@ -96,6 +96,8 @@ public class MainGUI extends javax.swing.JFrame {
                 return new LichTrinhPanel();
             case 2:
                 return new DiaDiemPanel();
+            case 7:
+                return new HoaDonPanel(account.getMaNhanVien());
             case 9:
                 return new PhanQuyenPanel();
             // case 3:
@@ -501,6 +503,8 @@ public class MainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   
+    
     private void btnFullscreenMouseClicked(java.awt.event.MouseEvent evt) {
         fullscreen();
     }
