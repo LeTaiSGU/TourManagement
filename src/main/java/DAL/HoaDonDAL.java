@@ -4,7 +4,6 @@ import DTO.HoaDon;
 import Exception.DaoException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HoaDonDAL {
     private ConnectionDAL conn = new ConnectionDAL();
@@ -29,7 +28,8 @@ public class HoaDonDAL {
         ArrayList<HoaDon> dshd = new ArrayList<>();
         String sql = "SELECT hd.*, kh.tenKhachHang, kh.soDienThoai, kh.email "
                 + "FROM HOADON hd "
-                + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang";
+                + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
+                + "ORDER BY hd.maHoaDon DESC";
         
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
@@ -51,7 +51,8 @@ public class HoaDonDAL {
         String sql = "SELECT hd.*, kh.tenKhachHang, kh.soDienThoai, kh.email "
                 + "FROM HOADON hd "
                 + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
-                + "WHERE hd.trangThaiTT = ? ";
+                + "WHERE hd.trangThaiTT = ? "
+                + "ORDER BY hd.maHoaDon DESC";
         
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
@@ -96,7 +97,8 @@ public class HoaDonDAL {
                 + "FROM HOADON hd "
                 + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
                 + "JOIN CTHD cthd ON cthd.maHoaDon = hd.maHoaDon "
-                + "WHERE hd.trangThaiTT = ? and cthd.trangThai = ? ";
+                + "WHERE hd.trangThaiTT = ? and cthd.trangThai = ? "
+                + "ORDER BY hd.maHoaDon DESC";
         
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
@@ -121,7 +123,8 @@ public class HoaDonDAL {
                 + "FROM HOADON hd "
                 + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
                 + "JOIN CTHD cthd ON cthd.maHoaDon = hd.maHoaDon "
-                + "WHERE cthd.trangThai = ? ";
+                + "WHERE cthd.trangThai = ? "
+                + "ORDER BY hd.maHoaDon DESC";
         
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
@@ -142,10 +145,11 @@ public class HoaDonDAL {
     public ArrayList<HoaDon> getHoaDonCanHoanTienDoTourBiHuy() throws DaoException {
         ArrayList<HoaDon> dshd = new ArrayList<>();
         String sql = "SELECT DISTINCT hd.*, kh.tenKhachHang, kh.soDienThoai, kh.email "
-                   + "FROM HOADON hd "
-                   + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
-                   + "JOIN CTHD cthd ON cthd.maHoaDon = hd.maHoaDon "
-                   + "WHERE cthd.trangThai = ? AND cthd.hoanTien = ? AND hd.trangThaiTT = ? ";
+                    + "FROM HOADON hd "
+                    + "JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang "
+                    + "JOIN CTHD cthd ON cthd.maHoaDon = hd.maHoaDon "
+                    + "WHERE cthd.trangThai = ? AND cthd.hoanTien = ? AND hd.trangThaiTT = ? "
+                    + "ORDER BY hd.maHoaDon DESC";
 
         try (Connection con = conn.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
