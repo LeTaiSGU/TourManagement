@@ -48,6 +48,10 @@ public class PDFService {
 
         try {
             File file = new File(path);
+            
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             if (!file.exists()) 
                 taoHoaDonHoanTienPDF(hd, dsct, path, tienhoan, lydohuy);
         } catch (Exception e) {
@@ -71,6 +75,9 @@ public class PDFService {
         File file = new File(path);
 
         try {
+            if (file.getParentFile() != null && !file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
             if (!file.exists())
                 taoPDF(hd, dsct, path, thanhtoan);
         } 

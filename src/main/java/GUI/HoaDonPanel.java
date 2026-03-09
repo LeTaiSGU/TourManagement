@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class HoaDonPanel extends javax.swing.JPanel {
@@ -25,10 +27,10 @@ public class HoaDonPanel extends javax.swing.JPanel {
     TourBUS tbus = new TourBUS();
     KhuyenMaiBUS kmbus = new KhuyenMaiBUS();
     
-    DecimalFormat df = new DecimalFormat("#,###");
-    DecimalFormat df2 = new DecimalFormat("#.0");
-    private final float thue1 = 0.1f;
-    private final float thue = Float.parseFloat(df2.format(thue1).replace(",", "."));
+    DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
+    DecimalFormat df = new DecimalFormat("#,###", symbols);
+    DecimalFormat df2 = new DecimalFormat("#.0", symbols);
+    private final float thue = Float.parseFloat(df2.format(0.1f));
     
     DefaultTableModel modeltour, modelhd, modelcthd, modelcthd2;
     TableRowSorter dshdSorter, dstourSorter;
@@ -71,6 +73,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         menuItemHoanTien.setVisible(false);
         
         autoXuLyVeDaHoanTat();
+        System.out.println(thue);
     }
     
     public void setTxtEditable() {
@@ -217,7 +220,6 @@ public class HoaDonPanel extends javax.swing.JPanel {
             }
             else 
                 khuyenmai = 0;
-
 
             tienthue = tongtien * thue;
             tongtt = tongtien + tienthue - khuyenmai;
@@ -2141,7 +2143,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
             hd.setMaNhanVien(String.valueOf(txtMaNV.getText()));
             hd.setMaKhachHang(String.valueOf(txtMaKH.getText()));
             hd.setNgayLapHD(LocalDate.parse(txtNgayLap.getText()));
-            hd.setTongTien(Double.parseDouble(txtTongThanhToan.getText().replace(".", "")));
+            hd.setTongTien(Double.parseDouble(txtTongThanhToan.getText().replace(",", "")));
             hd.setMaKhuyenMai(makm);
             hd.setThue(thue);
             hd.setTrangThaiTT(false);
@@ -2557,8 +2559,8 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
     private void cmboxKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmboxKMActionPerformed
         try {
-            double tongtien = Double.parseDouble(String.valueOf(txtTongTien.getText()).replace(".", ""));
-            double tienthue = Double.parseDouble(String.valueOf(txtThue.getText()).replace(".", ""));
+            double tongtien = Double.parseDouble(String.valueOf(txtTongTien.getText()).replace(",", ""));
+            double tienthue = Double.parseDouble(String.valueOf(txtThue.getText()).replace(",", ""));
             double khuyenmai = 0;
             double tongtt = 0;
 
