@@ -46,6 +46,7 @@ public class DiaDiemBUS {
         if (diaDiem == null) throw new BusException("Dữ liệu địa điểm không hợp lệ.");
         if (isBlank(diaDiem.getMaDiaDiem())) throw new BusException("Mã địa điểm không được để trống.");
         if (isBlank(diaDiem.getTenDiaDiem())) throw new BusException("Tên địa điểm không được để trống.");
+        if (isBlank(diaDiem.getAnhDiaDiem())) throw new BusException("Anh địa điểm không được để trống.");
         if (isBlank(diaDiem.getQuocGia())) throw new BusException("Quốc gia không được để trống.");
         if (isBlank(diaDiem.getMoTa())) throw new BusException("Mô tả không được để trống.");
     }

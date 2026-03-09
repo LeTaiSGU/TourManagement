@@ -1,7 +1,10 @@
 package GUI;
 
 import BUS.DiaDiemBUS;
+import DAL.ConnectionDAL;
+import DAL.DiaDiemDAL;
 import DTO.DiaDiem;
+import Exception.DaoException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -10,6 +13,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -20,6 +24,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import javax.swing.table.DefaultTableModel;
@@ -80,6 +85,7 @@ public class DiaDiemPanel extends javax.swing.JPanel {
                 model.addRow(new Object[]{
                     dd.getMaDiaDiem(),
                     dd.getTenDiaDiem(),
+                    dd.getAnhDiaDiem(),
                     dd.getQuocGia(),
                     dd.getMoTa()
                 });
@@ -509,19 +515,15 @@ public class DiaDiemPanel extends javax.swing.JPanel {
     if(!maDiaDiem.getText().trim().isEmpty()){
         filters.add(RowFilter.regexFilter("(?i)" + maDiaDiem.getText(), 0));
     }
-
     if(!tenDiaDiem.getText().trim().isEmpty()){
         filters.add(RowFilter.regexFilter("(?i)" + tenDiaDiem.getText(), 1));
     }
-
     if(!quocGia.getText().trim().isEmpty()){
         filters.add(RowFilter.regexFilter("(?i)" + quocGia.getText(), 3));
     }
-
     if(!moTa.getText().trim().isEmpty()){
         filters.add(RowFilter.regexFilter("(?i)" + moTa.getText(), 4));
     }
-
     sorter.setRowFilter(RowFilter.andFilter(filters));
     }//GEN-LAST:event_timkiemActionPerformed
 
@@ -533,33 +535,28 @@ public class DiaDiemPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_lammoiActionPerformed
 
     private void layanhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_layanhActionPerformed
-    try {
-        Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/tour_management", "root", "");
-        String sql = "SELECT Anh FROM DIADIEM WHERE Madiadiem = ?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, maDiaDiem1.getText()); 
-        ResultSet rs = pst.executeQuery();
-        if (rs.next()) {
-            byte[] img = rs.getBytes("Anh"); 
-
-            ImageIcon icon = new ImageIcon(img);
-            Image image = icon.getImage().getScaledInstance(
-                    lblAnh.getWidth(),
-                    lblAnh.getHeight(),
-                    Image.SCALE_SMOOTH);
-            lblAnh.setIcon(new ImageIcon(image)); 
-        }
-        rs.close();
-        pst.close();
-        conn.close();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(null, e);
+        int row = tbDiadiem.getSelectedRow();
+            if(row == -1){
+                JOptionPane.showMessageDialog(this, "Hãy chọn một dòng trước");
+                return;
+            }
+        String tenAnh = tbDiadiem.getValueAt(row, 2).toString().trim();
+        URL imgURL = getClass().getClassLoader().getResource("image/diadiem/" + tenAnh);
+            if (imgURL != null) {
+                ImageIcon icon = new ImageIcon(imgURL);
+                Image img = icon.getImage().getScaledInstance(
+                lblAnh.getWidth(),
+                lblAnh.getHeight(),
+                Image.SCALE_SMOOTH
+            );
+        lblAnh.setIcon(new ImageIcon(img));
+    } else {
+        JOptionPane.showMessageDialog(this, "Không tìm thấy ảnh: " + tenAnh);
     }
     }//GEN-LAST:event_layanhActionPerformed
 
     private void anhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anhActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_anhActionPerformed
 
 
