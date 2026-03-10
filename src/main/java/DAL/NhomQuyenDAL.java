@@ -30,39 +30,46 @@ public class NhomQuyenDAL {
         List<NhomQuyen> ds = new ArrayList<>();
         String sql = "SELECT maNhomQuyen, tenNhomQuyen, moTa FROM NHOMQUYEN ORDER BY maNhomQuyen";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) ds.add(map(rs));
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next())
+                ds.add(map(rs));
         }
         return ds;
     }
 
     /**
      * Tìm nhóm quyền phù hợp nhất với tên chức vụ.
-     * Ưu tiên: khớp chính xác → tên NQ chứa từ khóa → từ khóa nằm trong tên NQ → đầu tiên trong DS.
+     * Ưu tiên: khớp chính xác → tên NQ chứa từ khóa → từ khóa nằm trong tên NQ →
+     * đầu tiên trong DS.
      *
      * @param tenChucVu Tên chức vụ cần tra (VD: "Quản trị viên")
      * @return NhomQuyen phù hợp nhất, hoặc null nếu DB trống
      */
     public NhomQuyen timTheoTenChucVu(String tenChucVu) throws SQLException {
         List<NhomQuyen> daNQ = getAll();
-        if (daNQ.isEmpty()) return null;
+        if (daNQ.isEmpty())
+            return null;
 
         String key = tenChucVu == null ? "" : tenChucVu.trim().toLowerCase();
 
         // 1. Khớp chính xác (ignore case)
         for (NhomQuyen nq : daNQ) {
-            if (nq.getTenNhomQuyen().trim().equalsIgnoreCase(key)) return nq;
+            if (nq.getTenNhomQuyen().trim().equalsIgnoreCase(key))
+                return nq;
         }
 
         // 2. tenNhomQuyen chứa từ đầu tiên của tenChucVu
         String tuDau = key.contains(" ") ? key.split(" ")[0] : key;
         for (NhomQuyen nq : daNQ) {
-            if (nq.getTenNhomQuyen().trim().toLowerCase().contains(tuDau)) return nq;
+            if (nq.getTenNhomQuyen().trim().toLowerCase().contains(tuDau))
+                return nq;
         }
 
-        // 3. tenChucVu chứa tenNhomQuyen (VD: NQ có tên "admin" nằm trong "Quản trị admin")
+        // 3. tenChucVu chứa tenNhomQuyen (VD: NQ có tên "admin" nằm trong "Quản trị
+        // admin")
         for (NhomQuyen nq : daNQ) {
-            if (key.contains(nq.getTenNhomQuyen().trim().toLowerCase())) return nq;
+            if (key.contains(nq.getTenNhomQuyen().trim().toLowerCase()))
+                return nq;
         }
 
         // 4. Fallback — nhóm đầu tiên

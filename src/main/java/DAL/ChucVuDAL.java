@@ -30,8 +30,9 @@ public class ChucVuDAL {
         List<ChucVu> ds = new ArrayList<>();
         String sql = "SELECT maChucVu, tenChucVu, moTa FROM CHUCVU ORDER BY maChucVu";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) ds.add(map(rs));
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next())
+                ds.add(map(rs));
         }
         return ds;
     }
@@ -42,7 +43,8 @@ public class ChucVuDAL {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maChucVu);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return map(rs);
+                if (rs.next())
+                    return map(rs);
             }
         }
         return null;

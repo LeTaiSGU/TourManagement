@@ -19,12 +19,13 @@ import java.util.List;
  *
  * Điểm đặc biệt:
  * - Khi THÊM mới nhân viên, đồng thời tạo TAIKHOAN với:
- *     tenDangNhap = maNhanVien
- *     matKhau     = "123123" (mặc định)
- *     maNhomQuyen = tra tự động từ tên chức vụ
+ * tenDangNhap = maNhanVien
+ * matKhau = "123123" (mặc định)
+ * maNhomQuyen = tra tự động từ tên chức vụ
  * - Cả hai thao tác NHANVIEN + TAIKHOAN được thực hiện trong 1 transaction.
  * - Khi CẬP NHẬT, nếu chức vụ đổi thì cập nhật maNhomQuyen trong TAIKHOAN.
- * - Khi XÓA: nếu NV đang có trong HOADON → xóa mềm; ngược lại xóa cứng (xóa TK trước).
+ * - Khi XÓA: nếu NV đang có trong HOADON → xóa mềm; ngược lại xóa cứng (xóa TK
+ * trước).
  */
 public class NhanVienBUS {
 
@@ -84,8 +85,8 @@ public class NhanVienBUS {
     /**
      * Thêm nhân viên + tạo tài khoản trong 1 transaction.
      *
-     * @param nv           Thông tin nhân viên
-     * @param tenChucVu    Tên chức vụ đã chọn (để tra nhóm quyền)
+     * @param nv        Thông tin nhân viên
+     * @param tenChucVu Tên chức vụ đã chọn (để tra nhóm quyền)
      * @throws IllegalArgumentException nếu validate thất bại
      * @throws SQLException             nếu lỗi DB
      */
@@ -106,7 +107,8 @@ public class NhanVienBUS {
 
             // 1. Thêm nhân viên
             int r = nvDAL.them(nv);
-            if (r == 0) throw new SQLException("Thêm nhân viên thất bại.");
+            if (r == 0)
+                throw new SQLException("Thêm nhân viên thất bại.");
 
             // 2. Xác định nhóm quyền từ tên chức vụ
             NhomQuyen nq = nqDAL.timTheoTenChucVu(tenChucVu);
@@ -158,7 +160,8 @@ public class NhanVienBUS {
 
             // 1. Cập nhật nhân viên
             int r = nvDAL.capNhat(nv);
-            if (r == 0) throw new SQLException("Cập nhật nhân viên thất bại.");
+            if (r == 0)
+                throw new SQLException("Cập nhật nhân viên thất bại.");
 
             // 2. Cập nhật nhóm quyền trong tài khoản (nếu TK tồn tại)
             if (tkDAL.tonTai(nv.getMaNhanVien())) {

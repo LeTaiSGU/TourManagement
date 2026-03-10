@@ -10,14 +10,14 @@ import java.util.List;
  * Truy xuất dữ liệu bảng NHANVIEN.
  *
  * Cấu trúc bảng:
- *   maNhanVien  VARCHAR(5) PK
- *   tenNhanVien NVARCHAR(100) NOT NULL
- *   gioiTinh    NVARCHAR(10)
- *   namSinh     INT
- *   diaChi      NVARCHAR(255)
- *   soDienThoai VARCHAR(10)
- *   maChucVu    VARCHAR(5) FK → CHUCVU
- *   trangThai   BIT DEFAULT 1
+ * maNhanVien VARCHAR(5) PK
+ * tenNhanVien NVARCHAR(100) NOT NULL
+ * gioiTinh NVARCHAR(10)
+ * namSinh INT
+ * diaChi NVARCHAR(255)
+ * soDienThoai VARCHAR(10)
+ * maChucVu VARCHAR(5) FK → CHUCVU
+ * trangThai BIT DEFAULT 1
  */
 public class NhanVienDAL {
 
@@ -54,8 +54,9 @@ public class NhanVienDAL {
         String sql = "SELECT maNhanVien, tenNhanVien, gioiTinh, namSinh, diaChi, "
                 + "soDienThoai, maChucVu, trangThai FROM NHANVIEN ORDER BY maNhanVien";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) ds.add(map(rs));
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next())
+                ds.add(map(rs));
         }
         return ds;
     }
@@ -71,7 +72,8 @@ public class NhanVienDAL {
             ps.setNString(1, pat);
             ps.setString(2, pat);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) ds.add(map(rs));
+                while (rs.next())
+                    ds.add(map(rs));
             }
         }
         return ds;
@@ -96,7 +98,7 @@ public class NhanVienDAL {
         String sql = "SELECT MAX(CAST(SUBSTRING(maNhanVien, 3, LEN(maNhanVien)) AS INT)) "
                 + "FROM NHANVIEN WHERE maNhanVien LIKE 'NV%'";
         try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                ResultSet rs = ps.executeQuery()) {
             int max = rs.next() ? rs.getInt(1) : 0;
             return String.format("NV%03d", max + 1);
         }

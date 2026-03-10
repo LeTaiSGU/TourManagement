@@ -8,10 +8,10 @@ import java.sql.*;
  * Truy xuất dữ liệu bảng TAIKHOAN.
  *
  * Cấu trúc bảng:
- *   maNhanVien  VARCHAR(5) PK & FK → NHANVIEN
- *   matKhau     NVARCHAR(255) NOT NULL
- *   maNhomQuyen VARCHAR(5) FK → NHOMQUYEN
- *   trangThai   BIT DEFAULT 1
+ * maNhanVien VARCHAR(5) PK & FK → NHANVIEN
+ * matKhau NVARCHAR(255) NOT NULL
+ * maNhomQuyen VARCHAR(5) FK → NHOMQUYEN
+ * trangThai BIT DEFAULT 1
  */
 public class TaiKhoanDAL {
 
