@@ -3,11 +3,13 @@ package DAL;
 import java.util.List;
 
 import DTO.HuongDanVien;
+import DTO.HuongDanVienDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Exception.DaoException;
@@ -38,25 +40,22 @@ public class HuongDanVienDAL {
             throw new DaoException("Lỗi truy vấn huớng dẫn viên: " + e.getMessage());
         }
     }
-}
 
-    private ConnectionDAL connectionDAL = new ConnectionDAL();
     public ArrayList<HuongDanVienDTO> getAllHDV() throws DaoException {
         ArrayList<HuongDanVienDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM HuongDanVien";
-        
-        try (Connection conn = connectionDAL.getConnection(); 
-             Statement st = conn.createStatement(); 
-             ResultSet rs = st.executeQuery(sql)) {
+
+        try (Connection con = conn.getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 HuongDanVienDTO hdv = new HuongDanVienDTO(
-                    rs.getString("maHDV"),
-                    rs.getString("tenHDV"),
-                    rs.getString("gioiTinh"),
-                    rs.getInt("namSinh"),
-                    rs.getString("chuyenMon"),
-                    rs.getString("soDienThoai")
-                );
+                        rs.getString("maHDV"),
+                        rs.getString("tenHDV"),
+                        rs.getString("gioiTinh"),
+                        rs.getInt("namSinh"),
+                        rs.getString("chuyenMon"),
+                        rs.getString("soDienThoai"));
                 list.add(hdv);
             }
         } catch (SQLException e) {
@@ -64,12 +63,13 @@ public class HuongDanVienDAL {
         }
         return list;
     }
+
     public void addHuongDanVien(HuongDanVienDTO hdv) throws DaoException {
         String sql = "INSERT INTO HuongDanVien (maHDV, tenHDV, gioiTinh, namSinh, chuyenMon, soDienThoai) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = connectionDAL.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, hdv.getMaHDV());
             ps.setString(2, hdv.getTenHDV());
             ps.setString(3, hdv.getGioiTinh());
@@ -81,12 +81,13 @@ public class HuongDanVienDAL {
             throw new DaoException("Lỗi khi thêm hướng dẫn viên", e);
         }
     }
+
     public void updateHuongDanVien(HuongDanVienDTO hdv) throws DaoException {
         String sql = "UPDATE HuongDanVien SET tenHDV = ?, gioiTinh = ?, namSinh = ?, chuyenMon = ?, soDienThoai = ? "
                 + "WHERE maHDV = ?";
-        
-        try (Connection conn = connectionDAL.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, hdv.getTenHDV());
             ps.setString(2, hdv.getGioiTinh());
             ps.setInt(3, hdv.getNamSinh());
@@ -98,11 +99,12 @@ public class HuongDanVienDAL {
             throw new DaoException("Lỗi khi sửa thông tin hướng dẫn viên", e);
         }
     }
+
     public void deleteHuongDanVien(String maHDV) throws DaoException {
         String sql = "DELETE FROM HuongDanVien WHERE maHDV = ?";
-        
-        try (Connection conn = connectionDAL.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maHDV);
             ps.executeUpdate();
         } catch (SQLException e) {

@@ -175,7 +175,7 @@ public class MainGUI extends javax.swing.JFrame {
             mainSide.revalidate();
             mainSide.repaint();
             currentPanel = null;
-            currentPanelIndex = -1;
+            // currentPanelIndex = -1;
         });
 
         lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -202,14 +202,13 @@ public class MainGUI extends javax.swing.JFrame {
             case "6": // Nhân viên
             case "7": // Khách hàng
             case "9": // Khuyến mãi
-            case "13": // Thống kê
                 // Chưa có panel tương ứng, hiển thị "đang phát triển"
                 return null;
             case "8":
-                return new HoaDonPanel();
+                return new HoaDonPanel(account.getMaNhanVien());
             case "10":
                 return new PhanQuyenPanel();
-            case 10:
+            case "13":
                 return new ThongKeBaoCaoPanel();
             default:
                 return null;

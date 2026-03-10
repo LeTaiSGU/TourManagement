@@ -195,7 +195,7 @@ public class TourPanel extends javax.swing.JPanel {
 
     public void loadComboboxMaDiaDiem() {
         try {
-            List<DiaDiem> listDiaDiem = diaDiemBUS.getAllDiaDiem();
+            List<DiaDiem> listDiaDiem = diaDiemBUS.getAllDiaDiemTai();
             DefaultComboBoxModel model = new DefaultComboBoxModel();
             model.addElement("...");
             for (DiaDiem dd : listDiaDiem) {

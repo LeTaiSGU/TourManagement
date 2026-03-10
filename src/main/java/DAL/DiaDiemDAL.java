@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import DTO.DiaDiem;
@@ -63,25 +64,24 @@ public class DiaDiemDAL {
             throw new DaoException("Lỗi truy vấn địa điểm: " + e.getMessage());
         }
     }
-}
-
-    private ConnectionDAL connectionDAL = new ConnectionDAL();
 
     public ArrayList<DiaDiem> getAll() throws DaoException {
         ArrayList<DiaDiem> list = new ArrayList<>();
         String sql = "SELECT * FROM DiaDiem";
 
-        try (Connection conn = connectionDAL.getConnection();
-                Statement st = conn.createStatement();
+        try (Connection con = conn.getConnection();
+                Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
-                DiaDiem dd = new DiaDiem(
-                        rs.getString("maDiaDiem"),
-                        rs.getString("tenDiaDiem"),
-                        rs.getString("anhDiaDiem"),
-                        rs.getString("quocGia"),
-                        rs.getString("moTa"));
+                DiaDiem dd = DiaDiem.builder()
+                        .maDiaDiem(rs.getString("maDiaDiem"))
+                        .tenDiaDiem(rs.getString("tenDiaDiem"))
+                        .anhDiaDiem(rs.getString("anhDiaDiem"))
+                        .quocGia(rs.getString("quocGia"))
+                        .moTa(rs.getString("moTa"))
+                        .trangThai(rs.getBoolean("trangThai"))
+                        .build();
                 list.add(dd);
             }
         } catch (SQLException e) {
@@ -93,8 +93,8 @@ public class DiaDiemDAL {
     public void addDiaDiem(DiaDiem diaDiem) throws DaoException {
         String sql = "INSERT INTO DiaDiem (maDiaDiem, tenDiaDiem, anhDiaDiem, quocGia, moTa) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = connectionDAL.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, diaDiem.getMaDiaDiem());
             ps.setString(2, diaDiem.getTenDiaDiem());
@@ -110,8 +110,8 @@ public class DiaDiemDAL {
     public void updateDiaDiem(DiaDiem diaDiem) throws DaoException {
         String sql = "UPDATE DiaDiem SET tenDiaDiem = ?, anhDiaDiem = ?, quocGia = ?, moTa = ? WHERE maDiaDiem = ?";
 
-        try (Connection conn = connectionDAL.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, diaDiem.getTenDiaDiem());
             ps.setString(2, diaDiem.getAnhDiaDiem());
@@ -127,8 +127,8 @@ public class DiaDiemDAL {
     public void deleteDiaDiem(String maDiaDiem) throws DaoException {
         String sql = "DELETE FROM DiaDiem WHERE maDiaDiem = ?";
 
-        try (Connection conn = connectionDAL.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maDiaDiem);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -140,8 +140,8 @@ public class DiaDiemDAL {
         String sql = "SELECT anhDiaDiem FROM DiaDiem WHERE maDiaDiem = ?";
         String tenAnh = null;
 
-        try (Connection conn = connectionDAL.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, maDiaDiem);
             ResultSet rs = ps.executeQuery();

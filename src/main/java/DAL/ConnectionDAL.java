@@ -15,7 +15,7 @@ public class ConnectionDAL {
     public Connection getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(url, user, password);
             System.out.println("connect successfully!");
         } catch (Exception ex) {
             System.out.println("connect failure!");

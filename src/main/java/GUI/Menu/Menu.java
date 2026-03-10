@@ -145,7 +145,7 @@ public class Menu extends javax.swing.JPanel {
                     listMenu.addItem(new Model_Menu("8", "Đặt vé", Model_Menu.MenuType.MENU));
                     break;
                 case "CN013":
-                    listMenu.addItem(new Model_Menu("10", "Thống kê", Model_Menu.MenuType.MENU));
+                    listMenu.addItem(new Model_Menu("13", "Thống kê", Model_Menu.MenuType.MENU));
                     break;
             }
         }

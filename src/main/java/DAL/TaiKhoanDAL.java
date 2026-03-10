@@ -84,8 +84,7 @@ public class TaiKhoanDAL {
     public List<TaiKhoan> getAllAccount() throws DaoException {
         List<TaiKhoan> list = new ArrayList<>();
         String sql = "SELECT * FROM TAIKHOAN order by maNhanVien desc";
-        try (Connection conn = con.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
+        try (PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(TaiKhoan.builder()
@@ -104,7 +103,7 @@ public class TaiKhoanDAL {
     public Boolean editTaiKhoan(TaiKhoan tk) throws DaoException {
         String sql = "{call editTaiKhoan(?,?,?)}";
 
-        try (Connection conn = con.getConnection();
+        try (
                 CallableStatement call = conn.prepareCall(sql)) {
 
             call.setString(1, tk.getMaNhanVien());
@@ -123,7 +122,7 @@ public class TaiKhoanDAL {
     public Boolean unblockAccount(TaiKhoan tk) throws DaoException {
         String sql = "{call setStatusAcount(?,?)}";
 
-        try (Connection conn = con.getConnection();
+        try (
                 CallableStatement call = conn.prepareCall(sql)) {
             call.setString(1, tk.getMaNhanVien());
             call.setBoolean(2, tk.getTrangThai());
@@ -147,7 +146,7 @@ public class TaiKhoanDAL {
         if (trangThai != null)
             sql.append(" AND trangThai = ").append(trangThai ? 1 : 0);
 
-        try (Connection conn = con.getConnection();
+        try (
                 PreparedStatement ps = conn.prepareStatement(sql.toString());
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {

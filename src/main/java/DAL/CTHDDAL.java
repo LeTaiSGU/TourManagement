@@ -245,6 +245,8 @@ public class CTHDDAL {
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new DaoException("Lỗi: " + ex.getMessage());
+        }
+    }
 
     public int xuLyVeDaHoanTat() throws DaoException {
         String sql = "UPDATE cthd "

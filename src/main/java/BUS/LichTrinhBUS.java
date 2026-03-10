@@ -1,14 +1,17 @@
 package BUS;
 
+import java.sql.Connection;
 import java.util.List;
 
+import DAL.ConnectionDAL;
 import DAL.LichTrinhDAL;
 import DTO.LichTrinh;
 import Exception.BusException;
 import Exception.DaoException;
 
 public class LichTrinhBUS {
-    private LichTrinhDAL lichTrinhDAL = new LichTrinhDAL();
+    Connection conn = new ConnectionDAL().getConnection();
+    private LichTrinhDAL lichTrinhDAL = new LichTrinhDAL(conn);
 
     public Boolean checkMaLT(String maLT) throws BusException {
         try {

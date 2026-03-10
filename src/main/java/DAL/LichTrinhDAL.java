@@ -183,12 +183,10 @@ public class LichTrinhDAL {
         }
     }
 
-    private ConnectionDAL conn = new ConnectionDAL();
-
     public Boolean checkMaLT(String maLT) throws DaoException {
         String sql = "{call checkMaLT(?)}";
-        try (Connection con = conn.getConnection();
-                CallableStatement call = con.prepareCall(sql);) {
+        try (
+                CallableStatement call = conn.prepareCall(sql);) {
             call.setString(1, maLT);
             ResultSet rs = call.executeQuery();
             if (rs.next()) {
@@ -203,8 +201,8 @@ public class LichTrinhDAL {
 
     public String getLastMaLichTrinh() throws DaoException {
         String sql = "{call getLastMaLT}";
-        try (Connection con = conn.getConnection();
-                CallableStatement call = con.prepareCall(sql);) {
+        try (
+                CallableStatement call = conn.prepareCall(sql);) {
             ResultSet rs = call.executeQuery();
             if (rs.next()) {
                 return rs.getString(1);
@@ -219,8 +217,8 @@ public class LichTrinhDAL {
     public List<LichTrinh> getAllLichTrinh() throws DaoException {
         List<LichTrinh> dslt = new ArrayList();
         String sql = "Select * from LICHTRINH where trangThai = 1";
-        try (Connection con = conn.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
+        try (
+                PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 LichTrinh lt = LichTrinh.builder()
@@ -244,8 +242,8 @@ public class LichTrinhDAL {
     public List<LichTrinh> getLichTrinhByMaTour(String maTour) throws DaoException {
         List<LichTrinh> dslt = new ArrayList();
         String sql = "Select * from LICHTRINH where maTour = ? and trangThai = 1";
-        try (Connection con = conn.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);) {
+        try (
+                PreparedStatement ps = conn.prepareStatement(sql);) {
             ps.setString(1, maTour);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -269,8 +267,8 @@ public class LichTrinhDAL {
 
     public Boolean insertLichTrinh(LichTrinh lichTrinh) throws DaoException {
         String sql = "{call insertLichTrinh(?,?,?,?,?,?,?)}";
-        try (Connection con = conn.getConnection();
-                CallableStatement call = con.prepareCall(sql);) {
+        try (
+                CallableStatement call = conn.prepareCall(sql);) {
             call.setString(1, lichTrinh.getMaLichTrinh());
             call.setString(2, lichTrinh.getMaTour());
             call.setString(3, lichTrinh.getMaDiaDiem());
@@ -288,8 +286,8 @@ public class LichTrinhDAL {
 
     public Boolean editLichTrinh(LichTrinh lichTrinh) throws DaoException {
         String sql = "{call editLichTrinh(?,?,?,?,?,?,?)}";
-        try (Connection con = conn.getConnection();
-                CallableStatement call = con.prepareCall(sql);) {
+        try (
+                CallableStatement call = conn.prepareCall(sql);) {
             call.setString(1, lichTrinh.getMaLichTrinh());
             call.setString(2, lichTrinh.getMaTour());
             call.setString(3, lichTrinh.getMaDiaDiem());
@@ -307,8 +305,8 @@ public class LichTrinhDAL {
 
     public Boolean dropLicTrinh(String maTour) throws DaoException {
         String sql = "{call dropLichtrinhTour(?)}";
-        try (Connection con = conn.getConnection();
-                CallableStatement call = con.prepareCall(sql);) {
+        try (
+                CallableStatement call = conn.prepareCall(sql);) {
             call.setString(1, maTour);
             int rows = call.executeUpdate();
             return rows > 0;

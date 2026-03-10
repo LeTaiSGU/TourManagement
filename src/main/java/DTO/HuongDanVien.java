@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DiaDiem {
-    private String maDiaDiem;
-    private String tenDiaDiem;
-    private String anhDiaDiem;
-    private String quocGia;
-    private String moTa;
+public class HuongDanVien {
+    private String maHDV;
+    private String tenHDV;
+    private String gioiTinh;
+    private int namSinh;
+    private String chuyenMon;
+    private String soDienThoai;
     private Boolean trangThai;
 }
