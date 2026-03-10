@@ -1,5 +1,6 @@
 package BUS;
 
+<<<<<<< HEAD
 import DAL.ChucVuDAL;
 import DAL.ConnectionDAL;
 import DAL.NhanVienDAL;
@@ -257,4 +258,28 @@ public class NhanVienBUS {
         if (nv.getSoDienThoai() != null && nv.getSoDienThoai().length() > 10)
             throw new IllegalArgumentException("Số điện thoại tối đa 10 ký tự.");
     }
+=======
+import DAL.NhanVienDAL;
+import DTO.NhanVien;
+import Exception.BusException;
+import Exception.DaoException;
+
+public class NhanVienBUS {
+    private NhanVienDAL nhanVienDAL = new NhanVienDAL();
+
+    public NhanVien getNvByMa(String ma) throws BusException {
+        if (ma == null || ma.trim().isEmpty()) {
+            throw new BusException("Mã nhân viên không được để trống");
+        }
+        try {
+            NhanVien nv = nhanVienDAL.getNhanVienByMa(ma);
+            if (nv == null) {
+                throw new BusException("Không tìm thấy nhân viên với mã: " + ma);
+            }
+            return nv;
+        } catch (DaoException e) {
+            throw new BusException("Lỗi dữ liệu nhân viên: " + e.getMessage());
+        }
+    }
+>>>>>>> 379838c5d2def71baad191839bfd9123657069d3
 }

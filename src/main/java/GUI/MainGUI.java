@@ -1,9 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package GUI;
 
+import DTO.TaiKhoan;
 import GUI.Menu.EventMenu;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
@@ -28,13 +26,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-/**
- *
- * @author letan
- */
 public class MainGUI extends javax.swing.JFrame {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainGUI.class.getName());
+    private TaiKhoan account = new TaiKhoan();
     private int previousState = JFrame.NORMAL; // Lưu trạng thái trước khi minimize
     private int x, y; // Tọa độ cho drag
 
@@ -42,6 +36,7 @@ public class MainGUI extends javax.swing.JFrame {
     private static final int BORDER_SIZE = 5;
     private Point mouseDownCompCoords = null;
     private int resizeDirection = -1;
+    private java.awt.event.MouseAdapter resizeListener;
 
     private static final int RESIZE_NONE = -1;
     private static final int RESIZE_TOP = 0;
@@ -62,27 +57,27 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JPanel currentPanel = null;
 
     public void initGUI() {
-        // Top Side - Apply gradient using custom paintComponent
+        setLocationRelativeTo(null);
         initTopSideMoving();
         initResizable();
-        initMenuDrop();
-        initMenuPanels();
+        mainSide.setLayout(new BorderLayout());
+        // initMenuDrop();
+        
 
         menu1.initMoving(this);
         menu1.addEventMenu(new EventMenu() {
             @Override
             public void menuIndexChange(int index) {
-                // Lấy menu item theo index
+
                 GUI.Menu.Model_Menu menuItem = menu1.getMenuItem(index);
 
-                // Gán tên và icon cho lbCN
                 lbCN.setText("  " + menuItem.getName());
                 lbCN.setIcon(menuItem.toIconSelected());
 
-                // Hiển thị panel tương ứng
                 showPanel(index);
             }
         });
+<<<<<<< HEAD
 
         // Click logo → hiển thị Dashboard (ThongKePanel), không thuộc menu item nào
         menu1.setLogoClickAction(() -> {
@@ -106,6 +101,16 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Tạo panel mới theo index (tương ứng với thứ tự menu trong Menu.java)
+=======
+        lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                toggleMenuDrop();
+            }
+        });
+    }
+
+>>>>>>> 379838c5d2def71baad191839bfd9123657069d3
     private javax.swing.JPanel createPanel(int index) {
         switch (index) {
             case 0:
@@ -114,6 +119,7 @@ public class MainGUI extends javax.swing.JFrame {
             case 1:
                 // Panel quản lý Lịch trình
                 return new LichTrinhPanel();
+<<<<<<< HEAD
             // TODO: Thêm case cho các panel chức năng khác khi có
             // case 2: return new DiaDiemPanel(); // Địa điểm
             case 3:
@@ -129,23 +135,38 @@ public class MainGUI extends javax.swing.JFrame {
             case 10:
                 // Module Thống kê & Báo cáo — Dashboard + 5 báo cáo chi tiết + xuất Excel/PDF
                 return new ThongKeBaoCaoPanel();
+=======
+            case 2:
+                return new DiaDiemPanel();
+            case 4:
+                return new HuongDanVienPanel();
+            case 6:
+                return new KhachHangPanel ();
+            case 7: 
+                return new HoaDonPanel();
+            case 8:
+                return new KhuyenMaiPanel ();
+            case 9:
+                return new PhanQuyenPanel();
+            // case 3:
+            // return new PhuongTienPanel();
+            // case 4:
+            // return new HuongDanVienPanel();
+            // ... và tiếp tục
+>>>>>>> 379838c5d2def71baad191839bfd9123657069d3
             default:
                 return null;
         }
     }
 
-    // Hiển thị panel tương ứng với menu index
     private void showPanel(int index) {
-        // Kiểm tra xem panel này đã được mở chưa
+
         if (currentPanelIndex == index && currentPanel != null) {
-            // Panel đã mở rồi, không cần làm gì
             return;
         }
 
-        // Tạo panel mới
-        javax.swing.JPanel panel = createPanel(index);
+        JPanel panel = createPanel(index);
 
-        // Clear mainSide
         mainSide.removeAll();
 
         if (panel != null) {
@@ -156,18 +177,20 @@ public class MainGUI extends javax.swing.JFrame {
             // Add panel mới
             mainSide.setLayout(new java.awt.BorderLayout());
             mainSide.add(panel, java.awt.BorderLayout.CENTER);
+            // Bổ sung listener resize cho panel mới
+            addResizeSupport(panel);
         } else {
             // Reset current panel
             currentPanel = null;
             currentPanelIndex = -1;
 
-            // Nếu chưa có panel cho menu này, hiển thị thông báo
-            javax.swing.JLabel lblComingSoon = new javax.swing.JLabel("Chức năng đang phát triển...");
+            JLabel lblComingSoon = new javax.swing.JLabel("Chức năng đang phát triển...");
             lblComingSoon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
             lblComingSoon.setFont(new java.awt.Font("Segoe UI", 0, 18));
             lblComingSoon.setForeground(new java.awt.Color(100, 100, 100));
             mainSide.setLayout(new java.awt.BorderLayout());
             mainSide.add(lblComingSoon, java.awt.BorderLayout.CENTER);
+            addResizeSupport(lblComingSoon);
         }
 
         // Refresh UI
@@ -175,38 +198,22 @@ public class MainGUI extends javax.swing.JFrame {
         mainSide.repaint();
     }
 
-    // Initialize MenuDrop
-    private void initMenuDrop() {
-        // Tạo MenuDrop panel
-        menuDropPanel = new GUI.Menu.MenuDrop();
-
-        // Tạo JPopupMenu để chứa MenuDrop
-        popupMenuDrop = new javax.swing.JPopupMenu();
-        popupMenuDrop.setBorder(null);
-        popupMenuDrop.setLayout(new java.awt.BorderLayout());
-        popupMenuDrop.add(menuDropPanel, java.awt.BorderLayout.CENTER);
-
-        // Add event cho lbMenuDrop
-        lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                toggleMenuDrop();
-            }
-        });
-    }
-
-    // Toggle hiển thị MenuDrop
     private void toggleMenuDrop() {
+        if (popupMenuDrop == null) {
+            menuDropPanel = new GUI.Menu.MenuDrop(this, account.getMaNhanVien());
+            popupMenuDrop = new javax.swing.JPopupMenu();
+            popupMenuDrop.setBorder(null);
+            popupMenuDrop.setLayout(new java.awt.BorderLayout());
+            popupMenuDrop.add(menuDropPanel, java.awt.BorderLayout.CENTER);
+        }
+
         if (popupMenuDrop.isVisible()) {
             popupMenuDrop.setVisible(false);
         } else {
-            // Hiển thị dropdown ngay dưới lbMenuDrop
-            Point location = lbMenuDrop.getLocationOnScreen();
             popupMenuDrop.show(lbMenuDrop, 0, lbMenuDrop.getHeight());
         }
     }
 
-    // Cho phép kéo thả window bằng topSide
     private void initTopSideMoving() {
         topSide.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -225,15 +232,12 @@ public class MainGUI extends javax.swing.JFrame {
         });
     }
 
-    // Fullscreen màn hình
     public void fullscreen() {
         previousState = this.getExtendedState();
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
-    // Minimize màn hình
     public void minimizeWindow() {
-        // Lưu trạng thái hiện tại trước khi minimize
         int currentState = this.getExtendedState();
         if (currentState != JFrame.ICONIFIED) {
             previousState = currentState;
@@ -241,13 +245,12 @@ public class MainGUI extends javax.swing.JFrame {
         this.setExtendedState(JFrame.ICONIFIED);
     }
 
-    // Enable resize cho undecorated window
     private void initResizable() {
-        java.awt.event.MouseAdapter resizeListener = new java.awt.event.MouseAdapter() {
+        resizeListener = new java.awt.event.MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 mouseDownCompCoords = e.getPoint();
-                resizeDirection = getResizeDirection(e.getPoint());
+                resizeDirection = getResizeDirectionFromScreen(e);
             }
 
             @Override
@@ -259,7 +262,7 @@ public class MainGUI extends javax.swing.JFrame {
 
             @Override
             public void mouseMoved(java.awt.event.MouseEvent e) {
-                int direction = getResizeDirection(e.getPoint());
+                int direction = getResizeDirectionFromScreen(e);
                 setCursorForDirection(direction);
             }
 
@@ -271,29 +274,56 @@ public class MainGUI extends javax.swing.JFrame {
             }
         };
 
-        addMouseListener(resizeListener);
-        addMouseMotionListener(resizeListener);
+        addResizeSupport(this);
     }
 
-    private int getResizeDirection(Point point) {
-        int width = getWidth();
-        int height = getHeight();
+    private void addResizeSupport(java.awt.Component comp) {
+        if (comp == null || resizeListener == null) {
+            return;
+        }
 
-        if (point.x < BORDER_SIZE && point.y < BORDER_SIZE) {
+        if (comp instanceof javax.swing.JTabbedPane
+                || comp instanceof javax.swing.AbstractButton
+                || comp instanceof javax.swing.JTable
+                || comp instanceof javax.swing.JScrollPane
+                || comp instanceof javax.swing.JScrollBar
+                || comp instanceof javax.swing.JViewport
+                || comp instanceof javax.swing.text.JTextComponent
+                || comp instanceof javax.swing.JComboBox
+                || comp instanceof javax.swing.JList) {
+            return;
+        }
+        comp.addMouseListener(resizeListener);
+        comp.addMouseMotionListener(resizeListener);
+        if (comp instanceof java.awt.Container) {
+            for (java.awt.Component child : ((java.awt.Container) comp).getComponents()) {
+                addResizeSupport(child);
+            }
+        }
+    }
+
+    private int getResizeDirectionFromScreen(java.awt.event.MouseEvent e) {
+        Point screen = e.getLocationOnScreen();
+        int fx = screen.x - getX();
+        int fy = screen.y - getY();
+        int fw = getWidth();
+        int fh = getHeight();
+
+        if (fx < BORDER_SIZE && fy < BORDER_SIZE) {
             return RESIZE_TOP_LEFT;
-        } else if (point.x > width - BORDER_SIZE && point.y < BORDER_SIZE) {
+        } else if (fx > fw - BORDER_SIZE && fy < BORDER_SIZE) {
             return RESIZE_TOP_RIGHT;
-        } else if (point.x < BORDER_SIZE && point.y > height - BORDER_SIZE) {
+        } else if (fx < BORDER_SIZE && fy > fh - BORDER_SIZE) {
             return RESIZE_BOTTOM_LEFT;
-        } else if (point.x > width - BORDER_SIZE && point.y > height - BORDER_SIZE) {
+        } else if (fx > fw - BORDER_SIZE && fy > fh - BORDER_SIZE) {
             return RESIZE_BOTTOM_RIGHT;
-        } else if (point.y < BORDER_SIZE) {
+        } else if (fy < BORDER_SIZE) {
             return RESIZE_TOP;
-        } else if (point.y > height - BORDER_SIZE) {
+        } else if (fy > fh - BORDER_SIZE) {
             return RESIZE_BOTTOM;
-        } else if (point.x < BORDER_SIZE) {
+        } else if (fx < BORDER_SIZE) {
             return RESIZE_LEFT;
-        } else if (point.x > width - BORDER_SIZE) {
+        } else if (fx > fw - BORDER_SIZE) {
             return RESIZE_RIGHT;
         }
         return RESIZE_NONE;
@@ -375,9 +405,9 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
-    public MainGUI() {
+    public MainGUI(TaiKhoan tk) {
         initComponents();
-        // Scale logo sau khi UI được init
+        account = tk;
         SwingUtilities.invokeLater(() -> {
             initGUI();
         });
@@ -388,9 +418,7 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -407,7 +435,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 720));
-        setUndecorated(true);
         setSize(new java.awt.Dimension(1600, 1000));
 
         jPanel1.setBackground(new java.awt.Color(245, 255, 255));
@@ -461,52 +488,54 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout topSideLayout = new javax.swing.GroupLayout(topSide);
         topSide.setLayout(topSideLayout);
         topSideLayout.setHorizontalGroup(
-                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(lbMenuDrop)
-                                .addGap(18, 18, 18)
-                                .addComponent(lbCN)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1179,
-                                        Short.MAX_VALUE)
-                                .addComponent(btnMinimize)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnFullscreen)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnExit)
-                                .addContainerGap()));
+            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(lbMenuDrop)
+                .addGap(18, 18, 18)
+                .addComponent(lbCN)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1176, Short.MAX_VALUE)
+                .addComponent(btnMinimize)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnFullscreen)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExit)
+                .addContainerGap())
+        );
         topSideLayout.setVerticalGroup(
-                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(topSideLayout.createSequentialGroup()
-                                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(topSideLayout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(topSideLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(btnMinimize)
-                                                        .addComponent(btnFullscreen)
-                                                        .addComponent(btnExit)))
-                                        .addGroup(topSideLayout.createSequentialGroup()
-                                                .addGap(28, 28, 28)
-                                                .addGroup(topSideLayout
-                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(lbCN)
-                                                        .addComponent(lbMenuDrop))))
-                                .addContainerGap(28, Short.MAX_VALUE)));
+            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topSideLayout.createSequentialGroup()
+                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(topSideLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnMinimize)
+                            .addComponent(btnFullscreen)
+                            .addComponent(btnExit)))
+                    .addGroup(topSideLayout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbCN)
+                            .addComponent(lbMenuDrop))))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
 
         jPanel2.add(topSide, java.awt.BorderLayout.PAGE_START);
 
         mainSide.setBackground(new java.awt.Color(255, 255, 255));
         mainSide.setName(""); // NOI18N
+        mainSide.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
         mainSide.setLayout(mainSideLayout);
         mainSideLayout.setHorizontalGroup(
-                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1350, Short.MAX_VALUE));
+            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1350, Short.MAX_VALUE)
+        );
         mainSideLayout.setVerticalGroup(
-                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 920, Short.MAX_VALUE));
+            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 920, Short.MAX_VALUE)
+        );
 
         jPanel2.add(mainSide, java.awt.BorderLayout.CENTER);
 
@@ -515,45 +544,16 @@ public class MainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnFullscreenMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_btnFullscreenMouseClicked
+    private void btnFullscreenMouseClicked(java.awt.event.MouseEvent evt) {
         fullscreen();
-    }// GEN-LAST:event_btnFullscreenMouseClicked
+    }
 
-    private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_btnMinimizeMouseClicked
+    private void btnMinimizeMouseClicked(java.awt.event.MouseEvent evt) {
         minimizeWindow();
-    }// GEN-LAST:event_btnMinimizeMouseClicked
+    }
 
-    private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_btnExitMouseClicked
+    private void btnExitMouseClicked(java.awt.event.MouseEvent evt) {
         this.dispose();
-    }// GEN-LAST:event_btnExitMouseClicked
-
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
-        // (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
-         * look and feel.
-         * For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // </editor-fold>
-        // try {
-        // UIManager.setLookAndFeel( new FlatMacLightLaf() );
-        // } catch( Exception ex ) {
-        // System.err.println( "Failed to initialize LaF" );
-        // }
-
-        /* Create and display the form */
-        // FlatLightLaf.setup();
-
-        java.awt.EventQueue.invokeLater(() -> new MainGUI().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

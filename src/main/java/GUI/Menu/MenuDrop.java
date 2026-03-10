@@ -1,8 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
+
 package GUI.Menu;
+
+import DAL.NhanVienDAL;
+import DTO.NhanVien;
+import Exception.DaoException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,17 +25,26 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class MenuDrop extends javax.swing.JPanel {
 
-    private String userName = "Admin Atlas";
-    private String userEmail = "admin@atlasagency.com";
+    private NhanVienDAL nhanVienDAL = new NhanVienDAL();
+    private NhanVien nv = new NhanVien();
+    private JFrame parentFrame;
 
-    public MenuDrop() {
+    public MenuDrop(javax.swing.JFrame parentFrame, String maNhanVien) {
         initComponents();
+        this.parentFrame = parentFrame;
+        try {
+            nv = nhanVienDAL.getNhanVienByMa(maNhanVien);
+        } catch (DaoException e) {
+            System.out.println(e.getMessage());
+        }
         setupMenuDrop();
     }
 
@@ -69,15 +79,14 @@ public class MenuDrop extends javax.swing.JPanel {
                 super.paintComponent(g);
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 // Gradient từ #2980B9 đến #6DD5FA giống Menu
                 GradientPaint gradient = new GradientPaint(
-                    0, 0, Color.decode("#2980B9"), 
-                    0, getHeight(), Color.decode("#6DD5FA")
-                );
+                        0, 0, Color.decode("#2980B9"),
+                        0, getHeight(), Color.decode("#6DD5FA"));
                 g2.setPaint(gradient);
                 g2.fillRect(0, 0, getWidth(), getHeight());
-                
+
                 g2.dispose();
             }
         };
@@ -111,14 +120,14 @@ public class MenuDrop extends javax.swing.JPanel {
         avatarLabel.setAlignmentX(CENTER_ALIGNMENT);
 
         // Name
-        JLabel nameLabel = new JLabel(userName);
-        nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        JLabel nameLabel = new JLabel(nv.getTenNhanVien());
+        nameLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
         nameLabel.setForeground(new Color(33, 33, 33));
         nameLabel.setAlignmentX(CENTER_ALIGNMENT);
 
         // Email
-        JLabel emailLabel = new JLabel(userEmail);
-        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        JLabel emailLabel = new JLabel(nv.getMaChucVu());
+        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         emailLabel.setForeground(new Color(100, 100, 100));
         emailLabel.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -254,23 +263,49 @@ public class MenuDrop extends javax.swing.JPanel {
     private void handleMenuClick(String menuItem) {
         switch (menuItem) {
             case "Profile Settings":
-                // TODO: Open profile settings
-                System.out.println("Profile Settings clicked");
+                handleProfileSettings();
                 break;
             case "Security":
-                // TODO: Open security settings
-                System.out.println("Security clicked");
+                handleSecuritySettings();
                 break;
             case "Logout":
-                // TODO: Handle logout
-                System.out.println("Logout clicked");
+                handleLogout();
                 break;
         }
     }
 
-    public void setUserInfo(String name, String email) {
-        this.userName = name;
-        this.userEmail = email;
+    private void handleProfileSettings() {
+        JOptionPane.showMessageDialog(
+                null,
+                "Chức năng hồ sơ cá nhân đang được phát triển.",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void handleSecuritySettings() {
+        JOptionPane.showMessageDialog(
+                null,
+                "Chức năng bảo mật (đổi mật khẩu, ... ) đang được phát triển.",
+                "Thông báo",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void handleLogout() {
+        int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (parentFrame != null) {
+                parentFrame.dispose();
+            }
+            new GUI.LoginForm.LoginFrame().setVisible(true);
+        }
+    }
+
+    public void setUserInfo() {
         removeAll();
         setupMenuDrop();
         revalidate();

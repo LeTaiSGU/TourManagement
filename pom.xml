@@ -7,10 +7,11 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.tourmanagement.TourManagement</exec.mainClass>
         <lombok.version>1.18.42</lombok.version>
     </properties>
+<<<<<<< HEAD
     <build>
         <plugins>
             <plugin>
@@ -29,6 +30,9 @@
             </plugin>
         </plugins>
     </build>
+=======
+    
+>>>>>>> 379838c5d2def71baad191839bfd9123657069d3
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
         <dependency>
@@ -37,11 +41,14 @@
             <version>13.2.1.jre11</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
+            <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
@@ -56,6 +63,7 @@
             <scope>compile</scope>
         </dependency>
 
+<<<<<<< HEAD
         <!-- Apache POI — xuất báo cáo Excel (.xlsx) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -68,6 +76,50 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.31</version>
+=======
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
+            <version>3.7.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext-core</artifactId>
+            <version>9.4.0</version>
+            <type>pom</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE280</version>
+>>>>>>> 379838c5d2def71baad191839bfd9123657069d3
         </dependency>
     </dependencies>
+    <build>
+       <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>21</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

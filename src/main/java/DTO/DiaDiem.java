@@ -15,5 +15,5 @@ public class DiaDiem {
     private String anhDiaDiem;
     private String quocGia;
     private String moTa;
-    private Boolean trangThai;
+    //private Boolean trangThai;
 }

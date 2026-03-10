@@ -19,10 +19,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-/**
- *
- * @author letan
- */
 public class TabbedPaneCustomUI extends BasicTabbedPaneUI {
     private final TabbedPaneCustom tab;
 
