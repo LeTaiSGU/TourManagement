@@ -3,6 +3,7 @@ package BUS;
 import DAL.ChucVuDAL;
 import DAL.ConnectionDAL;
 import DAL.NhanVienDAL;
+import DAL.NhomQuyenDAL;
 import DAL.TaiKhoanDAL;
 import DTO.ChucVu;
 import DTO.NhanVien;
@@ -61,26 +62,34 @@ public class NhanVienBUS {
     }
 
     /**
-     * Tìm NhomQuyen phù hợp nhất với tên chức vụ.
-     * Trả về null nếu bảng NHOMQUYEN chưa có dữ liệu.
-     *
-     * @param tenChucVu Tên chức vụ (VD: "Quản trị viên")
+     * Tìm NhomQuyen phù hợp nhất với tên chức vụ bằng cách query DB.
+     * So sánh tenChucVu với tenNhomQuyen (không phân biệt hoa thường, bỏ dấu).
+     * Nếu không tìm thấy, trả về nhóm quyền cuối cùng trong danh sách.
      */
     public NhomQuyen timNhomQuyenChoChucVu(String tenChucVu) throws SQLException {
-        return resolveNhomQuyen(tenChucVu);
+        try {
+            java.util.List<NhomQuyen> danhSach = new NhomQuyenDAL().getAllNhomQuyen();
+            if (danhSach == null || danhSach.isEmpty()) return null;
+            if (tenChucVu == null) return danhSach.get(danhSach.size() - 1);
+            String normalized = removeAccents(tenChucVu.toLowerCase());
+            // Ưu tiên so khớp chứa tên
+            for (NhomQuyen nq : danhSach) {
+                String nqNorm = removeAccents(nq.getTenNhomQuyen().toLowerCase());
+                if (normalized.contains(nqNorm) || nqNorm.contains(normalized)) {
+                    return nq;
+                }
+            }
+            // Fallback: nhóm cuối (ít quyền nhất)
+            return danhSach.get(danhSach.size() - 1);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    /**
-     * Gán nhóm quyền cố định theo chức vụ:
-     * "Quản trị viên" → NQ01 (ADMIN)
-     * Còn lại → NQ02 (NHANVIEN)
-     */
-    private NhomQuyen resolveNhomQuyen(String tenChucVu) {
-        boolean isAdmin = tenChucVu != null && tenChucVu.equalsIgnoreCase("Quản trị viên");
-        return NhomQuyen.builder()
-                .maNhomQuyen(isAdmin ? "NQ01" : "NQ02")
-                .tenNhomQuyen(isAdmin ? "ADMIN" : "NHANVIEN")
-                .build();
+    /** Bỏ dấu tiếng Việt để so sánh tên không phân biệt dấu. */
+    private String removeAccents(String s) {
+        String result = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+        return result.replaceAll("\\p{M}", "");
     }
 
     /** Sinh mã nhân viên mới tự động (NV001, NV002, …). */

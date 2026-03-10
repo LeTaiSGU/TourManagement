@@ -84,8 +84,6 @@ public class NhanVienPanel extends JPanel {
     private JTextField txtTenNV;
     private JComboBox<String> cboGioiTinh;
     private JTextField txtNamSinh;
-    private JTextField txtDiaChi;
-    private JTextField txtSoDienThoai;
     private JComboBox<String> cboChucVu; // hiển thị tenChucVu
     private JLabel lblNhomQuyen; // read-only — tự cập nhật khi đổi chức vụ
     private JCheckBox chkTrangThai;
@@ -373,36 +371,6 @@ public class NhanVienPanel extends JPanel {
         gbc.gridy = row - 1;
         panelNoiDung.add(txtNamSinh, gbc);
 
-        // Địa chỉ
-        row = addLabel(panelNoiDung, gbc, row, "Địa chỉ");
-        txtDiaChi = new JTextField();
-        txtDiaChi.setFont(new Font(FONT, Font.PLAIN, 13));
-        styleInput(txtDiaChi);
-        gbc.gridx = 1;
-        gbc.gridy = row - 1;
-        panelNoiDung.add(txtDiaChi, gbc);
-
-        // Số điện thoại
-        row = addLabel(panelNoiDung, gbc, row, "SĐT");
-        txtSoDienThoai = new JTextField();
-        txtSoDienThoai.setFont(new Font(FONT, Font.PLAIN, 13));
-        styleInput(txtSoDienThoai);
-        gbc.gridx = 1;
-        gbc.gridy = row - 1;
-        panelNoiDung.add(txtSoDienThoai, gbc);
-
-        // Separator chức vụ / quyền
-        JLabel lblSep = new JLabel("─── Chức vụ & Quyền ─────────");
-        lblSep.setFont(new Font(FONT, Font.PLAIN, 11));
-        lblSep.setForeground(MAU_CHU_PHU);
-        gbc.gridx = 0;
-        gbc.gridy = row++;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(10, 2, 4, 2);
-        panelNoiDung.add(lblSep, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2);
-        gbc.gridwidth = 1;
-
         // Chức vụ
         row = addLabel(panelNoiDung, gbc, row, "Chức vụ *");
         cboChucVu = new JComboBox<>();
@@ -414,8 +382,16 @@ public class NhanVienPanel extends JPanel {
         gbc.gridy = row - 1;
         panelNoiDung.add(cboChucVu, gbc);
 
-        // Nhóm quyền (read-only)
-        row = addLabel(panelNoiDung, gbc, row, "Nhóm quyền");
+        // Nhóm quyền (read-only) — label và value cạnh nhau tránh chồng chữ
+        JLabel lblNhomQuyenText = new JLabel("Nhóm quyền");
+        lblNhomQuyenText.setFont(new Font(FONT, Font.PLAIN, 12));
+        lblNhomQuyenText.setForeground(MAU_CHU_PHU);
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(8, 2, 4, 4);
+        panelNoiDung.add(lblNhomQuyenText, gbc);
+
         lblNhomQuyen = new JLabel("—");
         lblNhomQuyen.setFont(new Font(FONT, Font.BOLD, 12));
         lblNhomQuyen.setForeground(MAU_CHINH);
@@ -426,8 +402,10 @@ public class NhanVienPanel extends JPanel {
         lblNhomQuyen.setOpaque(true);
         lblNhomQuyen.setPreferredSize(new Dimension(0, 32));
         gbc.gridx = 1;
-        gbc.gridy = row - 1;
+        gbc.gridy = row++;
+        gbc.insets = new Insets(8, 2, 4, 2);
         panelNoiDung.add(lblNhomQuyen, gbc);
+        gbc.insets = new Insets(4, 2, 4, 2);
 
         // Trạng thái
         row = addLabel(panelNoiDung, gbc, row, "Trạng thái");
@@ -653,8 +631,6 @@ public class NhanVienPanel extends JPanel {
         txtTenNV.setText(tenNV);
         cboGioiTinh.setSelectedItem(gioiTinh != null ? gioiTinh : "Nam");
         txtNamSinh.setText(namSinh != null ? namSinh.toString() : "");
-        txtDiaChi.setText("");
-        txtSoDienThoai.setText("");
         if (idxCV >= 0)
             cboChucVu.setSelectedIndex(idxCV);
         chkTrangThai.setSelected(Boolean.TRUE.equals(trangThai));
@@ -673,8 +649,6 @@ public class NhanVienPanel extends JPanel {
         txtTenNV.setText("");
         cboGioiTinh.setSelectedIndex(0);
         txtNamSinh.setText("");
-        txtDiaChi.setText("");
-        txtSoDienThoai.setText("");
         if (cboChucVu.getItemCount() > 0)
             cboChucVu.setSelectedIndex(0);
         chkTrangThai.setSelected(true);
@@ -777,8 +751,6 @@ public class NhanVienPanel extends JPanel {
         String tenNV = txtTenNV.getText().trim();
         String gioiTinh = (String) cboGioiTinh.getSelectedItem();
         String namSinhStr = txtNamSinh.getText().trim();
-        String diaChi = txtDiaChi.getText().trim();
-        String sdt = txtSoDienThoai.getText().trim();
         int idxCV = cboChucVu.getSelectedIndex();
         String maCV = (idxCV >= 0 && idxCV < danhSachChucVu.size())
                 ? danhSachChucVu.get(idxCV).getMaChucVu()
@@ -807,8 +779,6 @@ public class NhanVienPanel extends JPanel {
                 .tenNhanVien(tenNV)
                 .gioiTinh(gioiTinh)
                 .namSinh(namSinh)
-                .diaChi(diaChi.isEmpty() ? null : diaChi)
-                .soDienThoai(sdt.isEmpty() ? null : sdt)
                 .maChucVu(maCV)
                 .trangThai(chkTrangThai.isSelected())
                 .build();

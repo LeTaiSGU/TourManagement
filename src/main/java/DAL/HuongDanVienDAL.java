@@ -100,6 +100,42 @@ public class HuongDanVienDAL {
         }
     }
 
+    public String sinhMaMoi() throws DaoException {
+        String sql = "SELECT TOP 1 maHDV FROM HuongDanVien ORDER BY maHDV DESC";
+        try (Connection con = conn.getConnection();
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                String ma = rs.getString(1);
+                int so = Integer.parseInt(ma.replaceAll("[^0-9]", "")) + 1;
+                return String.format("HDV%03d", so);
+            }
+            return "HDV001";
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi sinh mã hướng dẫn viên.", e);
+        }
+    }
+
+    public ArrayList<HuongDanVienDTO> searchHuongDanVien(String keyword) throws DaoException {
+        ArrayList<HuongDanVienDTO> list = new ArrayList<>();
+        String sql = "SELECT * FROM HuongDanVien WHERE tenHDV LIKE ? OR maHDV LIKE ?";
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new HuongDanVienDTO(
+                        rs.getString("maHDV"), rs.getString("tenHDV"),
+                        rs.getString("gioiTinh"), rs.getInt("namSinh"),
+                        rs.getString("chuyenMon"), rs.getString("soDienThoai")));
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi tìm kiếm hướng dẫn viên.", e);
+        }
+        return list;
+    }
+
     public void deleteHuongDanVien(String maHDV) throws DaoException {
         String sql = "DELETE FROM HuongDanVien WHERE maHDV = ?";
 

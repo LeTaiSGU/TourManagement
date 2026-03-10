@@ -38,6 +38,14 @@ public class KhachHangBUS {
             throw new BusException("Lỗi khi xóa khách hàng.", e);
         }
     }
+    public String sinhMaMoi() throws BusException {
+        try {
+            return khachHangDAL.sinhMaMoi();
+        } catch (Exception e) {
+            throw new BusException("Lỗi sinh mã khách hàng.", e);
+        }
+    }
+
     public ArrayList<KhachHangDTO> searchKhachHang(String keyword) throws BusException {
         try {
             return khachHangDAL.searchKhachHang(keyword);
