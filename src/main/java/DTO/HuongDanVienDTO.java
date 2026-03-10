@@ -9,14 +9,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KhachHang {
-    private String maKhachHang;
-    private String maLoaiKH;
-    private String tenKhachHang;
+public class HuongDanVienDTO {
+
+    private String maHDV;
+    private String tenHDV;
     private String gioiTinh;
     private int namSinh;
-    private String diaChi;
+    private String chuyenMon;
     private String soDienThoai;
-    private String email;
-    private Boolean trangThai;
+
 }

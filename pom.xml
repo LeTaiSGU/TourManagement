@@ -9,8 +9,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.tourmanagement.TourManagement</exec.mainClass>
+        <lombok.version>1.18.42</lombok.version>
     </properties>
-    
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
         <dependency>
@@ -41,6 +41,19 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- Apache POI — xuất báo cáo Excel (.xlsx) -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+
+        <!-- Apache PDFBox — xuất báo cáo PDF -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.31</version>
+        </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
@@ -59,6 +72,11 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE280</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -67,7 +85,7 @@
         </dependency>
     </dependencies>
     <build>
-       <plugins>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

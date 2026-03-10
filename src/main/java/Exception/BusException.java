@@ -1,15 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Exception;
 
-/**
- *
- * @author letan
- */
 public class BusException extends Exception {
+    public BusException(String message, Throwable cause) {
+        super(message, cause); // Gọi constructor của Exception với message và cause
+    }
     public BusException(String message) {
-        super(message);
+        super(message); // Gọi constructor của Exception với message
     }
 }

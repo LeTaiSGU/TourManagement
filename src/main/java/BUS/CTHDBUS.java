@@ -129,6 +129,15 @@ public class CTHDBUS {
         return phantram;
     }
 
+    public int xuLyVeDaHoanTat() throws BusException {
+        try {
+            return cthddal.xuLyVeDaHoanTat();
+        } catch (DaoException e) {
+            e.printStackTrace();
+            throw new BusException("Lỗi khi xử lứ những vé đã hoàn tất!");
+        }
+    }
+
     public Boolean setUpCTHD(String maTour, String lydohuy, Boolean hoanTien) throws BusException {
         try {
             return cthddal.setUpCTHD(maTour, lydohuy, hoanTien);

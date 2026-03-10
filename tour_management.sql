@@ -220,10 +220,10 @@ INSERT INTO KHUYENMAI(maKhuyenMai, tenKhuyenMai, moTa, phuongThucKM, trangThaiKM
 
 
 -- Chức vụ
-INSERT INTO chuc_vu (maChucVu, tenChucVu, moTa) VALUES
-('CV01', 'Quản trị viên', 'Quản lý toàn bộ hệ thống'),
-('CV02', 'Nhân viên bán tour', 'Tư vấn & bán tour cho khách'),
-('CV03', 'Kế toán', 'Quản lý hóa đơn & thanh toán');
+INSERT INTO CHUCVU (maChucVu, tenChucVu, moTa) VALUES
+('CV001', N'Quản trị viên', N'Quản lý toàn bộ hệ thống'),
+('CV002', N'Nhân viên bán tour', N'Tư vấn & bán tour cho khách'),
+('CV003', N'Kế toán', N'Quản lý hóa đơn & thanh toán');
 
 use tour_management
 go
@@ -317,40 +317,44 @@ INSERT INTO KHACHHANG (maKhachHang, maLoaiKH, tenKhachHang, gioiTinh, namSinh, d
 ('KH005', 'LKH01', N'Lê Thị D', N'Nữ', 1998, N'Cần Thơ', '0984000004','abc@gmail.com', 1);
 
 -- Nhóm quyền & chức năng
---INSERT INTO nhom_quyen (maNhomQuyen, tenNhomQuyen, moTa) VALUES
---('NQ01', 'ADMIN', 'Quyền quản trị toàn hệ thống'),
---('NQ02', 'NHANVIEN', 'Nhân viên bán tour');
+INSERT INTO NHOMQUYEN (maNhomQuyen, tenNhomQuyen, moTa) VALUES
+('NQ01', N'ADMIN', N'Quyền quản trị toàn hệ thống'),
+('NQ02', N'NHANVIEN', N'Nhân viên bán tour');
 
 
---INSERT INTO chuc_nang (maChucNang, tenChucNang, moTa) VALUES
---('CN01', 'QUAN_LY_TOUR', 'Quản lý tour du lịch'),
---('CN02', 'QUAN_LY_KHACH_HANG', 'Quản lý khách hàng'),
---('CN03', 'QUAN_LY_HOA_DON', 'Quản lý hóa đơn & thanh toán'),
---('CN04', 'QUAN_LY_TAI_KHOAN', 'Quản lý tài khoản & phân quyền');
+-- Chức năng
+INSERT INTO CHUCNANG (maChucNang, tenChucNang, moTa) VALUES
+('CN001', N'QUAN_LY_TOUR', N'Quản lý tour du lịch'),
+('CN002', N'QUAN_LY_KHACH_HANG', N'Quản lý khách hàng'),
+('CN003', N'QUAN_LY_HOA_DON', N'Quản lý hóa đơn & thanh toán'),
+('CN004', N'QUAN_LY_TAI_KHOAN', N'Quản lý tài khoản & phân quyền');
 
---INSERT INTO ctcn_nq (maNhomQuyen, maCN) VALUES
---('NQ001', 'CN001'),
---('NQ001', 'CN002'),
---('NQ001', 'CN003'),
---('NQ001', 'CN004'),
---('NQ002', 'CN001'),
---('NQ002', 'CN002'),
---('NQ002', 'CN003');
+-- Phân quyền chức năng cho nhóm
+INSERT INTO CTCNNQ (maNhomQuyen, maCN) VALUES
+('NQ01', 'CN001'),
+('NQ01', 'CN002'),
+('NQ01', 'CN003'),
+('NQ01', 'CN004'),
+('NQ02', 'CN001'),
+('NQ02', 'CN002'),
+('NQ02', 'CN003');
 
--- Tài khoản đăng nhập
---INSERT INTO TAIKHOAN (maNhanVien, maNhomQuyen, matKhau, trangThai) VALUES
---('admin', 'NQ01', '123456', 1),
---('nv01', 'NQ02', '123456', 1);
+-- Tài khoản đăng nhập (maNhanVien phải tồn tại trong NHANVIEN)
+INSERT INTO TAIKHOAN (maNhanVien, maNhomQuyen, matKhau, trangThai) VALUES
+('NV001', 'NQ01', N'123123', 1),
+('NV002', 'NQ02', N'123123', 1),
+('NV003', 'NQ02', N'123123', 1),
+('NV004', 'NQ02', N'123123', 1);
 
 -- Hóa đơn & chi tiết hóa đơn
---INSERT INTO hoa_don (maHoaDon, maNhanVien, maKhachHang, ngayLapHD, soLuongVe, tongTien, maKhuyenMai, thue, HTTT, trangThaiTT, trangThaiHD) VALUES
---('HD001', 'NV02', 'KH001', '2026-03-01', 2, 13000000, 'KM01', 0.10, 'Chuyển khoản', 1, 1),
---('HD002', 'NV02', 'KH002', '2026-04-05', 3, 16500000, 'KM02', 0.10, 'Tiền mặt', 1, 1),
---('HD003', 'NV03', 'KH004', '2026-05-10', 10, 25000000, 'KM03', 0.10, 'Chuyển khoản', 1, 1);
+INSERT INTO HOADON (maHoaDon, maNhanVien, maKhachHang, ngayLapHD, soLuongVe, tongTien, maKhuyenMai, thue, HTTT, trangThaiTT, trangThaiHD) VALUES
+('HD001', 'NV002', 'KH001', '2026-03-01', 2, 13000000, 'KM001', 0.10, N'Chuyển khoản', 1, 1),
+('HD002', 'NV002', 'KH002', '2026-04-05', 3, 16500000, 'KM002', 0.10, N'Tiền mặt', 1, 1),
+('HD003', 'NV003', 'KH004', '2026-05-10', 10, 25000000, 'KM003', 0.10, N'Chuyển khoản', 1, 1);
 
---INSERT INTO cthd (maHoaDon, maTour) VALUES
---('HD001', 'T001'),
---('HD002', 'T002'),
---('HD002', 'T004'),
---('HD003', 'T003'),
---('HD003', 'T005');
+INSERT INTO CTHD (maHoaDon, maTour) VALUES
+('HD001', 'T001'),
+('HD002', 'T002'),
+('HD002', 'T004'),
+('HD003', 'T003'),
+('HD003', 'T005');

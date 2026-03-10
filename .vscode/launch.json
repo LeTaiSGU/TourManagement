@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch LoginFrame",
+      "request": "launch",
+      "mainClass": "GUI.LoginForm.LoginFrame",
+      "projectName": "TourManagement",
+      "classPaths": ["$Auto", "${workspaceFolder}/target/classes"],
+      "modulePaths": ["$Auto"]
+    },
+    {
+      "type": "java",
+      "name": "Launch TourManagement",
+      "request": "launch",
+      "mainClass": "com.mycompany.tourmanagement.TourManagement",
+      "projectName": "TourManagement",
+      "classPaths": ["$Auto", "${workspaceFolder}/target/classes"],
+      "modulePaths": ["$Auto"]
+    }
+  ]
+}

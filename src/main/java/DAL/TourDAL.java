@@ -16,6 +16,8 @@ import java.util.List;
 public class TourDAL {
     private ConnectionDAL conn = new ConnectionDAL();
 
+    private ConnectionDAL conn = new ConnectionDAL();
+
     public ArrayList<Tour> getAllTour() throws DaoException {
         ArrayList<Tour> dstour = new ArrayList<>();
         String sql = "Select * from TOUR order by maTour desc";
@@ -38,6 +40,7 @@ public class TourDAL {
 
                 dstour.add(t);
             }
+        } catch (SQLException e) {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("Lỗi truy vấn tour");
@@ -63,7 +66,25 @@ public class TourDAL {
                 ) ct ON t.maTour = ct.maTour
                 WHERE t.khoiHanh = 0 and t.trangThai = 1
                 """;
+                SELECT
+                    t.*,
+                    t.soLuongVe - ISNULL(ct.daDat, 0) AS soChoCon
+                FROM TOUR t
 
+    LEFT JOIN (
+                    SELECT
+                        ct.maTour,
+                        SUM(ct.soLuongVe) AS daDat
+                    FROM CTHD ct
+                    WHERE (ct.trangThai = 'DA_DAT' OR ct.trangThai = 'HOAN_TAT')
+                    GROUP BY ct.maTour
+                ) ct ON t.maTour = ct.maTour
+                WHERE t.khoiHanh = 0 and t.trangThai = 1
+                """;
+
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {

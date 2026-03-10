@@ -16,6 +16,7 @@ public class HoaDon {
     private String maKhachHang;
     private String tenKhachHang;
     private String sdt;
+    private String email;
     private LocalDate ngayLapHD;
     private double tongTien;
     private String maKhuyenMai;

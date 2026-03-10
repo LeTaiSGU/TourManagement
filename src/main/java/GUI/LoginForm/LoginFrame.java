@@ -36,7 +36,8 @@ public class LoginFrame extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jFrame1 = new javax.swing.JFrame();
@@ -175,17 +176,16 @@ public class LoginFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtMatkhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMatkhauActionPerformed
+    private void txtMatkhauActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_txtMatkhauActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtMatkhauActionPerformed
+    }// GEN-LAST:event_txtMatkhauActionPerformed
 
     private void btnDangnhapActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDangnhapActionPerformed
         try {
             TaiKhoan acc = taiKhoanBUS.login(txtTendangnhap.getText(), txtMatkhau.getText());
-            if (!acc.getTrangThai()){
+            if (!acc.getTrangThai()) {
                 JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa. Vui lòng gọi hỗ trợ để mở khóa");
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công!");
                 GUI.MainGUI main = new GUI.MainGUI(acc);
                 main.setVisible(true);

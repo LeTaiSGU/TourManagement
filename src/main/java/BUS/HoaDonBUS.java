@@ -87,7 +87,7 @@ public class HoaDonBUS {
             String maHD = hd.getMaHoaDon();
             String filePath = PDFService.createHoaDonPDF(hd, dscthd);
 
-            String noidung = "";
+            String noidung;
             if (!hd.isTrangThaiTT())
                 noidung = "<h2>Xác nhận đặt tour</h2>"
                         + "<p>Mã hóa đơn: " + maHD + "</p>"
@@ -97,11 +97,11 @@ public class HoaDonBUS {
                         + "<p>Mã hóa đơn: " + maHD + "</p>"
                         + "<p>Quý khách vui lòng nhấn vào file đính kèm để xác nhận chi tiết nội dung thanh toán.</p>";
 
-            EmailService.sendEmail("letantai20072003@gmail.com", "Xác nhận hóa đơn", noidung, filePath);
+            EmailService.sendEmail(hd.getEmail(), "Xác nhận hóa đơn", noidung, filePath);
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BusException("Lỗi khi tạo hóa đơn!");
+            throw new BusException("Lỗi khi gửi email!");
         }
     }
 
@@ -115,11 +115,11 @@ public class HoaDonBUS {
                     + "<p>Mã hóa đơn: " + maHD + "</p>"
                     + "<p>Quý khách vui lòng nhấn vào file đính kèm để xem chi tiết nội dung hủy và hoàn tiền.</p>";
 
-            EmailService.sendEmail("letantai20072003@gmail.com", "Xác nhận hủy tour", content, filePath);
+            EmailService.sendEmail(hd.getEmail(), "Xác nhận hủy tour", content, filePath);
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BusException("Lỗi khi tạo hóa đơn!");
+            throw new BusException("Lỗi khi gửi email!");
         }
     }
 

@@ -138,6 +138,7 @@ public class MainGUI extends javax.swing.JFrame {
     public void initGUI() {
         setLocationRelativeTo(null);
         initResizable();
+        mainSide.setLayout(new BorderLayout());
         // initMenuDrop();
 
         menu1.initMoving(this);
@@ -162,6 +163,19 @@ public class MainGUI extends javax.swing.JFrame {
 
                 showPanel(menuItem.getIcon());
             }
+        });
+
+        // Click logo → hiển thị Dashboard (ThongKePanel), không thuộc menu item nào
+        menu1.setLogoClickAction(() -> {
+            lbCN.setText("  Dashboard");
+            lbCN.setIcon(null);
+            mainSide.removeAll();
+            mainSide.setLayout(new java.awt.BorderLayout());
+            mainSide.add(new ThongKePanel(), java.awt.BorderLayout.CENTER);
+            mainSide.revalidate();
+            mainSide.repaint();
+            currentPanel = null;
+            currentPanelIndex = -1;
         });
 
         lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -195,11 +209,8 @@ public class MainGUI extends javax.swing.JFrame {
                 return new HoaDonPanel();
             case "10":
                 return new PhanQuyenPanel();
-            // case 3:
-            // return new PhuongTienPanel();
-            // case 4:
-            // return new HuongDanVienPanel();
-            // ... và tiếp tục
+            case 10:
+                return new ThongKeBaoCaoPanel();
             default:
                 return null;
         }
@@ -314,7 +325,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 720));
-        setUndecorated(true);
         setSize(new java.awt.Dimension(1600, 1000));
 
         jPanel1.setBackground(new java.awt.Color(245, 255, 255));
@@ -405,6 +415,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         mainSide.setBackground(new java.awt.Color(255, 255, 255));
         mainSide.setName(""); // NOI18N
+        mainSide.setRequestFocusEnabled(false);
         mainSide.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
