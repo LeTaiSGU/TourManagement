@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class CTHDDAL {
     private ConnectionDAL conn = new ConnectionDAL();
+
     private CTHD getCTHDObj(ResultSet rs) throws SQLException {
         CTHD cthd = new CTHD();
         cthd.setMaHoaDon(rs.getString("maHoaDon"));
@@ -96,7 +97,7 @@ public class CTHDDAL {
         }
         return dscthd;
     }
-    
+
     public boolean insertCTHD(CTHD cthd) throws DaoException {
         boolean result = false;
         String sql = "INSERT INTO CTHD "
@@ -235,6 +236,28 @@ public class CTHDDAL {
         catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("Lỗi tự động hủy đặt vé do công ty hủy tour!");
+        }
+    }
+    
+    public int xuLyVeDaHoanTat() throws DaoException{
+        String sql = "UPDATE cthd "
+                + "SET cthd.trangThai = ? "
+                + "FROM CTHD cthd "
+                + "JOIN TOUR t ON cthd.maTour = t.maTour "
+                + "JOIN HOADON hd ON cthd.maHoaDon = hd.maHoaDon "
+                + "WHERE t.khoiHanh = ? AND cthd.trangThai = ? AND hd.trangThaiTT = ? ";
+        
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps= con.prepareStatement(sql)) {
+            ps.setString(1, "HOAN_TAT");
+            ps.setBoolean(2, true);
+            ps.setString(3, "DA_DAT");
+            ps.setBoolean(4, true);
+            return ps.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DaoException("Lỗi khi cập nhật những vé đã hoàn tất!");
         }
     }
 }

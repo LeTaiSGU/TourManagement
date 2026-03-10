@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KhuyenMaiDTO {
+public class KhuyenMai {
     private String maKhuyenMai;
     private String tenKhuyenMai;
-    private String phuongThucKM;
     private String moTa;
+    private double phuongThucKM;
+    private Boolean trangThaiKM;
 }

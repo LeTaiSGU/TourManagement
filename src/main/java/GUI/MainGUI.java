@@ -77,13 +77,11 @@ public class MainGUI extends javax.swing.JFrame {
                 showPanel(index);
             }
         });
-<<<<<<< HEAD
 
         // Click logo → hiển thị Dashboard (ThongKePanel), không thuộc menu item nào
         menu1.setLogoClickAction(() -> {
             lbCN.setText("  Dashboard");
             lbCN.setIcon(null);
-            // Bỏ highlight menu (đặt selection về -1 qua reflection hoặc reload)
             mainSide.removeAll();
             mainSide.setLayout(new java.awt.BorderLayout());
             mainSide.add(new ThongKePanel(), java.awt.BorderLayout.CENTER);
@@ -91,6 +89,13 @@ public class MainGUI extends javax.swing.JFrame {
             mainSide.repaint();
             currentPanel = null;
             currentPanelIndex = -1;
+        });
+
+        lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                toggleMenuDrop();
+            }
         });
     }
 
@@ -101,16 +106,6 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Tạo panel mới theo index (tương ứng với thứ tự menu trong Menu.java)
-=======
-        lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                toggleMenuDrop();
-            }
-        });
-    }
-
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
     private javax.swing.JPanel createPanel(int index) {
         switch (index) {
             case 0:
@@ -119,41 +114,24 @@ public class MainGUI extends javax.swing.JFrame {
             case 1:
                 // Panel quản lý Lịch trình
                 return new LichTrinhPanel();
-<<<<<<< HEAD
-            // TODO: Thêm case cho các panel chức năng khác khi có
-            // case 2: return new DiaDiemPanel(); // Địa điểm
-            case 3:
-                // Panel quản lý Phương tiện
-                return new PhuongTienPanel();
-            // case 4: return new HuongDanVienPanel(); // Hướng dẫn viên
-            case 5:
-                return new NhanVienPanel();
-            // case 6: return new KhachHangPanel(); // Khách hàng
-            // case 7: return new HoaDonPanel(); // Hóa đơn
-            // case 8: return new KhuyenMaiPanel(); // Khuyến mãi
-            // case 9: return new PhanQuyenPanel(); // Phân quyền
-            case 10:
-                // Module Thống kê & Báo cáo — Dashboard + 5 báo cáo chi tiết + xuất Excel/PDF
-                return new ThongKeBaoCaoPanel();
-=======
             case 2:
                 return new DiaDiemPanel();
+            case 3:
+                return new PhuongTienPanel();
             case 4:
                 return new HuongDanVienPanel();
+            case 5:
+                return new NhanVienPanel();
             case 6:
-                return new KhachHangPanel ();
-            case 7: 
-                return new HoaDonPanel();
+                return new KhachHangPanel();
+            case 7:
+                return new HoaDonPanel(account.getMaNhanVien());
             case 8:
-                return new KhuyenMaiPanel ();
+                return new KhuyenMaiPanel();
             case 9:
                 return new PhanQuyenPanel();
-            // case 3:
-            // return new PhuongTienPanel();
-            // case 4:
-            // return new HuongDanVienPanel();
-            // ... và tiếp tục
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
+            case 10:
+                return new ThongKeBaoCaoPanel();
             default:
                 return null;
         }
@@ -544,6 +522,8 @@ public class MainGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   
+    
     private void btnFullscreenMouseClicked(java.awt.event.MouseEvent evt) {
         fullscreen();
     }

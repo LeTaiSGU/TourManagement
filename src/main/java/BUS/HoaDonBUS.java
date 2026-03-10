@@ -8,12 +8,10 @@ import Exception.BusException;
 import Exception.DaoException;
 import Service.EmailService;
 import Service.PDFService;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class HoaDonBUS {
     HoaDonDAL hddal = new HoaDonDAL();
-    CTHDDAL cthddal = new CTHDDAL();
     
     public ArrayList<HoaDon> getAllHoaDon() throws BusException {
         try {
@@ -84,12 +82,13 @@ public class HoaDonBUS {
             throw new BusException("Lỗi khi thêm hóa đơn!");
         }
     }
+    
     public void sendEmail(HoaDon hd, ArrayList<CTHD> dscthd) throws BusException {
         try {
             String maHD = hd.getMaHoaDon();
             String filePath = PDFService.createHoaDonPDF(hd, dscthd);
 
-            String noidung = "";
+            String noidung;
             if (!hd.isTrangThaiTT())
                 noidung = "<h2>Xác nhận đặt tour</h2>"
                            + "<p>Mã hóa đơn: " + maHD + "</p>"
@@ -99,13 +98,14 @@ public class HoaDonBUS {
                            + "<p>Mã hóa đơn: " + maHD + "</p>"
                            + "<p>Quý khách vui lòng nhấn vào file đính kèm để xác nhận chi tiết nội dung thanh toán.</p>";
 
-            EmailService.sendEmail("nguyenthituyettram26@gmail.com", "Xác nhận hóa đơn", noidung, filePath);
+            EmailService.sendEmail(hd.getEmail(), "Xác nhận hóa đơn", noidung, filePath);
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BusException("Lỗi khi tạo hóa đơn!");
+            throw new BusException("Lỗi khi gửi email!");
         }
     }
+    
     
     public void sendEmailHoanTien(HoaDon hd, ArrayList<CTHD> dscthd, String tienhoan, String lydohuy) throws BusException {
         try {
@@ -116,11 +116,11 @@ public class HoaDonBUS {
                            + "<p>Mã hóa đơn: " + maHD + "</p>"
                            + "<p>Quý khách vui lòng nhấn vào file đính kèm để xem chi tiết nội dung hủy và hoàn tiền.</p>";
 
-            EmailService.sendEmail("nguyenthituyettram26@gmail.com","Xác nhận hủy tour", content, filePath);
+            EmailService.sendEmail(hd.getEmail(),"Xác nhận hủy tour", content, filePath);
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new BusException("Lỗi khi tạo hóa đơn!");
+            throw new BusException("Lỗi khi gửi email!");
         }
     }
     

@@ -242,7 +242,6 @@ public class LichTrinhPanel extends JPanel {
     // VÙNG CHÍNH
     // ---------------------------------------------------------
 
-<<<<<<< HEAD
     private JPanel xayDungVungChinh() {
         JPanel panel = new JPanel(new BorderLayout(10, 0));
         panel.setBackground(MAU_NEN);
@@ -250,19 +249,6 @@ public class LichTrinhPanel extends JPanel {
         panel.add(xayDungFormNhap(), BorderLayout.EAST);
         return panel;
     }
-=======
-        tabbedPaneCustom2 = new GUI.Menu.TabbedPaneCustom();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        actionButton3 = new GUI.Menu.ActionButton();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new GUI.ScrollPane.ScrollPaneWin11();
-        jTable1 = new javax.swing.JTable();
-        actionButton1 = new GUI.Menu.ActionButton();
-        paintComponent1 = new GUI.Menu.PaintComponent();
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
 
     // ---------------------------------------------------------
     // BẢNG DỮ LIỆU
@@ -296,39 +282,11 @@ public class LichTrinhPanel extends JPanel {
         bangDuLieu.getColumnModel().getColumn(5).setMinWidth(80);
         bangDuLieu.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-<<<<<<< HEAD
         // Auto-sort: bản ghi mới nhất (STT lớn nhất) lên đầu
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modelBang);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
         sorter.setSortsOnUpdates(true);
         bangDuLieu.setRowSorter(sorter);
-=======
-        actionButton3.setText("actionButton3");
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(158, 158, 158)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(287, 287, 287)
-                        .addComponent(actionButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(908, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(110, 110, 110)
-                .addComponent(actionButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addContainerGap(709, Short.MAX_VALUE))
-        );
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
 
         // Header gradient
         xayDungHeaderBang(bangDuLieu);
@@ -409,7 +367,6 @@ public class LichTrinhPanel extends JPanel {
         outer.setBackground(MAU_TRANG);
         outer.setBorder(BorderFactory.createLineBorder(MAU_VIEN, 1));
 
-<<<<<<< HEAD
         // Thanh gradient trên cùng
         PaintComponent headerBar = new PaintComponent();
         headerBar.setPreferredSize(new Dimension(0, 6));
@@ -825,19 +782,4 @@ public class LichTrinhPanel extends JPanel {
     private void hienThiThongBao(String msg) {
         JOptionPane.showMessageDialog(this, msg, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }
-=======
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private GUI.Menu.ActionButton actionButton1;
-    private GUI.Menu.ActionButton actionButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private GUI.Menu.PaintComponent paintComponent1;
-    private GUI.Menu.TabbedPaneCustom tabbedPaneCustom2;
-    // End of variables declaration//GEN-END:variables
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
 }

@@ -1,35 +1,6 @@
 package DAL;
 
 import DTO.Tour;
-<<<<<<< HEAD
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
-public class TourDAL {
-
-    private final Connection conn;
-
-    public TourDAL(Connection conn) {
-        this.conn = conn;
-    }
-
-    /** Lấy tất cả tour đang hoạt động, sắp xếp theo tên. */
-    public List<Tour> getAll() throws SQLException {
-        List<Tour> ds = new ArrayList<>();
-        String sql = "SELECT maTour, tenTour FROM TOUR WHERE trangThai = 1 ORDER BY tenTour";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next())
-                ds.add(Tour.builder()
-                        .maTour(rs.getString("maTour"))
-                        .tenTour(rs.getString("tenTour"))
-                        .build());
-        }
-        return ds;
-    }
-=======
 import Exception.DaoException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,10 +10,11 @@ import java.util.ArrayList;
 
 public class TourDAL {
     private ConnectionDAL conn = new ConnectionDAL();
+
     public ArrayList<Tour> getAllTour() throws DaoException {
         ArrayList<Tour> dstour = new ArrayList<>();
         String sql = "Select * from TOUR";
-        
+
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
@@ -58,27 +30,26 @@ public class TourDAL {
                 t.setSoLuongMin(rs.getInt("soLuongMin"));
                 t.setTrangThai(rs.getBoolean("trangThai"));
                 t.setKhoiHanh(rs.getBoolean("khoiHanh"));
-                
+
                 dstour.add(t);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("Lỗi truy vấn tour");
         }
         return dstour;
     }
-    
+
     public ArrayList<Tour> getAllTourWithSoChoCon() throws DaoException {
         ArrayList<Tour> dstour = new ArrayList<>();
 
         String sql = """
-            SELECT 
+            SELECT
                 t.*,
                 t.soLuongVe - ISNULL(ct.daDat, 0) AS soChoCon
             FROM TOUR t
             LEFT JOIN (
-                SELECT 
+                SELECT
                     ct.maTour,
                     SUM(ct.soLuongVe) AS daDat
                 FROM CTHD ct
@@ -86,7 +57,7 @@ public class TourDAL {
                 GROUP BY ct.maTour
             ) ct ON t.maTour = ct.maTour
             WHERE t.khoiHanh = 0 and t.trangThai = 1
-            """; 
+            """;
 
         try (Connection con = conn.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -117,5 +88,5 @@ public class TourDAL {
         return dstour;
     }
 
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
 }
+

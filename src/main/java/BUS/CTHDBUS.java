@@ -29,15 +29,7 @@ public class CTHDBUS {
             throw new BusException("Lỗi khi lấy Chi tiết hóa đơn!");
         }
     }
-    public ArrayList<CTHD> getDSCTHDCoTheHuy(String maHD) throws BusException {
-        try {
-            return cthddal.getDSCTHDCoTheHuy(maHD);
-        }
-        catch (DaoException e) {
-            e.printStackTrace();
-            throw new BusException("Lỗi khi tải danh sách Chi tiết hóa đơn!");
-        }
-    }
+
     public String insertCTHD(CTHD cthd) throws BusException {
         try {
             if (cthddal.insertCTHD(cthd))
@@ -115,5 +107,15 @@ public class CTHDBUS {
         else phantram = 0;
         
         return phantram;
+    }
+    
+    public int xuLyVeDaHoanTat() throws BusException {
+        try {
+            return cthddal.xuLyVeDaHoanTat();
+        }
+        catch (DaoException e) {
+            e.printStackTrace();
+            throw new BusException("Lỗi khi xử lứ những vé đã hoàn tất!");
+        }
     }
 }

@@ -1,11 +1,77 @@
 package DAL;
 
 import DTO.NhomQuyen;
-<<<<<<< HEAD
-
-import java.sql.*;
+import Exception.DaoException;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * DAL cho bảng NHOMQUYEN.
+ */
+public class NhomQuyenDAL {
+
+    private ConnectionDAL conn = new ConnectionDAL();
+
+    public NhomQuyenDAL() {}
+
+    public NhomQuyenDAL(Connection connection) {
+        // constructor for transaction support (connection unused here since each method gets its own)
+    }
+
+    public List<NhomQuyen> getAllNhomQuyen() throws DaoException {
+        List<NhomQuyen> list = new ArrayList<>();
+        String sql = "select * from NHOMQUYEN";
+
+        try (Connection con = conn.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                NhomQuyen nq = NhomQuyen.builder()
+                        .maNhomQuyen(rs.getString(1))
+                        .tenNhomQuyen(rs.getString(2))
+                        .moTa(rs.getString(3))
+                        .build();
+                list.add(nq);
+            }
+
+        } catch (SQLException ex) {
+            throw new DaoException("Lỗi khi lấy dữ liệu: " + ex.getMessage());
+        }
+
+        return list;
+    }
+
+    public NhomQuyen getQuyenByMa(String ma) throws DaoException {
+        try (Connection con = conn.getConnection()) {
+            CallableStatement call = con.prepareCall("{call getNQByMa(?)}");
+            call.setString(1, ma);
+            ResultSet rs = call.executeQuery();
+            if (rs.next()) {
+                return NhomQuyen.builder()
+                        .maNhomQuyen(rs.getString("maNhomQuyen"))
+                        .tenNhomQuyen(rs.getString("tenNhomQuyen"))
+                        .moTa(rs.getString("moTa"))
+                        .build();
+            } else {
+                return null;
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("Lỗi khi tìm dữ liệu: " + ex.getMessage());
+        }
+    }
+
+    /** Lấy toàn bộ danh sách nhóm quyền (compat method). */
+    public List<NhomQuyen> getAll() throws DaoException {
+        return getAllNhomQuyen();
+    }
+}
+
 
 /**
  * DAL cho bảng NHOMQUYEN.
