@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.NhanVienBUS;
+import DTO.CTCN_NQ;
 import DTO.ChucVu;
 import DTO.NhanVien;
 import DTO.NhomQuyen;
@@ -98,12 +99,21 @@ public class NhanVienPanel extends JPanel {
     // KHỞI TẠO
     // =========================================================
 
-    public NhanVienPanel() {
+    public NhanVienPanel(CTCN_NQ quyenCN008) {
         this.bus = new NhanVienBUS();
         xayDungGiaoDien();
         taiDanhSachChucVu(); // Đổ combo trước
         taiDuLieu(null); // Rồi tải bảng
         resetFormThemMoi(); // Sinh mã NV tiếp theo vào form
+
+        String chiTiet = (quyenCN008 != null && quyenCN008.getChiTiet() != null) ? quyenCN008.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemMoi.setVisible(coQuyenThem);
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
     }
 
     // =========================================================

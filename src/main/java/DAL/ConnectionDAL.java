@@ -6,15 +6,16 @@ import java.sql.DriverManager;
 public class ConnectionDAL {
     private static Connection conn;
     private static String url = "jdbc:sqlserver://localhost:1433;"
-            + "databaseName=tour_management;"
-            + "encrypt=true;"
-            + "trustServerCertificate=true;"
-            + "integratedSecurity=true;";
+            + "databaseName = tour_management;"
+            + "encrypt = true;"
+            + "trustServerCertificate = true;";
+    private static String user = "sa";
+    private static String password = "letaiken9a4";
 
     public Connection getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(url, user, password);
             System.out.println("connect successfully!");
         } catch (Exception ex) {
             System.out.println("connect failure!");

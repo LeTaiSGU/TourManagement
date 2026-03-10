@@ -206,7 +206,8 @@ public class MainGUI extends javax.swing.JFrame {
             case "5": // Hướng dẫn viên
                 return new HuongDanVienPanel();
             case "6": // Nhân viên
-                return new NhanVienPanel();
+                return new NhanVienPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN008")).findFirst().orElse(null));
             case "7": // Khách hàng
                 return new KhachHangPanel();
             case "9": // Khuyến mãi

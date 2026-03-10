@@ -69,8 +69,10 @@ public class NhanVienBUS {
     public NhomQuyen timNhomQuyenChoChucVu(String tenChucVu) throws SQLException {
         try {
             java.util.List<NhomQuyen> danhSach = new NhomQuyenDAL().getAllNhomQuyen();
-            if (danhSach == null || danhSach.isEmpty()) return null;
-            if (tenChucVu == null) return danhSach.get(danhSach.size() - 1);
+            if (danhSach == null || danhSach.isEmpty())
+                return null;
+            if (tenChucVu == null)
+                return danhSach.get(danhSach.size() - 1);
             String normalized = removeAccents(tenChucVu.toLowerCase());
             // Ưu tiên so khớp chứa tên
             for (NhomQuyen nq : danhSach) {
@@ -130,7 +132,7 @@ public class NhanVienBUS {
                 throw new SQLException("Thêm nhân viên thất bại.");
 
             // 2. Xác định nhóm quyền từ tên chức vụ (gán cố định)
-            NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+            NhomQuyen nq = timNhomQuyenChoChucVu(tenChucVu);
             String maNhomQuyen = nq.getMaNhomQuyen();
 
             // 3. Tạo tài khoản
@@ -183,7 +185,7 @@ public class NhanVienBUS {
 
             // 2. Cập nhật nhóm quyền trong tài khoản (nếu TK tồn tại)
             if (tkDAL.tonTai(nv.getMaNhanVien())) {
-                NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+                NhomQuyen nq = timNhomQuyenChoChucVu(tenChucVu);
                 tkDAL.capNhatNhomQuyen(nv.getMaNhanVien(), nq.getMaNhomQuyen());
             }
 
