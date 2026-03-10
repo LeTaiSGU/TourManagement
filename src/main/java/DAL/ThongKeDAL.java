@@ -47,15 +47,17 @@ public class ThongKeDAL {
 
         String sql = """
                 SELECT
-                    MONTH(ngayLapHD)     AS thang,
-                    YEAR(ngayLapHD)      AS nam,
-                    SUM(tongTien)        AS tongDoanhThu,
-                    COUNT(maHoaDon)      AS soHoaDon,
-                    SUM(soLuongVe)       AS soVe
-                FROM HOADON
-                WHERE trangThaiHD = 1
-                  AND YEAR(ngayLapHD) = ?
-                GROUP BY YEAR(ngayLapHD), MONTH(ngayLapHD)
+                    MONTH(hd.ngayLapHD)     AS thang,
+                    YEAR(hd.ngayLapHD)      AS nam,
+                    SUM(hd.tongTien)        AS tongDoanhThu,
+                    COUNT(hd.maHoaDon)      AS soHoaDon,
+                    COALESCE(SUM(ct_agg.soVe), 0) AS soVe
+                FROM HOADON hd
+                LEFT JOIN (SELECT maHoaDon, SUM(soLuongVe) AS soVe FROM CTHD GROUP BY maHoaDon) ct_agg
+                    ON hd.maHoaDon = ct_agg.maHoaDon
+                WHERE hd.trangThaiTT = 1
+                  AND YEAR(hd.ngayLapHD) = ?
+                GROUP BY YEAR(hd.ngayLapHD), MONTH(hd.ngayLapHD)
                 ORDER BY thang
                 """;
 
@@ -93,12 +95,12 @@ public class ThongKeDAL {
                 SELECT
                     lt.tenLoai            AS nhan,
                     SUM(hd.tongTien)      AS giaTri,
-                    SUM(hd.soLuongVe)     AS soLuong
+                    SUM(ct.soLuongVe)     AS soLuong
                 FROM HOADON hd
                 JOIN CTHD     ct  ON hd.maHoaDon    = ct.maHoaDon
                 JOIN TOUR     t   ON ct.maTour       = t.maTour
                 JOIN LOAITOUR lt  ON t.maLoaiTour    = lt.maLoaiTour
-                WHERE hd.trangThaiHD = 1
+                WHERE hd.trangThaiTT = 1
                 GROUP BY lt.tenLoai
                 ORDER BY giaTri DESC
                 """;
@@ -132,12 +134,12 @@ public class ThongKeDAL {
         String sql = """
                 SELECT TOP (?)
                     t.tenTour            AS nhan,
-                    SUM(hd.soLuongVe)    AS soLuong,
+                    SUM(ct.soLuongVe)    AS soLuong,
                     SUM(hd.tongTien)     AS giaTri
                 FROM HOADON hd
                 JOIN CTHD ct ON hd.maHoaDon = ct.maHoaDon
                 JOIN TOUR  t  ON ct.maTour   = t.maTour
-                WHERE hd.trangThaiHD = 1
+                WHERE hd.trangThaiTT = 1
                 GROUP BY t.tenTour
                 ORDER BY soLuong DESC
                 """;
@@ -231,7 +233,7 @@ public class ThongKeDAL {
         String sql = """
                 SELECT DISTINCT YEAR(ngayLapHD) AS nam
                 FROM HOADON
-                WHERE trangThaiHD = 1
+                WHERE trangThaiTT = 1
                 ORDER BY nam DESC
                 """;
 

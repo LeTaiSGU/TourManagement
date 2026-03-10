@@ -179,7 +179,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void btnDangnhapActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btnDangnhapActionPerformed
         try {
-            TaiKhoan acc = taiKhoanBUS.login(txtTendangnhap.getText(), txtMatkhau.getText());
+            TaiKhoan acc = taiKhoanBUS.login(txtTendangnhap.getText(), new String(txtMatkhau.getPassword()));
             if (!acc.getTrangThai()){
                 JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa. Vui lòng gọi hỗ trợ để mở khóa");
             }

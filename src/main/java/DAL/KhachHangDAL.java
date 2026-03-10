@@ -6,17 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class KhachHangDAL {
-    public Connection getConnection() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=tour_management;encrypt=false";
-        String user = "sa";
-        String password = "Mysqlserver02";
-        return DriverManager.getConnection(url, user, password);
-    }
+    private ConnectionDAL connectionDAL = new ConnectionDAL();
 
     public ArrayList<KhachHangDTO> getAllKhachHang() throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM KhachHang";
-        try (Connection conn = getConnection();
+        try (Connection conn = connectionDAL.getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
 
@@ -40,7 +35,7 @@ public class KhachHangDAL {
 
     public void addKhachHang(KhachHangDTO kh) throws DaoException {
         String sql = "INSERT INTO KhachHang(maKhachHang, tenKhachHang, gioiTinh, namSinh, diaChi, soDienThoai, email, maLoaiKH) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionDAL.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, kh.getMaKhachHang());
             ps.setString(2, kh.getTenKhachHang());
             ps.setString(3, kh.getGioiTinh());
@@ -57,7 +52,7 @@ public class KhachHangDAL {
 
     public void updateKhachHang(KhachHangDTO kh) throws DaoException {
         String sql = "UPDATE KhachHang SET tenKhachHang = ?, gioiTinh = ?, namSinh = ?, diaChi = ?, soDienThoai = ?, email = ?, maLoaiKH = ? WHERE maKhachHang = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionDAL.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, kh.getTenKhachHang());
             ps.setString(2, kh.getGioiTinh());
             ps.setInt(3, kh.getNamSinh());
@@ -74,7 +69,7 @@ public class KhachHangDAL {
 
     public void deleteKhachHang(String maKhachHang) throws DaoException {
         String sql = "DELETE FROM KhachHang WHERE maKhachHang = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionDAL.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maKhachHang);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -85,7 +80,7 @@ public class KhachHangDAL {
     public ArrayList<KhachHangDTO> searchKhachHang(String keyword) throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM KhachHang WHERE tenKhachHang LIKE ? OR maKhachHang LIKE ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = connectionDAL.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%");
             ps.setString(2, "%" + keyword + "%");
             ResultSet rs = ps.executeQuery();

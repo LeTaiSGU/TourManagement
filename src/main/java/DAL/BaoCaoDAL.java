@@ -112,9 +112,11 @@ public class BaoCaoDAL {
                 SELECT MONTH(HD.ngayLapHD)        AS thang,
                        SUM(HD.tongTien)            AS tongDoanhThu,
                        COUNT(DISTINCT HD.maHoaDon) AS soHoaDon,
-                       SUM(HD.soLuongVe)           AS soVe
+                       COALESCE(SUM(ct_agg.soVe), 0) AS soVe
                 FROM   HOADON HD
-                WHERE  HD.trangThaiHD = 1
+                LEFT JOIN (SELECT maHoaDon, SUM(soLuongVe) AS soVe FROM CTHD GROUP BY maHoaDon) ct_agg
+                       ON HD.maHoaDon = ct_agg.maHoaDon
+                WHERE  HD.trangThaiTT = 1
                   AND  YEAR(HD.ngayLapHD) = ?
                 GROUP  BY MONTH(HD.ngayLapHD)
                 ORDER  BY thang
@@ -156,12 +158,12 @@ public class BaoCaoDAL {
         StringBuilder sql = new StringBuilder("""
                 SELECT T.maTour, T.tenTour,
                        COUNT(DISTINCT HD.maHoaDon) AS soHoaDon,
-                       COALESCE(SUM(HD.soLuongVe), 0)  AS soVe,
+                       COALESCE(SUM(C.soLuongVe), 0)  AS soVe,
                        COALESCE(SUM(HD.tongTien),  0)  AS tongDoanhThu
                 FROM   TOUR T
                 LEFT   JOIN CTHD C ON T.maTour = C.maTour
                 LEFT   JOIN HOADON HD ON C.maHoaDon = HD.maHoaDon
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
                 WHERE  1 = 1
                 """);
 
@@ -204,13 +206,13 @@ public class BaoCaoDAL {
         StringBuilder sql = new StringBuilder("""
                 SELECT LT.maLoaiTour, LT.tenLoai AS tenLoaiTour,
                        COUNT(DISTINCT HD.maHoaDon) AS soHoaDon,
-                       COALESCE(SUM(HD.soLuongVe), 0) AS soVe,
+                       COALESCE(SUM(C.soLuongVe), 0) AS soVe,
                        COALESCE(SUM(HD.tongTien),  0) AS tongDoanhThu
                 FROM   LOAITOUR LT
                 LEFT   JOIN TOUR T ON LT.maLoaiTour = T.maLoaiTour
                 LEFT   JOIN CTHD C ON T.maTour = C.maTour
                 LEFT   JOIN HOADON HD ON C.maHoaDon = HD.maHoaDon
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
                 WHERE  1 = 1
                 """);
 
@@ -247,12 +249,12 @@ public class BaoCaoDAL {
                        COALESCE(CV.tenChucVu, N'Chưa phân công') AS tenChucVu,
                        COUNT(DISTINCT HD.maHoaDon)                AS soHoaDon,
                        COUNT(DISTINCT C.maTour)                   AS soTourBan,
-                       COALESCE(SUM(HD.soLuongVe), 0)             AS soVe,
+                       COALESCE(SUM(C.soLuongVe), 0)             AS soVe,
                        COALESCE(SUM(HD.tongTien),  0)             AS tongDoanhThu
                 FROM   NHANVIEN NV
                 LEFT   JOIN CHUCVU CV  ON NV.maChucVu  = CV.maChucVu
                 LEFT   JOIN HOADON HD  ON NV.maNhanVien = HD.maNhanVien
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
                 LEFT   JOIN CTHD C     ON HD.maHoaDon   = C.maHoaDon
                 WHERE  1 = 1
                 """);
@@ -299,13 +301,13 @@ public class BaoCaoDAL {
                        COALESCE(LT.tenLoai, '') AS tenLoaiTour,
                        T.soLuongVe              AS soLuongToiDa,
                        T.trangThai, T.khoiHanh,
-                       COALESCE(SUM(HD.soLuongVe), 0) AS soVeDaBan,
+                       COALESCE(SUM(C.soLuongVe), 0) AS soVeDaBan,
                        COALESCE(SUM(HD.tongTien),  0) AS doanhThu
                 FROM   TOUR T
                 LEFT   JOIN LOAITOUR LT ON T.maLoaiTour = LT.maLoaiTour
                 LEFT   JOIN CTHD C ON T.maTour = C.maTour
                 LEFT   JOIN HOADON HD ON C.maHoaDon = HD.maHoaDon
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
                 WHERE  1 = 1
                 """);
 
@@ -403,13 +405,15 @@ public class BaoCaoDAL {
         StringBuilder sql = new StringBuilder("""
                 SELECT TOP(?) KH.maKhachHang, KH.tenKhachHang AS nhan,
                        COUNT(DISTINCT HD.maHoaDon) AS soHoaDon,
-                       SUM(HD.soLuongVe)           AS soLuong,
+                       COALESCE(SUM(ct_agg.soVe), 0) AS soLuong,
                        SUM(HD.tongTien)            AS tongChiTieu
                 FROM   KHACHHANG KH
                 JOIN   HOADON HD ON KH.maKhachHang = HD.maKhachHang
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
+                LEFT JOIN (SELECT maHoaDon, SUM(soLuongVe) AS soVe FROM CTHD GROUP BY maHoaDon) ct_agg
+                       ON HD.maHoaDon = ct_agg.maHoaDon
                 WHERE  1 = 1
-                """);
+                """);;
         params.add(topN);
         apDungFilterThoiGian(sql, filter, params, "HD");
 
@@ -441,12 +445,14 @@ public class BaoCaoDAL {
                        KH.tenKhachHang AS nhan,
                        COALESCE(LKH.tenLoaiKH, N'Chưa phân loại') AS tenLoaiKH,
                        COUNT(DISTINCT HD.maHoaDon) AS soHoaDon,
-                       COALESCE(SUM(HD.soLuongVe), 0) AS soLuong,
+                       COALESCE(SUM(ct_agg.soVe), 0) AS soLuong,
                        COALESCE(SUM(HD.tongTien),  0) AS tongChiTieu
                 FROM   KHACHHANG KH
                 LEFT   JOIN LOAIKHACHHANG LKH ON KH.maLoaiKH = LKH.maLoaiKH
                 LEFT   JOIN HOADON HD ON KH.maKhachHang = HD.maKhachHang
-                       AND HD.trangThaiHD = 1
+                       AND HD.trangThaiTT = 1
+                LEFT JOIN (SELECT maHoaDon, SUM(soLuongVe) AS soVe FROM CTHD GROUP BY maHoaDon) ct_agg
+                       ON HD.maHoaDon = ct_agg.maHoaDon
                 WHERE  1 = 1
                 """);
 

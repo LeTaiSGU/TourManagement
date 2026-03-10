@@ -6,17 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class HuongDanVienDAL {
-    private Connection getConnection() throws SQLException {
-        String url = "jdbc:sqlserver://localhost:1433;databaseName=tour_management;encrypt=false";
-        String user = "sa";
-        String password = "Mysqlserver02";
-        return DriverManager.getConnection(url, user, password);
-    }
+    private ConnectionDAL connectionDAL = new ConnectionDAL();
     public ArrayList<HuongDanVienDTO> getAllHDV() throws DaoException {
         ArrayList<HuongDanVienDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM HuongDanVien";
         
-        try (Connection conn = getConnection(); 
+        try (Connection conn = connectionDAL.getConnection(); 
              Statement st = conn.createStatement(); 
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
@@ -39,7 +34,7 @@ public class HuongDanVienDAL {
         String sql = "INSERT INTO HuongDanVien (maHDV, tenHDV, gioiTinh, namSinh, chuyenMon, soDienThoai) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
         
-        try (Connection conn = getConnection(); 
+        try (Connection conn = connectionDAL.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hdv.getMaHDV());
             ps.setString(2, hdv.getTenHDV());
@@ -56,7 +51,7 @@ public class HuongDanVienDAL {
         String sql = "UPDATE HuongDanVien SET tenHDV = ?, gioiTinh = ?, namSinh = ?, chuyenMon = ?, soDienThoai = ? "
                 + "WHERE maHDV = ?";
         
-        try (Connection conn = getConnection(); 
+        try (Connection conn = connectionDAL.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, hdv.getTenHDV());
             ps.setString(2, hdv.getGioiTinh());
@@ -72,7 +67,7 @@ public class HuongDanVienDAL {
     public void deleteHuongDanVien(String maHDV) throws DaoException {
         String sql = "DELETE FROM HuongDanVien WHERE maHDV = ?";
         
-        try (Connection conn = getConnection(); 
+        try (Connection conn = connectionDAL.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, maHDV);
             ps.executeUpdate();
