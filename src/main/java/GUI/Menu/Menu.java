@@ -15,8 +15,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.Path2D;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.Timer;
+
+import DTO.CTCN_NQ;
 
 /**
  *
@@ -58,7 +62,7 @@ public class Menu extends javax.swing.JPanel {
                         speed = selectedIndex - index;
                         if (speed < 0) {
                             speed *= -1;
-                            
+
                         }
                     }
                     speed++; // Add 1 speed
@@ -102,21 +106,49 @@ public class Menu extends javax.swing.JPanel {
                 }
             }
         });
-        initData();
     }
 
-    private void initData() {
-        listMenu.addItem(new Model_Menu("1", "Tour", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("2", "Lịch trình", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("3", "Địa điểm", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("4", "Phương tiện", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("5", "Hướng dẫn viên", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("6", "Nhân viên", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("7", "Khách hàng", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("8", "Đặt vé", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("9", "Khuyến mãi", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("10", "Phân quyền", Model_Menu.MenuType.MENU));
-        listMenu.addItem(new Model_Menu("10", "Custome", Model_Menu.MenuType.MENU));
+    public void initData(List<CTCN_NQ> ctcnnq) {
+        for (CTCN_NQ ct : ctcnnq) {
+            switch (ct.getMaCN()) {
+                case "CN001":
+                    listMenu.addItem(new Model_Menu("1", "Tour", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN002":
+                    listMenu.addItem(new Model_Menu("2", "Lịch trình", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN003":
+                    listMenu.addItem(new Model_Menu("3", "Địa điểm", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN004":
+                    listMenu.addItem(new Model_Menu("7", "Khách hàng", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN006":
+                    listMenu.addItem(new Model_Menu("5", "Hướng dẫn viên", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN007":
+                    listMenu.addItem(new Model_Menu("9", "Khuyến mãi", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN008":
+                    listMenu.addItem(new Model_Menu("6", "Nhân viên", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN009":
+                    listMenu.addItem(new Model_Menu("4", "Phương tiện", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN010":
+                    listMenu.addItem(new Model_Menu("10", "Phân quyền", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN011":
+                    listMenu.addItem(new Model_Menu("8", "Hóa đơn", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN012":
+                    listMenu.addItem(new Model_Menu("8", "Đặt vé", Model_Menu.MenuType.MENU));
+                    break;
+                case "CN013":
+                    listMenu.addItem(new Model_Menu("10", "Thống kê", Model_Menu.MenuType.MENU));
+                    break;
+            }
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package DAL;
 
 import DTO.TaiKhoan;
-import DTO.TaiKhoanDTO;
 import Exception.DaoException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -16,7 +15,7 @@ public class TaiKhoanDAL {
 
     public List<TaiKhoan> getAllAccount() throws DaoException {
         List<TaiKhoan> list = new ArrayList<>();
-        String sql = "SELECT * FROM TAIKHOAN";
+        String sql = "SELECT * FROM TAIKHOAN order by maNhanVien desc";
         try (Connection conn = con.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {

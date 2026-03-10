@@ -6,15 +6,18 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class KhachHangDAL {
+
+    // tai
     private ConnectionDAL conn = new ConnectionDAL();
+
     public ArrayList<KhachHang> getAllKhachHang() throws DaoException {
         ArrayList<KhachHang> dskh = new ArrayList<>();
         // Truy vấn tất cả khách hàng
         String sql = "SELECT * FROM KHACHHANG";
 
         try (Connection con = conn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 KhachHang kh = new KhachHang();
@@ -39,5 +42,7 @@ public class KhachHangDAL {
         }
         return dskh;
     }
+
+    // tai
 
 }

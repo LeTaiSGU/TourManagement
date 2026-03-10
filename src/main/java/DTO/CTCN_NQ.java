@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class CTCN_NQ {
     private String maNhomQuyen;
     private String maCN;
+    private String chiTiet;
 }

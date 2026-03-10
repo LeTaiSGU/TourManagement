@@ -1,22 +1,30 @@
 
 package GUI;
 
+import DTO.CTCN_NQ;
 import DTO.TaiKhoan;
+import Exception.BusException;
 import GUI.Menu.EventMenu;
 import javax.swing.UIManager;
+
+import BUS.CTCN_NQBUS;
+
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.IllegalComponentStateException;
 import java.awt.Point;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,48 +34,123 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-/**
- *
- * @author letan
- */
 public class MainGUI extends javax.swing.JFrame {
 
+    private CTCN_NQBUS ctcnnqbus = new CTCN_NQBUS();
     private TaiKhoan account = new TaiKhoan();
     private int previousState = JFrame.NORMAL; // Lưu trạng thái trước khi minimize
     private int x, y; // Tọa độ cho drag
-
-    // Variables for resizing
-    private static final int BORDER_SIZE = 5;
-    private Point mouseDownCompCoords = null;
-    private int resizeDirection = -1;
-    private java.awt.event.MouseAdapter resizeListener;
-
-    private static final int RESIZE_NONE = -1;
-    private static final int RESIZE_TOP = 0;
-    private static final int RESIZE_BOTTOM = 1;
-    private static final int RESIZE_LEFT = 2;
-    private static final int RESIZE_RIGHT = 3;
-    private static final int RESIZE_TOP_LEFT = 4;
-    private static final int RESIZE_TOP_RIGHT = 5;
-    private static final int RESIZE_BOTTOM_LEFT = 6;
-    private static final int RESIZE_BOTTOM_RIGHT = 7;
 
     // MenuDrop
     private javax.swing.JPopupMenu popupMenuDrop;
     private GUI.Menu.MenuDrop menuDropPanel;
 
     // Cache panel để tránh tạo lại
-    private int currentPanelIndex = -1;
+    private String currentPanelKey = null;
     private javax.swing.JPanel currentPanel = null;
+
+    // Resize
+    private static final int RESIZE_BORDER = 8;
+    private AWTEventListener resizeListener;
+    private boolean resizingRight, resizingBottom;
+    private int resizeStartX, resizeStartY, resizeStartW, resizeStartH;
+
+    private void initResizable() {
+        if (resizeListener != null) {
+            return;
+        }
+        resizeListener = new AWTEventListener() {
+            @Override
+            public void eventDispatched(AWTEvent event) {
+                if (!isShowing()) {
+                    return;
+                }
+                if (getExtendedState() == JFrame.MAXIMIZED_BOTH)
+                    return;
+                MouseEvent e = (MouseEvent) event;
+                Point p;
+                Point frameLocation;
+                try {
+                    p = e.getLocationOnScreen();
+                    frameLocation = getLocationOnScreen();
+                } catch (IllegalComponentStateException ex) {
+                    return;
+                }
+                int fx = p.x - frameLocation.x;
+                int fy = p.y - frameLocation.y;
+                boolean onRight = fx >= getWidth() - RESIZE_BORDER && fx <= getWidth();
+                boolean onBottom = fy >= getHeight() - RESIZE_BORDER && fy <= getHeight();
+
+                switch (e.getID()) {
+                    case MouseEvent.MOUSE_MOVED:
+                        if (onRight && onBottom)
+                            setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+                        else if (onRight)
+                            setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+                        else if (onBottom)
+                            setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+                        else
+                            setCursor(Cursor.getDefaultCursor());
+                        break;
+
+                    case MouseEvent.MOUSE_PRESSED:
+                        resizingRight = onRight;
+                        resizingBottom = onBottom;
+                        if (resizingRight || resizingBottom) {
+                            resizeStartX = p.x;
+                            resizeStartY = p.y;
+                            resizeStartW = getWidth();
+                            resizeStartH = getHeight();
+                        }
+                        break;
+
+                    case MouseEvent.MOUSE_DRAGGED:
+                        if (!resizingRight && !resizingBottom)
+                            break;
+                        int dx = p.x - resizeStartX;
+                        int dy = p.y - resizeStartY;
+                        int newW = resizingRight ? resizeStartW + dx : getWidth();
+                        int newH = resizingBottom ? resizeStartH + dy : getHeight();
+                        setSize(Math.max(newW, getMinimumSize().width),
+                                Math.max(newH, getMinimumSize().height));
+                        break;
+
+                    case MouseEvent.MOUSE_RELEASED:
+                        resizingRight = false;
+                        resizingBottom = false;
+                        break;
+                }
+            }
+        };
+        Toolkit.getDefaultToolkit().addAWTEventListener(resizeListener,
+                AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
+    }
+
+    @Override
+    public void dispose() {
+        if (resizeListener != null) {
+            Toolkit.getDefaultToolkit().removeAWTEventListener(resizeListener);
+            resizeListener = null;
+        }
+        super.dispose();
+    }
 
     public void initGUI() {
         setLocationRelativeTo(null);
-        initTopSideMoving();
         initResizable();
         // initMenuDrop();
-        
 
         menu1.initMoving(this);
+        List<CTCN_NQ> ctcnnq = new ArrayList();
+        try {
+            ctcnnq = ctcnnqbus.getCTCN_NQbyMa(account.getMaNhomQuyen());
+        } catch (BusException e) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + e.getMessage());
+        }
+        for (CTCN_NQ ct : ctcnnq) {
+            System.out.println(ct.getMaCN() + "\n");
+        }
+        menu1.initData(ctcnnq);
         menu1.addEventMenu(new EventMenu() {
             @Override
             public void menuIndexChange(int index) {
@@ -77,9 +160,10 @@ public class MainGUI extends javax.swing.JFrame {
                 lbCN.setText("  " + menuItem.getName());
                 lbCN.setIcon(menuItem.toIconSelected());
 
-                showPanel(index);
+                showPanel(menuItem.getIcon());
             }
         });
+
         lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -88,17 +172,28 @@ public class MainGUI extends javax.swing.JFrame {
         });
     }
 
-    private javax.swing.JPanel createPanel(int index) {
-        switch (index) {
-            case 0:
+    private javax.swing.JPanel createPanel(String menuKey) {
+        if (menuKey == null) {
+            return null;
+        }
+        switch (menuKey) {
+            case "1":
                 return new TourPanel();
-            case 1:
+            case "2":
                 return new LichTrinhPanel();
-            case 2:
+            case "3":
                 return new DiaDiemPanel();
-            case 7: 
+            case "4": // Phương tiện
+            case "5": // Hướng dẫn viên
+            case "6": // Nhân viên
+            case "7": // Khách hàng
+            case "9": // Khuyến mãi
+            case "13": // Thống kê
+                // Chưa có panel tương ứng, hiển thị "đang phát triển"
+                return null;
+            case "8":
                 return new HoaDonPanel();
-            case 9:
+            case "10":
                 return new PhanQuyenPanel();
             // case 3:
             // return new PhuongTienPanel();
@@ -110,30 +205,30 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
-    private void showPanel(int index) {
+    private void showPanel(String menuKey) {
 
-        if (currentPanelIndex == index && currentPanel != null) {
+        if (menuKey != null && menuKey.equals(currentPanelKey) && currentPanel != null) {
             return;
         }
 
-        JPanel panel = createPanel(index);
+        JPanel panel = createPanel(menuKey);
 
         mainSide.removeAll();
 
         if (panel != null) {
             // Lưu panel hiện tại
             currentPanel = panel;
-            currentPanelIndex = index;
+            currentPanelKey = menuKey;
 
             // Add panel mới
             mainSide.setLayout(new java.awt.BorderLayout());
             mainSide.add(panel, java.awt.BorderLayout.CENTER);
             // Bổ sung listener resize cho panel mới
-            addResizeSupport(panel);
+
         } else {
             // Reset current panel
             currentPanel = null;
-            currentPanelIndex = -1;
+            currentPanelKey = null;
 
             JLabel lblComingSoon = new javax.swing.JLabel("Chức năng đang phát triển...");
             lblComingSoon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -141,7 +236,7 @@ public class MainGUI extends javax.swing.JFrame {
             lblComingSoon.setForeground(new java.awt.Color(100, 100, 100));
             mainSide.setLayout(new java.awt.BorderLayout());
             mainSide.add(lblComingSoon, java.awt.BorderLayout.CENTER);
-            addResizeSupport(lblComingSoon);
+
         }
 
         // Refresh UI
@@ -165,27 +260,18 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }
 
-    private void initTopSideMoving() {
-        topSide.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                x = e.getX() + 6;
-                y = e.getY() + 6;
-            }
-        });
-
-        topSide.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                setCursor(new Cursor(Cursor.HAND_CURSOR));
-                setLocation(e.getXOnScreen() - x, e.getYOnScreen() - y);
-            }
-        });
-    }
+    private java.awt.Rectangle previousBounds;
 
     public void fullscreen() {
-        previousState = this.getExtendedState();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        if (this.getExtendedState() == JFrame.MAXIMIZED_BOTH) {
+            this.setExtendedState(JFrame.NORMAL);
+            if (previousBounds != null) {
+                this.setBounds(previousBounds);
+            }
+        } else {
+            previousBounds = this.getBounds(); // lưu size & vị trí hiện tại
+            this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
     }
 
     public void minimizeWindow() {
@@ -194,166 +280,6 @@ public class MainGUI extends javax.swing.JFrame {
             previousState = currentState;
         }
         this.setExtendedState(JFrame.ICONIFIED);
-    }
-
-    private void initResizable() {
-        resizeListener = new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                mouseDownCompCoords = e.getPoint();
-                resizeDirection = getResizeDirectionFromScreen(e);
-            }
-
-            @Override
-            public void mouseReleased(java.awt.event.MouseEvent e) {
-                mouseDownCompCoords = null;
-                resizeDirection = RESIZE_NONE;
-                setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mouseMoved(java.awt.event.MouseEvent e) {
-                int direction = getResizeDirectionFromScreen(e);
-                setCursorForDirection(direction);
-            }
-
-            @Override
-            public void mouseDragged(java.awt.event.MouseEvent e) {
-                if (mouseDownCompCoords != null && resizeDirection != RESIZE_NONE) {
-                    handleResize(e);
-                }
-            }
-        };
-
-        addResizeSupport(this);
-    }
-
-    private void addResizeSupport(java.awt.Component comp) {
-        if (comp == null || resizeListener == null) {
-            return;
-        }
-
-        if (comp instanceof javax.swing.JTabbedPane
-                || comp instanceof javax.swing.AbstractButton
-                || comp instanceof javax.swing.JTable
-                || comp instanceof javax.swing.JScrollPane
-                || comp instanceof javax.swing.JScrollBar
-                || comp instanceof javax.swing.JViewport
-                || comp instanceof javax.swing.text.JTextComponent
-                || comp instanceof javax.swing.JComboBox
-                || comp instanceof javax.swing.JList) {
-            return;
-        }
-        comp.addMouseListener(resizeListener);
-        comp.addMouseMotionListener(resizeListener);
-        if (comp instanceof java.awt.Container) {
-            for (java.awt.Component child : ((java.awt.Container) comp).getComponents()) {
-                addResizeSupport(child);
-            }
-        }
-    }
-
-    private int getResizeDirectionFromScreen(java.awt.event.MouseEvent e) {
-        Point screen = e.getLocationOnScreen();
-        int fx = screen.x - getX();
-        int fy = screen.y - getY();
-        int fw = getWidth();
-        int fh = getHeight();
-
-        if (fx < BORDER_SIZE && fy < BORDER_SIZE) {
-            return RESIZE_TOP_LEFT;
-        } else if (fx > fw - BORDER_SIZE && fy < BORDER_SIZE) {
-            return RESIZE_TOP_RIGHT;
-        } else if (fx < BORDER_SIZE && fy > fh - BORDER_SIZE) {
-            return RESIZE_BOTTOM_LEFT;
-        } else if (fx > fw - BORDER_SIZE && fy > fh - BORDER_SIZE) {
-            return RESIZE_BOTTOM_RIGHT;
-        } else if (fy < BORDER_SIZE) {
-            return RESIZE_TOP;
-        } else if (fy > fh - BORDER_SIZE) {
-            return RESIZE_BOTTOM;
-        } else if (fx < BORDER_SIZE) {
-            return RESIZE_LEFT;
-        } else if (fx > fw - BORDER_SIZE) {
-            return RESIZE_RIGHT;
-        }
-        return RESIZE_NONE;
-    }
-
-    private void setCursorForDirection(int direction) {
-        Cursor cursor;
-        switch (direction) {
-            case RESIZE_TOP:
-                cursor = Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR);
-                break;
-            case RESIZE_BOTTOM:
-                cursor = Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR);
-                break;
-            case RESIZE_LEFT:
-                cursor = Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR);
-                break;
-            case RESIZE_RIGHT:
-                cursor = Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR);
-                break;
-            case RESIZE_TOP_LEFT:
-                cursor = Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR);
-                break;
-            case RESIZE_TOP_RIGHT:
-                cursor = Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR);
-                break;
-            case RESIZE_BOTTOM_LEFT:
-                cursor = Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR);
-                break;
-            case RESIZE_BOTTOM_RIGHT:
-                cursor = Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR);
-                break;
-            default:
-                cursor = Cursor.getDefaultCursor();
-        }
-        setCursor(cursor);
-    }
-
-    private void handleResize(java.awt.event.MouseEvent e) {
-        int x = getX();
-        int y = getY();
-        int width = getWidth();
-        int height = getHeight();
-
-        int mouseX = e.getXOnScreen();
-        int mouseY = e.getYOnScreen();
-
-        switch (resizeDirection) {
-            case RESIZE_TOP:
-                int newHeight = height + (y - mouseY);
-                setBounds(x, mouseY, width, newHeight);
-                break;
-            case RESIZE_BOTTOM:
-                setBounds(x, y, width, mouseY - y);
-                break;
-            case RESIZE_LEFT:
-                int newWidth = width + (x - mouseX);
-                setBounds(mouseX, y, newWidth, height);
-                break;
-            case RESIZE_RIGHT:
-                setBounds(x, y, mouseX - x, height);
-                break;
-            case RESIZE_TOP_LEFT:
-                int newWidthTL = width + (x - mouseX);
-                int newHeightTL = height + (y - mouseY);
-                setBounds(mouseX, mouseY, newWidthTL, newHeightTL);
-                break;
-            case RESIZE_TOP_RIGHT:
-                int newHeightTR = height + (y - mouseY);
-                setBounds(x, mouseY, mouseX - x, newHeightTR);
-                break;
-            case RESIZE_BOTTOM_LEFT:
-                int newWidthBL = width + (x - mouseX);
-                setBounds(mouseX, y, newWidthBL, mouseY - y);
-                break;
-            case RESIZE_BOTTOM_RIGHT:
-                setBounds(x, y, mouseX - x, mouseY - y);
-                break;
-        }
     }
 
     public MainGUI(TaiKhoan tk) {
@@ -369,7 +295,9 @@ public class MainGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -386,6 +314,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 720));
+        setUndecorated(true);
         setSize(new java.awt.Dimension(1600, 1000));
 
         jPanel1.setBackground(new java.awt.Color(245, 255, 255));
@@ -439,37 +368,38 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout topSideLayout = new javax.swing.GroupLayout(topSide);
         topSide.setLayout(topSideLayout);
         topSideLayout.setHorizontalGroup(
-            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(lbMenuDrop)
-                .addGap(18, 18, 18)
-                .addComponent(lbCN)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1176, Short.MAX_VALUE)
-                .addComponent(btnMinimize)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnFullscreen)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnExit)
-                .addContainerGap())
-        );
+                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topSideLayout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(lbMenuDrop)
+                                .addGap(18, 18, 18)
+                                .addComponent(lbCN)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1176,
+                                        Short.MAX_VALUE)
+                                .addComponent(btnMinimize)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnFullscreen)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnExit)
+                                .addContainerGap()));
         topSideLayout.setVerticalGroup(
-            topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topSideLayout.createSequentialGroup()
-                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(topSideLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnMinimize)
-                            .addComponent(btnFullscreen)
-                            .addComponent(btnExit)))
-                    .addGroup(topSideLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbCN)
-                            .addComponent(lbMenuDrop))))
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
+                topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(topSideLayout.createSequentialGroup()
+                                .addGroup(topSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(topSideLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(topSideLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(btnMinimize)
+                                                        .addComponent(btnFullscreen)
+                                                        .addComponent(btnExit)))
+                                        .addGroup(topSideLayout.createSequentialGroup()
+                                                .addGap(28, 28, 28)
+                                                .addGroup(topSideLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(lbCN)
+                                                        .addComponent(lbMenuDrop))))
+                                .addContainerGap(28, Short.MAX_VALUE)));
 
         jPanel2.add(topSide, java.awt.BorderLayout.PAGE_START);
 
@@ -480,13 +410,11 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);
         mainSide.setLayout(mainSideLayout);
         mainSideLayout.setHorizontalGroup(
-            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1350, Short.MAX_VALUE)
-        );
+                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1350, Short.MAX_VALUE));
         mainSideLayout.setVerticalGroup(
-            mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 920, Short.MAX_VALUE)
-        );
+                mainSideLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 920, Short.MAX_VALUE));
 
         jPanel2.add(mainSide, java.awt.BorderLayout.CENTER);
 

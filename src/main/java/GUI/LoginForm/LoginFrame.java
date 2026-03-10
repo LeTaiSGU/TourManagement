@@ -62,6 +62,7 @@ public class LoginFrame extends javax.swing.JFrame {
         lbSuco = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(1000, 750));
 
         image.setPreferredSize(new java.awt.Dimension(600, 750));
@@ -78,7 +79,7 @@ public class LoginFrame extends javax.swing.JFrame {
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         lb1.setBackground(new java.awt.Color(255, 255, 255));
-        lb1.setFont(new java.awt.Font("Segoe UI", 1, 26)); // NOI18N
+        lb1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         lb1.setText("Chào mừng bạn quay lại");
         lb1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jPanel1.add(lb1, java.awt.BorderLayout.CENTER);
@@ -101,12 +102,12 @@ public class LoginFrame extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel4.setLayout(new java.awt.GridLayout(2, 0));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Tên đăng nhập");
         jPanel4.add(jLabel1);
 
         txtTendangnhap.setText("NV001");
-        txtTendangnhap.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        txtTendangnhap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtTendangnhap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icon/user.png"))); // NOI18N
         txtTendangnhap.setIconGap(15);
         jPanel4.add(txtTendangnhap);
@@ -117,11 +118,12 @@ public class LoginFrame extends javax.swing.JFrame {
         jPanel6.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         jPanel6.setLayout(new java.awt.GridLayout(2, 0));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Mật khẩu");
         jPanel6.add(jLabel2);
 
         txtMatkhau.setText("12345678q");
+        txtMatkhau.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtMatkhau.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/icon/lock.png"))); // NOI18N
         txtMatkhau.setIconGap(15);
         txtMatkhau.addActionListener(this::txtMatkhauActionPerformed);
@@ -136,7 +138,7 @@ public class LoginFrame extends javax.swing.JFrame {
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        jPanel8.setLayout(new java.awt.GridLayout(2, 0));
+        jPanel8.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
         btnDangnhap.setBorder(null);
         btnDangnhap.setText("Đăng nhập");

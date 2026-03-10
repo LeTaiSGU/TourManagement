@@ -17,10 +17,9 @@ public class HoaDon {
     private String tenKhachHang;
     private String sdt;
     private LocalDate ngayLapHD;
-    private double tongTien;    
+    private double tongTien;
     private String maKhuyenMai;
     private float thue;
     private String HTTT;
     private boolean trangThaiTT;
-    
 }

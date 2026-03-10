@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Tour {
     private String maTour;
     private String maLoaiTour;
+    private String maHDV;
     private String tenTour;
     private String anhTour;
     private String noiKhoiHanh;
