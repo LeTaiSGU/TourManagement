@@ -80,6 +80,22 @@ public class KhachHangDAL {
         }
     }
 
+    public String sinhMaMoi() throws DaoException {
+        String sql = "SELECT TOP 1 maKhachHang FROM KhachHang ORDER BY maKhachHang DESC";
+        try (Connection con = conn.getConnection();
+                Statement stmt = con.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                String ma = rs.getString(1);
+                int so = Integer.parseInt(ma.replaceAll("[^0-9]", "")) + 1;
+                return String.format("KH%03d", so);
+            }
+            return "KH001";
+        } catch (SQLException e) {
+            throw new DaoException("Lỗi sinh mã khách hàng.", e);
+        }
+    }
+
     public ArrayList<KhachHangDTO> searchKhachHang(String keyword) throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM KhachHang WHERE tenKhachHang LIKE ? OR maKhachHang LIKE ?";

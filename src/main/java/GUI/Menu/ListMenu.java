@@ -39,6 +39,7 @@ public class ListMenu<E extends Object> extends JList<E> {
             public void mousePressed(MouseEvent me) {
                 if (SwingUtilities.isLeftMouseButton(me)) {
                     int index = locationToIndex(me.getPoint());
+                    if (index < 0) return;
                     Object obj = model.getElementAt(index);
                     if (obj instanceof Model_Menu) {
                         Model_Menu data = (Model_Menu) obj;

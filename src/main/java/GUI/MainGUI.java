@@ -197,10 +197,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return new LichTrinhPanel();
             case "3":
                 return new DiaDiemPanel();
-            case "4": // Phương tiện
-            case "5": // Hướng dẫn viên
-            case "6": // Nhân viên
-            case "7": // Khách hàng
+            case "4": 
+                return new PhuongTienPanel();
+            case "5": 
+                return new HuongDanVienPanel();
+            case "6": 
+            return new NhanVienPanel();
+            case "7": 
+            return new KhachHangPanel();
             case "9": // Khuyến mãi
                 // Chưa có panel tương ứng, hiển thị "đang phát triển"
                 return null;

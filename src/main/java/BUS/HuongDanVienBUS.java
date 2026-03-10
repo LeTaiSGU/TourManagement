@@ -30,6 +30,22 @@ public class HuongDanVienBUS {
             throw new BusException("Lỗi khi sửa hướng dẫn viên", e);
         }
     }
+    public String sinhMaMoi() throws BusException {
+        try {
+            return dal.sinhMaMoi();
+        } catch (Exception e) {
+            throw new BusException("Lỗi sinh mã hướng dẫn viên.", e);
+        }
+    }
+
+    public ArrayList<HuongDanVienDTO> searchHuongDanVien(String keyword) throws BusException {
+        try {
+            return dal.searchHuongDanVien(keyword);
+        } catch (Exception e) {
+            throw new BusException("Lỗi tìm kiếm hướng dẫn viên.", e);
+        }
+    }
+
     public void deleteHuongDanVien(String maHDV) throws BusException {
         try {
             dal.deleteHuongDanVien(maHDV);
