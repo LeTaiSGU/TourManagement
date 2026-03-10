@@ -128,12 +128,12 @@ public class KhuyenMaiDAL {
                 KhuyenMai km = new KhuyenMai();
                 km.setMaKhuyenMai(rs.getString("maKhuyenMai"));
                 km.setTenKhuyenMai(rs.getString("tenKhuyenMai"));
-                km.setPhuongThucKM(rs.getString("phuongThucKM"));
+                km.setPhuongThucKM(rs.getDouble("phuongThucKM"));
                 try {
                     String val = rs.getString("phuongThucKM");
-                    km.setGiaTriKM(val != null ? Double.parseDouble(val) : 0);
+                    km.setPhuongThucKM(val != null ? Double.parseDouble(val) : 0);
                 } catch (NumberFormatException ignored) {
-                    km.setGiaTriKM(0);
+                    km.setPhuongThucKM(0.0);
                 }
                 dskm.add(km);
             }
