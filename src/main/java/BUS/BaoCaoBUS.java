@@ -27,7 +27,7 @@ public class BaoCaoBUS {
 
     /** Constructor mặc định — tự lấy kết nối từ ConnectionDAL */
     public BaoCaoBUS() {
-        this.dal = new BaoCaoDAL(ConnectionDAL.getConnection());
+        this.dal = new BaoCaoDAL(new ConnectionDAL().getConnection());
     }
 
     // =========================================================

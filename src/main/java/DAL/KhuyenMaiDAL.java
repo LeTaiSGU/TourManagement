@@ -14,16 +14,15 @@ public class KhuyenMaiDAL {
         String sql = "SELECT * FROM KhuyenMai";
 
         try (Connection con = conn.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+                Statement st = con.createStatement();
+                ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 KhuyenMaiDTO km = new KhuyenMaiDTO(
                         rs.getString("maKhuyenMai"),
                         rs.getString("tenKhuyenMai"),
                         rs.getString("phuongThucKM"),
-                        rs.getString("moTa")
-                );
+                        rs.getString("moTa"));
                 list.add(km);
             }
         } catch (SQLException e) {
@@ -36,7 +35,7 @@ public class KhuyenMaiDAL {
         String sql = "INSERT INTO KhuyenMai(maKhuyenMai, tenKhuyenMai, phuongThucKM, moTa) VALUES (?, ?, ?, ?)";
 
         try (Connection con = conn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, km.getMaKhuyenMai());
             ps.setString(2, km.getTenKhuyenMai());
             ps.setString(3, km.getPhuongThucKM());
@@ -51,7 +50,7 @@ public class KhuyenMaiDAL {
         String sql = "UPDATE KhuyenMai SET tenKhuyenMai = ?, phuongThucKM = ?, moTa = ? WHERE maKhuyenMai = ?";
 
         try (Connection con = conn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, km.getTenKhuyenMai());
             ps.setString(2, km.getPhuongThucKM());
             ps.setString(3, km.getMoTa());
@@ -66,7 +65,7 @@ public class KhuyenMaiDAL {
         String sql = "DELETE FROM KhuyenMai WHERE maKhuyenMai = ?";
 
         try (Connection con = conn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+                PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maKhuyenMai);
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -114,4 +113,3 @@ public class KhuyenMaiDAL {
         }
     }
 }
-

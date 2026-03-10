@@ -58,7 +58,7 @@ public class Menu extends javax.swing.JPanel {
                         speed = selectedIndex - index;
                         if (speed < 0) {
                             speed *= -1;
-                            
+
                         }
                     }
                     speed++; // Add 1 speed

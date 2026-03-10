@@ -44,12 +44,18 @@ public class KhuyenMaiBUS {
     }
 
     public void validateKhuyenMai(KhuyenMaiDTO khuyenMai) throws BusException {
-        if (khuyenMai == null) throw new BusException("Dữ liệu khuyến mãi không hợp lệ.");
-        if (isBlank(khuyenMai.getMaKhuyenMai())) throw new BusException("Mã khuyến mãi không được để trống.");
-        if (isBlank(khuyenMai.getTenKhuyenMai())) throw new BusException("Tên khuyến mãi không được để trống.");
-        if (isBlank(khuyenMai.getPhuongThucKM())) throw new BusException("Phương thức khuyến mãi không được để trống.");
-        if (isBlank(khuyenMai.getMoTa())) throw new BusException("Mô tả khuyến mãi không được để trống.");
-        if (!isValidPhuongThucKM(khuyenMai.getPhuongThucKM())) throw new BusException("Phương thức khuyến mãi không hợp lệ.");
+        if (khuyenMai == null)
+            throw new BusException("Dữ liệu khuyến mãi không hợp lệ.");
+        if (isBlank(khuyenMai.getMaKhuyenMai()))
+            throw new BusException("Mã khuyến mãi không được để trống.");
+        if (isBlank(khuyenMai.getTenKhuyenMai()))
+            throw new BusException("Tên khuyến mãi không được để trống.");
+        if (isBlank(khuyenMai.getPhuongThucKM()))
+            throw new BusException("Phương thức khuyến mãi không được để trống.");
+        if (isBlank(khuyenMai.getMoTa()))
+            throw new BusException("Mô tả khuyến mãi không được để trống.");
+        if (!isValidPhuongThucKM(khuyenMai.getPhuongThucKM()))
+            throw new BusException("Phương thức khuyến mãi không hợp lệ.");
     }
 
     private boolean isBlank(String str) {
@@ -78,4 +84,3 @@ public class KhuyenMaiBUS {
         }
     }
 }
-

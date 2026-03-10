@@ -11,28 +11,6 @@
         <exec.mainClass>com.mycompany.tourmanagement.TourManagement</exec.mainClass>
         <lombok.version>1.18.42</lombok.version>
     </properties>
-<<<<<<< HEAD
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-=======
-    
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
         <dependency>
@@ -63,7 +41,6 @@
             <scope>compile</scope>
         </dependency>
 
-<<<<<<< HEAD
         <!-- Apache POI — xuất báo cáo Excel (.xlsx) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -76,7 +53,7 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.31</version>
-=======
+        </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
@@ -99,11 +76,10 @@
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE280</version>
->>>>>>> 379838c5d2def71baad191839bfd9123657069d3
         </dependency>
     </dependencies>
     <build>
-       <plugins>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

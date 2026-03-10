@@ -32,7 +32,7 @@ public class ThongKeBUS {
      * Dùng khi GUI khởi tạo ThongKeBUS() không cần truyền Connection.
      */
     public ThongKeBUS() {
-        Connection conn = ConnectionDAL.getConnection();
+        Connection conn = new ConnectionDAL().getConnection();
         this.dal = new ThongKeDAL(conn);
     }
 

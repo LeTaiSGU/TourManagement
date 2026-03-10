@@ -26,7 +26,7 @@ public class PhuongTienBUS {
 
     /** Constructor mặc định: tự lấy kết nối từ ConnectionDAL */
     public PhuongTienBUS() {
-        this.dal = new PhuongTienDAL(ConnectionDAL.getConnection());
+        this.dal = new PhuongTienDAL(new ConnectionDAL().getConnection());
     }
 
     /** Constructor nhận Connection từ bên ngoài (dùng khi share kết nối) */

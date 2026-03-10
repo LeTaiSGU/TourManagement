@@ -36,12 +36,12 @@ import java.awt.event.MouseEvent;
  * Panel Quản lý Lịch trình — CRUD đầy đủ.
  *
  * Bố cục (BorderLayout):
- * - NORTH  : Thanh tìm kiếm (txtTimKiem + btnTimKiem + lblTongSo)
+ * - NORTH : Thanh tìm kiếm (txtTimKiem + btnTimKiem + lblTongSo)
  * - CENTER : Bảng dữ liệu (trái) + Form nhập liệu (phải 310px)
  *
- * Form:  Mã lịch trình (tự động), Tour, Địa điểm, Phương tiện,
- *        Ngày thứ (spinner), Nội dung (textarea), Trạng thái (checkbox)
- * Nút:   Thêm mới | Cập nhật | Xóa | Làm mới
+ * Form: Mã lịch trình (tự động), Tour, Địa điểm, Phương tiện,
+ * Ngày thứ (spinner), Nội dung (textarea), Trạng thái (checkbox)
+ * Nút: Thêm mới | Cập nhật | Xóa | Làm mới
  *
  * TODO: kết nối BUS khi sẵn sàng (xem comment "TODO" trong từng method)
  */
@@ -51,17 +51,17 @@ public class LichTrinhPanel extends JPanel {
     // HẰNG SỐ GIAO DIỆN
     // =========================================================
 
-    private static final Color MAU_CHINH    = new Color(41, 128, 185);
-    private static final Color MAU_NEN      = new Color(246, 247, 248);
-    private static final Color MAU_TRANG    = Color.WHITE;
+    private static final Color MAU_CHINH = new Color(41, 128, 185);
+    private static final Color MAU_NEN = new Color(246, 247, 248);
+    private static final Color MAU_TRANG = Color.WHITE;
     private static final Color MAU_HANG_XEN = new Color(240, 246, 252);
-    private static final Color MAU_CHON     = new Color(214, 234, 248);
-    private static final Color MAU_CHU_TOI  = new Color(44, 62, 80);
-    private static final Color MAU_CHU_PHU  = new Color(127, 140, 141);
-    private static final Color MAU_VIEN     = new Color(213, 219, 219);
-    private static final Color MAU_XANH_LA  = new Color(39, 174, 96);
-    private static final Color MAU_DO       = new Color(231, 76, 60);
-    private static final String FONT        = "Segoe UI";
+    private static final Color MAU_CHON = new Color(214, 234, 248);
+    private static final Color MAU_CHU_TOI = new Color(44, 62, 80);
+    private static final Color MAU_CHU_PHU = new Color(127, 140, 141);
+    private static final Color MAU_VIEN = new Color(213, 219, 219);
+    private static final Color MAU_XANH_LA = new Color(39, 174, 96);
+    private static final Color MAU_DO = new Color(231, 76, 60);
+    private static final String FONT = "Segoe UI";
 
     // =========================================================
     // TRẠNG THÁI
@@ -75,22 +75,22 @@ public class LichTrinhPanel extends JPanel {
     // =========================================================
 
     // Thanh tìm kiếm
-    private JTextField    txtTimKiem;
-    private ActionButton  btnTimKiem;
-    private JLabel        lblTongSo;
+    private JTextField txtTimKiem;
+    private ActionButton btnTimKiem;
+    private JLabel lblTongSo;
 
     // Bảng
-    private JTable            bangDuLieu;
+    private JTable bangDuLieu;
     private DefaultTableModel modelBang;
 
     // Form nhập liệu
-    private JTextField        txtMaLT;         // Mã lịch trình — tự động, read-only
-    private JComboBox<String>  cboTour;         // ComboBox chọn Tour
-    private JComboBox<String>  cboDiaDiem;      // ComboBox chọn Địa điểm
-    private JComboBox<String>  cboPhuongTien;   // ComboBox chọn Phương tiện
-    private JSpinner           spnNgayThu;      // Số ngày thứ trong tour
-    private JTextArea          txtaNoiDung;     // Nội dung hoạt động trong ngày
-    private JCheckBox          chkTrangThai;    // Trạng thái hoạt động
+    private JTextField txtMaLT; // Mã lịch trình — tự động, read-only
+    private JComboBox<String> cboTour; // ComboBox chọn Tour
+    private JComboBox<String> cboDiaDiem; // ComboBox chọn Địa điểm
+    private JComboBox<String> cboPhuongTien; // ComboBox chọn Phương tiện
+    private JSpinner spnNgayThu; // Số ngày thứ trong tour
+    private JTextArea txtaNoiDung; // Nội dung hoạt động trong ngày
+    private JCheckBox chkTrangThai; // Trạng thái hoạt động
 
     // Nút thao tác
     private ActionButton btnThemMoi;
@@ -102,16 +102,16 @@ public class LichTrinhPanel extends JPanel {
     // DAL & DỮ LIỆU COMBO
     // =========================================================
 
-    private LichTrinhDAL  dal;
-    private TourDAL        tourDal;
-    private DiaDiemDAL    ddiaDiemDal;
+    private LichTrinhDAL dal;
+    private TourDAL tourDal;
+    private DiaDiemDAL ddiaDiemDal;
     private PhuongTienDAL ptDal;
 
-    /** tenTour  → maTour  */
-    private final Map<String, String> mapTour       = new LinkedHashMap<>();
+    /** tenTour → maTour */
+    private final Map<String, String> mapTour = new LinkedHashMap<>();
     /** tenDiaDiem → maDiaDiem */
-    private final Map<String, String> mapDiaDiem    = new LinkedHashMap<>();
-    /** tenPT    → maPT    */
+    private final Map<String, String> mapDiaDiem = new LinkedHashMap<>();
+    /** tenPT → maPT */
     private final Map<String, String> mapPhuongTien = new LinkedHashMap<>();
 
     // =========================================================
@@ -120,11 +120,11 @@ public class LichTrinhPanel extends JPanel {
 
     public LichTrinhPanel() {
         // Khởi tạo kết nối DB
-        Connection conn = ConnectionDAL.getConnection();
-        dal          = new LichTrinhDAL(conn);
-        tourDal      = new TourDAL(conn);
-        ddiaDiemDal  = new DiaDiemDAL(conn);
-        ptDal        = new PhuongTienDAL(conn);
+        Connection conn = new ConnectionDAL().getConnection();
+        dal = new LichTrinhDAL(conn);
+        tourDal = new TourDAL();
+        ddiaDiemDal = new DiaDiemDAL();
+        ptDal = new PhuongTienDAL(conn);
 
         xayDungGiaoDien();
         khoiTaoCombos();
@@ -141,7 +141,7 @@ public class LichTrinhPanel extends JPanel {
             // Tour
             cboTour.removeAllItems();
             mapTour.clear();
-            for (Tour t : tourDal.getAll()) {
+            for (Tour t : tourDal.getAllTour()) {
                 mapTour.put(t.getTenTour(), t.getMaTour());
                 cboTour.addItem(t.getTenTour());
             }
@@ -159,7 +159,7 @@ public class LichTrinhPanel extends JPanel {
                 mapPhuongTien.put(p.getTenPT(), p.getMaPT());
                 cboPhuongTien.addItem(p.getTenPT());
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             hienThiLoi("Lỗi tải dữ liệu combo: " + e.getMessage());
         }
     }
@@ -181,7 +181,7 @@ public class LichTrinhPanel extends JPanel {
         panelTab.setBorder(new EmptyBorder(10, 12, 10, 12));
 
         panelTab.add(xayDungThanhTimKiem(), BorderLayout.NORTH);
-        panelTab.add(xayDungVungChinh(),    BorderLayout.CENTER);
+        panelTab.add(xayDungVungChinh(), BorderLayout.CENTER);
 
         tabs.addTab("Lịch trình", panelTab);
         add(tabs, BorderLayout.CENTER);
@@ -245,7 +245,7 @@ public class LichTrinhPanel extends JPanel {
     private JPanel xayDungVungChinh() {
         JPanel panel = new JPanel(new BorderLayout(10, 0));
         panel.setBackground(MAU_NEN);
-        panel.add(xayDungBang(),     BorderLayout.CENTER);
+        panel.add(xayDungBang(), BorderLayout.CENTER);
         panel.add(xayDungFormNhap(), BorderLayout.EAST);
         return panel;
     }
@@ -256,9 +256,11 @@ public class LichTrinhPanel extends JPanel {
 
     private ScrollPaneWin11 xayDungBang() {
         modelBang = new DefaultTableModel(
-                new String[]{ "STT", "Mã LT", "Tour", "Địa điểm", "Phương tiện", "Ngày thứ" }, 0) {
+                new String[] { "STT", "Mã LT", "Tour", "Địa điểm", "Phương tiện", "Ngày thứ" }, 0) {
             @Override
-            public boolean isCellEditable(int row, int col) { return false; }
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
 
         bangDuLieu = new JTable(modelBang);
@@ -317,7 +319,8 @@ public class LichTrinhPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = bangDuLieu.getSelectedRow();
-                if (row >= 0) dienFormTuHang(row);
+                if (row >= 0)
+                    dienFormTuHang(row);
             }
         });
 
@@ -379,7 +382,7 @@ public class LichTrinhPanel extends JPanel {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 2, 4, 2);
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // ── Mã lịch trình ─────────────────────────────────────
         addLabel(panelNoiDung, gbc, 0, "Mã lịch trình:");
@@ -433,14 +436,16 @@ public class LichTrinhPanel extends JPanel {
         txtaNoiDung.setBorder(new EmptyBorder(6, 8, 6, 8));
         JScrollPane scrollNoiDung = new JScrollPane(txtaNoiDung);
         scrollNoiDung.setBorder(BorderFactory.createLineBorder(MAU_VIEN, 1));
-        gbc.gridx = 0; gbc.gridy = 11;
-        gbc.gridwidth = 1; gbc.weightx = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = 11;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill   = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 0.3;
         panelNoiDung.add(scrollNoiDung, gbc);
         gbc.weighty = 0;
-        gbc.fill    = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // ── Trạng thái ────────────────────────────────────────
         chkTrangThai = new JCheckBox("Hoạt động");
@@ -448,28 +453,33 @@ public class LichTrinhPanel extends JPanel {
         chkTrangThai.setBackground(MAU_TRANG);
         chkTrangThai.setForeground(MAU_CHU_TOI);
         chkTrangThai.setSelected(true);
-        gbc.gridx = 0; gbc.gridy = 12;
-        gbc.gridwidth = 1; gbc.weightx = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = 12;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill   = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.NONE;
         panelNoiDung.add(chkTrangThai, gbc);
 
         // Glue — đẩy nội dung lên trên
-        gbc.gridy = 13; gbc.weighty = 1.0;
-        gbc.fill  = GridBagConstraints.VERTICAL;
+        gbc.gridy = 13;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
         panelNoiDung.add(Box.createVerticalGlue(), gbc);
 
-        outer.add(panelNoiDung,        BorderLayout.CENTER);
-        outer.add(xayDungPanelNut(),   BorderLayout.SOUTH);
+        outer.add(panelNoiDung, BorderLayout.CENTER);
+        outer.add(xayDungPanelNut(), BorderLayout.SOUTH);
         return outer;
     }
 
     /** Thêm label xám đậm vào form */
     private void addLabel(JPanel p, GridBagConstraints gbc, int row, String text) {
-        gbc.gridx = 0; gbc.gridy = row;
-        gbc.gridwidth = 1; gbc.weightx = 0;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill   = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.NONE;
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font(FONT, Font.BOLD, 12));
         lbl.setForeground(MAU_CHU_PHU);
@@ -478,10 +488,12 @@ public class LichTrinhPanel extends JPanel {
 
     /** Thêm component field chiếm full width */
     private void addField(JPanel p, GridBagConstraints gbc, int row, JComponent comp) {
-        gbc.gridx = 0; gbc.gridy = row;
-        gbc.gridwidth = 1; gbc.weightx = 1.0;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1.0;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill   = GridBagConstraints.HORIZONTAL;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         p.add(comp, gbc);
     }
 
@@ -551,16 +563,16 @@ public class LichTrinhPanel extends JPanel {
             List<LichTrinh> ds = dal.getDanhSach(tuKhoa);
             int stt = 1;
             for (LichTrinh lt : ds) {
-                modelBang.addRow(new Object[]{
-                    stt++,
-                    lt.getMaLichTrinh(),
-                    lt.getTenTour(),
-                    lt.getTenDiaDiem(),
-                    lt.getTenPT(),
-                    lt.getNgayThu()
+                modelBang.addRow(new Object[] {
+                        stt++,
+                        lt.getMaLichTrinh(),
+                        lt.getTenTour(),
+                        lt.getTenDiaDiem(),
+                        lt.getTenPT(),
+                        lt.getNgayThu()
                 });
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             hienThiLoi("Lỗi tải danh sách lịch trình: " + e.getMessage());
         }
         lblTongSo.setText("Tổng: " + modelBang.getRowCount() + " bản ghi");
@@ -574,18 +586,18 @@ public class LichTrinhPanel extends JPanel {
         // Chuyển đổi view-row → model-row (do có sorter)
         int modelRow = bangDuLieu.convertRowIndexToModel(row);
 
-        String maLT       = (String) modelBang.getValueAt(modelRow, 1);
-        String tenTour    = (String) modelBang.getValueAt(modelRow, 2);
-        String diaDiem    = (String) modelBang.getValueAt(modelRow, 3);
-        String pt         = (String) modelBang.getValueAt(modelRow, 4);
+        String maLT = (String) modelBang.getValueAt(modelRow, 1);
+        String tenTour = (String) modelBang.getValueAt(modelRow, 2);
+        String diaDiem = (String) modelBang.getValueAt(modelRow, 3);
+        String pt = (String) modelBang.getValueAt(modelRow, 4);
         Object ngayThuObj = modelBang.getValueAt(modelRow, 5);
 
         maLichTrinhDangChon = maLT;
         txtMaLT.setText(maLT);
         txtMaLT.setBackground(new Color(240, 243, 247));
 
-        selectCombo(cboTour,       tenTour);
-        selectCombo(cboDiaDiem,    diaDiem);
+        selectCombo(cboTour, tenTour);
+        selectCombo(cboDiaDiem, diaDiem);
         selectCombo(cboPhuongTien, pt);
 
         if (ngayThuObj instanceof Integer)
@@ -605,7 +617,8 @@ public class LichTrinhPanel extends JPanel {
     }
 
     private void selectCombo(JComboBox<String> cbo, String value) {
-        if (value == null) return;
+        if (value == null)
+            return;
         for (int i = 0; i < cbo.getItemCount(); i++) {
             if (value.equals(cbo.getItemAt(i))) {
                 cbo.setSelectedIndex(i);
@@ -628,9 +641,12 @@ public class LichTrinhPanel extends JPanel {
         }
         txtMaLT.setBackground(new Color(240, 243, 247));
 
-        if (cboTour.getItemCount()       > 0) cboTour.setSelectedIndex(0);
-        if (cboDiaDiem.getItemCount()    > 0) cboDiaDiem.setSelectedIndex(0);
-        if (cboPhuongTien.getItemCount() > 0) cboPhuongTien.setSelectedIndex(0);
+        if (cboTour.getItemCount() > 0)
+            cboTour.setSelectedIndex(0);
+        if (cboDiaDiem.getItemCount() > 0)
+            cboDiaDiem.setSelectedIndex(0);
+        if (cboPhuongTien.getItemCount() > 0)
+            cboPhuongTien.setSelectedIndex(0);
 
         spnNgayThu.setValue(1);
         txtaNoiDung.setText("");
@@ -644,16 +660,18 @@ public class LichTrinhPanel extends JPanel {
 
     private void xuLyThemMoi() {
         String[] data = docVaValidateForm();
-        if (data == null) return;
+        if (data == null)
+            return;
 
         int ok = JOptionPane.showConfirmDialog(this,
                 "Xác nhận thêm lịch trình \"" + data[0] + "\"?\n"
-                + "Tour     : " + data[1] + "\n"
-                + "Địa điểm : " + data[2] + "\n"
-                + "Ngày thứ : " + data[4],
+                        + "Tour     : " + data[1] + "\n"
+                        + "Địa điểm : " + data[2] + "\n"
+                        + "Ngày thứ : " + data[4],
                 "Xác nhận thêm mới",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (ok != JOptionPane.YES_OPTION) return;
+        if (ok != JOptionPane.YES_OPTION)
+            return;
 
         try {
             LichTrinh lt = LichTrinh.builder()
@@ -672,7 +690,7 @@ public class LichTrinhPanel extends JPanel {
             } else {
                 hienThiLoi("Thêm lịch trình thất bại.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             hienThiLoi("Lỗi thêm lịch trình: " + e.getMessage());
         }
     }
@@ -683,7 +701,8 @@ public class LichTrinhPanel extends JPanel {
             return;
         }
         String[] data = docVaValidateForm();
-        if (data == null) return;
+        if (data == null)
+            return;
 
         try {
             LichTrinh lt = LichTrinh.builder()
@@ -701,7 +720,7 @@ public class LichTrinhPanel extends JPanel {
             } else {
                 hienThiLoi("Cập nhật thất bại — không tìm thấy bản ghi.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             hienThiLoi("Lỗi cập nhật lịch trình: " + e.getMessage());
         }
     }
@@ -715,7 +734,8 @@ public class LichTrinhPanel extends JPanel {
                 "Bạn có chắc muốn xóa lịch trình \"" + maLichTrinhDangChon + "\" không?",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (ok != JOptionPane.YES_OPTION) return;
+        if (ok != JOptionPane.YES_OPTION)
+            return;
 
         try {
             if (dal.xoa(maLichTrinhDangChon) > 0) {
@@ -725,7 +745,7 @@ public class LichTrinhPanel extends JPanel {
             } else {
                 hienThiLoi("Xóa thất bại — không tìm thấy bản ghi.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             hienThiLoi("Lỗi xóa lịch trình: " + e.getMessage());
         }
     }
@@ -768,7 +788,7 @@ public class LichTrinhPanel extends JPanel {
         int ngayThu = (int) spnNgayThu.getValue();
         String noiDung = txtaNoiDung.getText().trim();
 
-        return new String[]{ maLT, tenTour, diaDiem, pt, String.valueOf(ngayThu), noiDung };
+        return new String[] { maLT, tenTour, diaDiem, pt, String.valueOf(ngayThu), noiDung };
     }
 
     // =========================================================

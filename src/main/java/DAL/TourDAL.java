@@ -44,24 +44,24 @@ public class TourDAL {
         ArrayList<Tour> dstour = new ArrayList<>();
 
         String sql = """
-            SELECT
-                t.*,
-                t.soLuongVe - ISNULL(ct.daDat, 0) AS soChoCon
-            FROM TOUR t
-            LEFT JOIN (
                 SELECT
-                    ct.maTour,
-                    SUM(ct.soLuongVe) AS daDat
-                FROM CTHD ct
-                WHERE (ct.trangThai = 'DA_DAT' OR ct.trangThai = 'HOAN_TAT')
-                GROUP BY ct.maTour
-            ) ct ON t.maTour = ct.maTour
-            WHERE t.khoiHanh = 0 and t.trangThai = 1
-            """;
+                    t.*,
+                    t.soLuongVe - ISNULL(ct.daDat, 0) AS soChoCon
+                FROM TOUR t
+                LEFT JOIN (
+                    SELECT
+                        ct.maTour,
+                        SUM(ct.soLuongVe) AS daDat
+                    FROM CTHD ct
+                    WHERE (ct.trangThai = 'DA_DAT' OR ct.trangThai = 'HOAN_TAT')
+                    GROUP BY ct.maTour
+                ) ct ON t.maTour = ct.maTour
+                WHERE t.khoiHanh = 0 and t.trangThai = 1
+                """;
 
         try (Connection con = conn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
                 Tour t = new Tour();
@@ -89,4 +89,3 @@ public class TourDAL {
     }
 
 }
-

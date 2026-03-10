@@ -12,12 +12,13 @@ public class KhachHangDAL {
         String password = "Mysqlserver02";
         return DriverManager.getConnection(url, user, password);
     }
+
     public ArrayList<KhachHangDTO> getAllKhachHang() throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM KhachHang";
         try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 KhachHangDTO kh = new KhachHangDTO();
@@ -36,6 +37,7 @@ public class KhachHangDAL {
         }
         return list;
     }
+
     public void addKhachHang(KhachHangDTO kh) throws DaoException {
         String sql = "INSERT INTO KhachHang(maKhachHang, tenKhachHang, gioiTinh, namSinh, diaChi, soDienThoai, email, maLoaiKH) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -52,6 +54,7 @@ public class KhachHangDAL {
             throw new DaoException("Lỗi khi thêm khách hàng.", e);
         }
     }
+
     public void updateKhachHang(KhachHangDTO kh) throws DaoException {
         String sql = "UPDATE KhachHang SET tenKhachHang = ?, gioiTinh = ?, namSinh = ?, diaChi = ?, soDienThoai = ?, email = ?, maLoaiKH = ? WHERE maKhachHang = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -68,6 +71,7 @@ public class KhachHangDAL {
             throw new DaoException("Lỗi khi cập nhật thông tin khách hàng.", e);
         }
     }
+
     public void deleteKhachHang(String maKhachHang) throws DaoException {
         String sql = "DELETE FROM KhachHang WHERE maKhachHang = ?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -77,6 +81,7 @@ public class KhachHangDAL {
             throw new DaoException("Lỗi khi xóa khách hàng.", e);
         }
     }
+
     public ArrayList<KhachHangDTO> searchKhachHang(String keyword) throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM KhachHang WHERE tenKhachHang LIKE ? OR maKhachHang LIKE ?";
