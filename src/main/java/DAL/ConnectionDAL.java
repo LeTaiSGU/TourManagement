@@ -16,16 +16,17 @@ import java.sql.Statement;
 public class ConnectionDAL {
     private static Connection conn;
     private static String url = "jdbc:sqlserver://localhost:1433;"
-            + "databaseName=QLSV;"
+            + "databaseName=tour_management;"
+            + "integratedSecurity=true;"
             + "encrypt=true;" 
             + "trustServerCertificate=true;";
-    private static String user = "sa";
-    private static String password = "letaiken9a4";
+    private static String user = "";
+    private static String password = "";
     
     public static Connection getConnection() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(url);
             System.out.println("connect successfully!");
         } catch (Exception ex) {
             System.out.println("connect failure!");

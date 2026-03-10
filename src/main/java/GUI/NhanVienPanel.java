@@ -57,6 +57,12 @@ public class NhanVienPanel extends JPanel {
     /** Danh sách chức vụ đang giữ — để lấy maChucVu từ index combo */
     private List<ChucVu> danhSachChucVu = new ArrayList<>();
 
+    /**
+     * Cache toàn bộ danh sách NV đang hiển thị — để lấy diaChi, soDienThoai khi
+     * click hàng
+     */
+    private List<NhanVien> danhSachNV = new ArrayList<>();
+
     /** Nhân viên đang được chọn (null = chế độ thêm mới) */
     private NhanVien nvDangChon = null;
 
@@ -99,6 +105,7 @@ public class NhanVienPanel extends JPanel {
         xayDungGiaoDien();
         taiDanhSachChucVu(); // Đổ combo trước
         taiDuLieu(null); // Rồi tải bảng
+        resetFormThemMoi(); // Sinh mã NV tiếp theo vào form
     }
 
     // =========================================================
@@ -455,7 +462,7 @@ public class NhanVienPanel extends JPanel {
         return panelNgoai;
     }
 
-    /** Thêm dòng label (chiếm toàn chiều rộng) vào form, trả về row tiếp theo. */
+    /** Thêm dòng label (cột trái) vào form, trả về row tiếp theo. */
     private int addLabel(JPanel panel, GridBagConstraints gbc, int row, String ten) {
         JLabel lbl = new JLabel(ten);
         lbl.setFont(new Font(FONT, Font.PLAIN, 12));
@@ -551,6 +558,7 @@ public class NhanVienPanel extends JPanel {
             protected void done() {
                 try {
                     List<NhanVien> ds = get();
+                    danhSachNV = ds;
                     modelBang.setRowCount(0);
                     int stt = 1;
                     for (NhanVien nv : ds) {
@@ -683,6 +691,19 @@ public class NhanVienPanel extends JPanel {
         if (nv == null)
             return;
         String tenCV = (String) cboChucVu.getSelectedItem();
+
+        // Hỏi xác nhận trước khi tạo
+        int xacNhan = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có muốn tạo nhân viên với mã \"" + nv.getMaNhanVien() + "\" không?\n"
+                        + "Họ tên : " + nv.getTenNhanVien() + "\n"
+                        + "Chức vụ: " + (tenCV != null ? tenCV : ""),
+                "Xác nhận thêm nhân viên",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (xacNhan != JOptionPane.YES_OPTION)
+            return;
+
         try {
             bus.them(nv, tenCV != null ? tenCV : "");
             hienThiThongBao("Thêm nhân viên \"" + nv.getTenNhanVien() + "\" thành công.\n"
