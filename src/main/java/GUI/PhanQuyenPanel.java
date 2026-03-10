@@ -35,8 +35,16 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private CTCN_NQBUS ctcn_nqbus = new CTCN_NQBUS();
         private List<TaiKhoan> listAccCache = new ArrayList<>();
         private List<NhomQuyen> listNQ = new ArrayList<>();
+        private final CTCN_NQ quyenCN012;
+        private final CTCN_NQ quyenCN010;
 
         public PhanQuyenPanel() {
+                this(null, null);
+        }
+
+        public PhanQuyenPanel(CTCN_NQ quyenCN012, CTCN_NQ quyenCN010) {
+                this.quyenCN012 = quyenCN012;
+                this.quyenCN010 = quyenCN010;
                 initComponents();
                 initGUI();
         }
@@ -45,6 +53,8 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                 customTableHeader(tbTaiKhoan);
                 jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
                 setupPanelThongTinTK();
+                applyTabPermissions();
+                applyActionButtonPermissions();
                 bindPermissionParentCheckboxes();
                 resetPermissionCheckboxes();
                 loadTableAcc();
@@ -60,6 +70,39 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                 }
 
                 loadTableNhomQuyen();
+        }
+
+        private void applyTabPermissions() {
+                if (quyenCN012 == null && accPanel != null) {
+                        tabbedPaneCustom1.remove(accPanel);
+                }
+                if (quyenCN010 == null && phanquyenPanel != null) {
+                        tabbedPaneCustom1.remove(phanquyenPanel);
+                }
+        }
+
+        private void applyActionButtonPermissions() {
+                boolean coQuyenSuaTaiKhoan = hasActionPermission(quyenCN012, "sua");
+                boolean coQuyenKhoaMoTaiKhoan = hasActionPermission(quyenCN012, "khoa")
+                                || hasActionPermission(quyenCN012, "mo khoa");
+                boolean coQuyenSuaPhanQuyen = hasActionPermission(quyenCN010, "sua");
+
+                btnChinhSua.setVisible(coQuyenSuaTaiKhoan);
+                btnChinhSua.setEnabled(coQuyenSuaTaiKhoan);
+
+                btnMokhoa.setVisible(coQuyenKhoaMoTaiKhoan);
+                btnMokhoa.setEnabled(coQuyenKhoaMoTaiKhoan);
+
+                btnSuaNhomQuyen.setVisible(coQuyenSuaPhanQuyen);
+                btnSuaNhomQuyen.setEnabled(coQuyenSuaPhanQuyen);
+        }
+
+        private boolean hasActionPermission(CTCN_NQ quyen, String tuKhoaKhongDau) {
+                if (quyen == null || quyen.getChiTiet() == null || quyen.getChiTiet().trim().isEmpty()) {
+                        return false;
+                }
+                String detail = normalizeText(quyen.getChiTiet());
+                return detail.contains(tuKhoaKhongDau);
         }
 
         public void loadCbTTNhomQuyen() {
@@ -211,7 +254,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                 bindParentCheckbox(cboxTour, cboxThemTour, cboxSuaTour, cboxXoaTour);
                 bindParentCheckbox(cboxLichTrinh, cboxSuaLT, cboxXoaLT);
                 bindParentCheckbox(cboxDiadiem, cboxThemDd, cboxSuaDd, cboxXoaDd);
-                bindParentCheckbox(cboxLKH, cboxThemLKH, cboxSuaLKH, cboxXoaLKH);
                 bindParentCheckbox(cboxKhachhang, cboxThemKH, cboxSuaKH, cboxXoaKH);
                 bindParentCheckbox(cboxHDV, cboxThemHDV, cboxSuaHDV, cboxXoaHDV);
                 bindParentCheckbox(cboxKhuyenmai, cboxThemKm, cboxSuaKm, cboxXoaKm);
@@ -253,7 +295,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                 setParentWithChildrenState(cboxTour, false, cboxThemTour, cboxSuaTour, cboxXoaTour);
                 setParentWithChildrenState(cboxLichTrinh, false, cboxSuaLT, cboxXoaLT);
                 setParentWithChildrenState(cboxDiadiem, false, cboxThemDd, cboxSuaDd, cboxXoaDd);
-                setParentWithChildrenState(cboxLKH, false, cboxThemLKH, cboxSuaLKH, cboxXoaLKH);
                 setParentWithChildrenState(cboxKhachhang, false, cboxThemKH, cboxSuaKH, cboxXoaKH);
                 setParentWithChildrenState(cboxHDV, false, cboxThemHDV, cboxSuaHDV, cboxXoaHDV);
                 setParentWithChildrenState(cboxKhuyenmai, false, cboxThemKm, cboxSuaKm, cboxXoaKm);
@@ -326,10 +367,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                         case "CN004":
                                 setParentWithChildrenState(cboxKhachhang, true, cboxThemKH, cboxSuaKH, cboxXoaKH);
                                 applyActionDetail(chiTiet, cboxThemKH, cboxSuaKH, cboxXoaKH, null, null);
-                                break;
-                        case "CN005":
-                                setParentWithChildrenState(cboxLKH, true, cboxThemLKH, cboxSuaLKH, cboxXoaLKH);
-                                applyActionDetail(chiTiet, cboxThemLKH, cboxSuaLKH, cboxXoaLKH, null, null);
                                 break;
                         case "CN006":
                                 setParentWithChildrenState(cboxHDV, true, cboxThemHDV, cboxSuaHDV, cboxXoaHDV);
@@ -485,6 +522,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         // <editor-fold defaultstate="collapsed" desc="Generated
         // <editor-fold defaultstate="collapsed" desc="Generated
         // <editor-fold defaultstate="collapsed" desc="Generated
+        // <editor-fold defaultstate="collapsed" desc="Generated
         // Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
@@ -538,11 +576,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                 cboxThemDd = new javax.swing.JCheckBox();
                 cboxSuaDd = new javax.swing.JCheckBox();
                 cboxXoaDd = new javax.swing.JCheckBox();
-                jPanel16 = new javax.swing.JPanel();
-                cboxLKH = new javax.swing.JCheckBox();
-                cboxThemLKH = new javax.swing.JCheckBox();
-                cboxSuaLKH = new javax.swing.JCheckBox();
-                cboxXoaLKH = new javax.swing.JCheckBox();
                 jPanel15 = new javax.swing.JPanel();
                 cboxKhachhang = new javax.swing.JCheckBox();
                 cboxThemKH = new javax.swing.JCheckBox();
@@ -1042,7 +1075,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 92,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel11Layout.setVerticalGroup(
                                 jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel11Layout.createSequentialGroup()
@@ -1108,7 +1141,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 92,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel13Layout.setVerticalGroup(
                                 jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel13Layout.createSequentialGroup()
@@ -1183,7 +1216,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                 92,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel12Layout.setVerticalGroup(
                                 jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel12Layout.createSequentialGroup()
@@ -1201,94 +1234,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                 .addContainerGap(34, Short.MAX_VALUE)));
 
                 jPanel14.add(jPanel12);
-
-                jPanel16.setBackground(new java.awt.Color(255, 255, 255));
-                jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                                javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)),
-                                "Loại khách hàng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-                                javax.swing.border.TitledBorder.DEFAULT_POSITION,
-                                new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
-
-                cboxLKH.setBackground(new java.awt.Color(255, 255, 255));
-                cboxLKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-                cboxLKH.setText("Loại khách hàng");
-
-                cboxThemLKH.setBackground(new java.awt.Color(255, 255, 255));
-                cboxThemLKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-                cboxThemLKH.setText("Thêm");
-                cboxThemLKH.setEnabled(false);
-                cboxThemLKH.addActionListener(this::cboxThemLKHActionPerformed);
-
-                cboxSuaLKH.setBackground(new java.awt.Color(255, 255, 255));
-                cboxSuaLKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-                cboxSuaLKH.setText("Sửa");
-                cboxSuaLKH.setEnabled(false);
-
-                cboxXoaLKH.setBackground(new java.awt.Color(255, 255, 255));
-                cboxXoaLKH.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-                cboxXoaLKH.setText("Xóa");
-                cboxXoaLKH.setEnabled(false);
-
-                javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-                jPanel16.setLayout(jPanel16Layout);
-                jPanel16Layout.setHorizontalGroup(
-                                jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout
-                                                                .createSequentialGroup()
-                                                                .addContainerGap(24, Short.MAX_VALUE)
-                                                                .addGroup(jPanel16Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                .addGroup(jPanel16Layout
-                                                                                                .createSequentialGroup()
-                                                                                                .addGroup(jPanel16Layout
-                                                                                                                .createParallelGroup(
-                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                                                .addGroup(jPanel16Layout
-                                                                                                                                .createParallelGroup(
-                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                                .addGroup(jPanel16Layout
-                                                                                                                                                .createSequentialGroup()
-                                                                                                                                                .addGap(48, 48, 48)
-                                                                                                                                                .addComponent(cboxThemLKH,
-                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                                92,
-                                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                                                                .addComponent(cboxSuaLKH,
-                                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                92,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                                                .addGroup(jPanel16Layout
-                                                                                                                                .createSequentialGroup()
-                                                                                                                                .addGap(27, 27, 27)
-                                                                                                                                .addComponent(cboxXoaLKH,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                92,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                                                                .addPreferredGap(
-                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                                                                11,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                .addComponent(cboxLKH,
-                                                                                                javax.swing.GroupLayout.Alignment.TRAILING))
-                                                                .addGap(21, 21, 21)));
-                jPanel16Layout.setVerticalGroup(
-                                jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel16Layout.createSequentialGroup()
-                                                                .addContainerGap()
-                                                                .addComponent(cboxLKH)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(cboxThemLKH)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(cboxSuaLKH)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(cboxXoaLKH)
-                                                                .addContainerGap(34, Short.MAX_VALUE)));
-
-                jPanel14.add(jPanel16);
 
                 jPanel15.setBackground(new java.awt.Color(255, 255, 255));
                 jPanel15.setBorder(javax.swing.BorderFactory.createTitledBorder(
@@ -1353,7 +1298,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                                 113,
                                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel15Layout.setVerticalGroup(
                                 jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel15Layout.createSequentialGroup()
@@ -1434,7 +1379,8 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                 jPanel17Layout.createSequentialGroup()
                                                                                 .addGap(0, 0, Short.MAX_VALUE)
                                                                                 .addComponent(cboxHDV)
-                                                                                .addContainerGap(45, Short.MAX_VALUE)));
+                                                                                .addContainerGap(108,
+                                                                                                Short.MAX_VALUE)));
                 jPanel17Layout.setVerticalGroup(
                                 jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel17Layout.createSequentialGroup()
@@ -1513,7 +1459,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                                                 92,
                                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                                                                 .addComponent(cboxKhuyenmai))))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel18Layout.setVerticalGroup(
                                 jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel18Layout.createSequentialGroup()
@@ -1590,7 +1536,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                 .createSequentialGroup()
                                                                                                 .addGap(22, 22, 22)
                                                                                                 .addComponent(cboxNhanvien)))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel19Layout.setVerticalGroup(
                                 jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel19Layout.createSequentialGroup()
@@ -1641,26 +1587,20 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
                                                                                 .addGroup(jPanel20Layout
                                                                                                 .createSequentialGroup()
+                                                                                                .addGap(29, 29, 29)
+                                                                                                .addComponent(cboxTaikhoan))
+                                                                                .addGroup(jPanel20Layout
+                                                                                                .createSequentialGroup()
+                                                                                                .addGap(48, 48, 48)
                                                                                                 .addGroup(jPanel20Layout
                                                                                                                 .createParallelGroup(
                                                                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                .addGroup(jPanel20Layout
-                                                                                                                                .createSequentialGroup()
-                                                                                                                                .addGap(48, 48, 48)
-                                                                                                                                .addComponent(cboxSuaTk,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                                                92,
-                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                                                .addGroup(jPanel20Layout
-                                                                                                                                .createSequentialGroup()
-                                                                                                                                .addGap(29, 29, 29)
-                                                                                                                                .addComponent(cboxTaikhoan)))
-                                                                                                .addGap(0, 50, Short.MAX_VALUE))
-                                                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                jPanel20Layout.createSequentialGroup()
-                                                                                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                                                                                .addComponent(cboxKhoaTk)))
-                                                                .addContainerGap()));
+                                                                                                                .addComponent(cboxKhoaTk)
+                                                                                                                .addComponent(cboxSuaTk,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                92,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                                .addContainerGap(75, Short.MAX_VALUE)));
                 jPanel20Layout.setVerticalGroup(
                                 jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel20Layout.createSequentialGroup()
@@ -1670,9 +1610,9 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                 .addComponent(cboxSuaTk)
                                                                 .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                                 .addComponent(cboxKhoaTk)
-                                                                .addContainerGap(69, Short.MAX_VALUE)));
+                                                                .addContainerGap(63, Short.MAX_VALUE)));
 
                 jPanel14.add(jPanel20);
 
@@ -1706,7 +1646,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 92,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addContainerGap(56, Short.MAX_VALUE)));
+                                                                .addContainerGap(124, Short.MAX_VALUE)));
                 jPanel21Layout.setVerticalGroup(
                                 jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel21Layout.createSequentialGroup()
@@ -1794,7 +1734,7 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                                 .addGroup(jPanel23Layout.createSequentialGroup()
                                                                 .addGap(20, 20, 20)
                                                                 .addComponent(cboxThongke)
-                                                                .addContainerGap(79, Short.MAX_VALUE)));
+                                                                .addContainerGap(147, Short.MAX_VALUE)));
                 jPanel23Layout.setVerticalGroup(
                                 jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel23Layout.createSequentialGroup()
@@ -1836,39 +1776,40 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
                                 jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel24Layout.createSequentialGroup()
                                                                 .addGroup(jPanel24Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                javax.swing.GroupLayout.Alignment.LEADING)
                                                                                 .addGroup(jPanel24Layout
                                                                                                 .createParallelGroup(
-                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
                                                                                                 .addGroup(jPanel24Layout
-                                                                                                                .createSequentialGroup()
-                                                                                                                .addGap(48, 48, 48)
-                                                                                                                .addComponent(cboxThemPT,
+                                                                                                                .createParallelGroup(
+                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                .addGroup(jPanel24Layout
+                                                                                                                                .createSequentialGroup()
+                                                                                                                                .addGap(48, 48, 48)
+                                                                                                                                .addComponent(cboxThemPT,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                                92,
+                                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                                .addComponent(cboxSuaPT,
+                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
                                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                                 92,
                                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                                .addComponent(cboxSuaPT,
-                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                92,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                .addGroup(jPanel24Layout
+                                                                                                                .createSequentialGroup()
+                                                                                                                .addGap(27, 27, 27)
+                                                                                                                .addComponent(cboxXoaPT,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                92,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                                                 .addGroup(jPanel24Layout
                                                                                                 .createSequentialGroup()
-                                                                                                .addGap(27, 27, 27)
-                                                                                                .addComponent(cboxXoaPT,
+                                                                                                .addGap(17, 17, 17)
+                                                                                                .addComponent(cboxPT,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                                92,
+                                                                                                                131,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                                                .addContainerGap(56, Short.MAX_VALUE))
-                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel24Layout
-                                                                .createSequentialGroup()
-                                                                .addGap(0, 0, Short.MAX_VALUE)
-                                                                .addComponent(cboxPT,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                131,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                Short.MAX_VALUE)));
+                                                                .addContainerGap(116, Short.MAX_VALUE)));
                 jPanel24Layout.setVerticalGroup(
                                 jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel24Layout.createSequentialGroup()
@@ -1956,10 +1897,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private void cboxThemKHActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_cboxThemKHActionPerformed
                 // TODO add your handling code here:
         }// GEN-LAST:event_cboxThemKHActionPerformed
-
-        private void cboxThemLKHActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_cboxThemLKHActionPerformed
-                // TODO add your handling code here:
-        }// GEN-LAST:event_cboxThemLKHActionPerformed
 
         private void cboxThemHDVActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_cboxThemHDVActionPerformed
                 // TODO add your handling code here:
@@ -2215,7 +2152,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private javax.swing.JCheckBox cboxKhachhang;
         private javax.swing.JCheckBox cboxKhoaTk;
         private javax.swing.JCheckBox cboxKhuyenmai;
-        private javax.swing.JCheckBox cboxLKH;
         private javax.swing.JCheckBox cboxLichTrinh;
         private javax.swing.JCheckBox cboxNhanvien;
         private javax.swing.JCheckBox cboxPT;
@@ -2224,7 +2160,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private javax.swing.JCheckBox cboxSuaHDV;
         private javax.swing.JCheckBox cboxSuaKH;
         private javax.swing.JCheckBox cboxSuaKm;
-        private javax.swing.JCheckBox cboxSuaLKH;
         private javax.swing.JCheckBox cboxSuaLT;
         private javax.swing.JCheckBox cboxSuaNv;
         private javax.swing.JCheckBox cboxSuaPT;
@@ -2237,7 +2172,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private javax.swing.JCheckBox cboxThemHDV;
         private javax.swing.JCheckBox cboxThemKH;
         private javax.swing.JCheckBox cboxThemKm;
-        private javax.swing.JCheckBox cboxThemLKH;
         private javax.swing.JCheckBox cboxThemNv;
         private javax.swing.JCheckBox cboxThemPT;
         private javax.swing.JCheckBox cboxThemTour;
@@ -2247,7 +2181,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private javax.swing.JCheckBox cboxXoaHDV;
         private javax.swing.JCheckBox cboxXoaKH;
         private javax.swing.JCheckBox cboxXoaKm;
-        private javax.swing.JCheckBox cboxXoaLKH;
         private javax.swing.JCheckBox cboxXoaLT;
         private javax.swing.JCheckBox cboxXoaNv;
         private javax.swing.JCheckBox cboxXoaPT;
@@ -2265,7 +2198,6 @@ public class PhanQuyenPanel extends javax.swing.JPanel {
         private javax.swing.JPanel jPanel13;
         private javax.swing.JPanel jPanel14;
         private javax.swing.JPanel jPanel15;
-        private javax.swing.JPanel jPanel16;
         private javax.swing.JPanel jPanel17;
         private javax.swing.JPanel jPanel18;
         private javax.swing.JPanel jPanel19;

@@ -8,6 +8,7 @@ import BUS.LichTrinhBUS;
 import BUS.LoaiTourBUS;
 import BUS.PhuongTienBUS;
 import BUS.TourBUS;
+import DTO.CTCN_NQ;
 import DTO.DiaDiem;
 import DTO.HuongDanVien;
 import DTO.LichTrinh;
@@ -76,9 +77,24 @@ public class TourPanel extends javax.swing.JPanel {
     private GUI.Menu.ActionButton btnThemLichTrinh;
     private GUI.Menu.ActionButton btnThemExcel;
 
-    public TourPanel() {
+    public TourPanel(CTCN_NQ ctnq) {
         initComponents();
         initGUI();
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemTour.setVisible(coQuyenThem);
+        btnSuaTour.setVisible(coQuyenSua);
+        btnXoaTour.setVisible(coQuyenXoa);
+
+        btnThemTour.setEnabled(coQuyenThem);
+        btnSuaTour.setEnabled(coQuyenSua);
+        btnXoaTour.setEnabled(coQuyenXoa);
+
+        btnThemLichTrinh.setVisible(coQuyenThem);
+        btnThemExcel.setVisible(coQuyenThem);
     }
 
     public void initGUI() {
@@ -1035,6 +1051,7 @@ public class TourPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -1062,7 +1079,6 @@ public class TourPanel extends javax.swing.JPanel {
         jScrollPane2 = new GUI.ScrollPane.ScrollPaneWin11();
         tbLichtrinh = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
 
         popLT.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -1243,17 +1259,6 @@ public class TourPanel extends javax.swing.JPanel {
         jPanel2.add(jPanel3, java.awt.BorderLayout.CENTER);
 
         tabbedPaneCustom1.addTab("Tour", jPanel2);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 1315, Short.MAX_VALUE));
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 904, Short.MAX_VALUE));
-
-        tabbedPaneCustom1.addTab("Lịch trình", jPanel1);
 
         add(tabbedPaneCustom1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -1522,7 +1527,6 @@ public class TourPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem itemSua;
     private javax.swing.JMenuItem itemXoa;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

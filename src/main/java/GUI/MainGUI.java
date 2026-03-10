@@ -38,6 +38,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     private CTCN_NQBUS ctcnnqbus = new CTCN_NQBUS();
     private TaiKhoan account = new TaiKhoan();
+    private List<CTCN_NQ> ctcnnq = new ArrayList<>();
     private int previousState = JFrame.NORMAL; // Lưu trạng thái trước khi minimize
     private int x, y; // Tọa độ cho drag
 
@@ -192,22 +193,30 @@ public class MainGUI extends javax.swing.JFrame {
         }
         switch (menuKey) {
             case "1":
-                return new TourPanel();
+                return new TourPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN001")).findFirst().orElse(null));
             case "2":
-                return new LichTrinhPanel();
+                return new LichTrinhPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN002")).findFirst().orElse(null));
             case "3":
                 return new DiaDiemPanel();
-            case "4": // Phương tiện
+            case "4":
+                return new PhuongTienPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN009")).findFirst().orElse(null));
             case "5": // Hướng dẫn viên
+                return new HuongDanVienPanel();
             case "6": // Nhân viên
+                return new NhanVienPanel();
             case "7": // Khách hàng
+                return new KhachHangPanel();
             case "9": // Khuyến mãi
-                // Chưa có panel tương ứng, hiển thị "đang phát triển"
-                return null;
+                return new KhuyenMaiPanel();
             case "8":
                 return new HoaDonPanel(account.getMaNhanVien());
             case "10":
-                return new PhanQuyenPanel();
+                return new PhanQuyenPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN012")).findFirst().orElse(null),
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN010")).findFirst().orElse(null));
             case "13":
                 return new ThongKeBaoCaoPanel();
             default:
@@ -295,6 +304,11 @@ public class MainGUI extends javax.swing.JFrame {
     public MainGUI(TaiKhoan tk) {
         initComponents();
         account = tk;
+        try {
+            ctcnnq = ctcnnqbus.getCTCN_NQbyMa(account.getMaNhomQuyen());
+        } catch (BusException e) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + e.getMessage());
+        }
         SwingUtilities.invokeLater(() -> {
             initGUI();
         });
@@ -302,6 +316,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     @SuppressWarnings("unchecked")
 
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated
@@ -324,6 +339,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(860, 720));
+        setUndecorated(true);
         setSize(new java.awt.Dimension(1600, 1000));
 
         jPanel1.setBackground(new java.awt.Color(245, 255, 255));
@@ -414,7 +430,6 @@ public class MainGUI extends javax.swing.JFrame {
 
         mainSide.setBackground(new java.awt.Color(255, 255, 255));
         mainSide.setName(""); // NOI18N
-        mainSide.setRequestFocusEnabled(false);
         mainSide.setRequestFocusEnabled(false);
 
         javax.swing.GroupLayout mainSideLayout = new javax.swing.GroupLayout(mainSide);

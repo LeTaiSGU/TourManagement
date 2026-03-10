@@ -256,14 +256,14 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
         // Nút Lọc
         btnLoc = new ActionButton();
-        btnLoc.setText("🔍  Lọc");
+        btnLoc.setText("Lọc");
         btnLoc.setPreferredSize(new Dimension(95, 28));
         btnLoc.addActionListener(e -> apDungFilter());
         row1.add(btnLoc);
 
         // Nút Làm mới
         btnLamMoi = new ActionButton();
-        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setText("Làm mới");
         btnLamMoi.setColorTop(new Color(127, 140, 141));
         btnLamMoi.setColorBottom(new Color(99, 110, 114));
         btnLamMoi.setPreferredSize(new Dimension(105, 28));
@@ -274,7 +274,7 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
         // Nút Xuất Excel
         btnXuatExcel = new ActionButton();
-        btnXuatExcel.setText("📊  Xuất Excel");
+        btnXuatExcel.setText("Xuất Excel");
         btnXuatExcel.setColorTop(new Color(39, 174, 96));
         btnXuatExcel.setColorBottom(new Color(27, 124, 66));
         btnXuatExcel.setPreferredSize(new Dimension(125, 28));
@@ -283,7 +283,7 @@ public class ThongKeBaoCaoPanel extends JPanel {
 
         // Nút Xuất PDF
         btnXuatPdf = new ActionButton();
-        btnXuatPdf.setText("📄  Xuất PDF");
+        btnXuatPdf.setText("Xuất PDF");
         btnXuatPdf.setColorTop(new Color(192, 57, 43));
         btnXuatPdf.setColorBottom(new Color(146, 43, 33));
         btnXuatPdf.setPreferredSize(new Dimension(115, 28));

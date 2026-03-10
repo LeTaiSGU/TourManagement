@@ -17,7 +17,7 @@ CREATE TABLE KHUYENMAI (
     maKhuyenMai  VARCHAR(5) PRIMARY KEY,
     tenKhuyenMai NVARCHAR(100) NOT NULL,
     moTa         NVARCHAR(255),
-    phuongThucKM NVARCHAR(100),
+    phuongThucKM DECIMAL(18,3),
     trangThaiKM  BIT DEFAULT 1
 );
 GO
@@ -146,7 +146,6 @@ CREATE TABLE HOADON (
     thue        FLOAT,
     HTTT        NVARCHAR(50),
     trangThaiTT BIT,
-    trangThaiHD BIT,
     FOREIGN KEY (maNhanVien) REFERENCES NHANVIEN(maNhanVien),
     FOREIGN KEY (maKhachHang) REFERENCES KHACHHANG(maKhachHang),
     FOREIGN KEY (maKhuyenMai) REFERENCES KHUYENMAI(maKhuyenMai)
@@ -157,6 +156,10 @@ GO
 CREATE TABLE CTHD (
     maHoaDon VARCHAR(5),
     maTour   VARCHAR(4),
+	soLuongVe int,
+	ghiChu nvarchar(255),
+	trangThai bit,
+	hoanTien bit
     PRIMARY KEY (maHoaDon, maTour),
     FOREIGN KEY (maHoaDon) REFERENCES HOADON(maHoaDon),
     FOREIGN KEY (maTour) REFERENCES TOUR(maTour)
@@ -183,6 +186,7 @@ GO
 CREATE TABLE CTCNNQ (
     maNhomQuyen VARCHAR(5),
     maCN        VARCHAR(5),
+	chiTiet		NVARCHAR(50),
     PRIMARY KEY (maNhomQuyen, maCN),
     FOREIGN KEY (maNhomQuyen) REFERENCES NHOMQUYEN(maNhomQuyen),
     FOREIGN KEY (maCN) REFERENCES CHUCNANG(maChucNang)

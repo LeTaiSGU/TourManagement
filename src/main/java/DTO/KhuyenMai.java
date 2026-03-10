@@ -13,7 +13,6 @@ public class KhuyenMai {
     private String maKhuyenMai;
     private String tenKhuyenMai;
     private String moTa;
-    private String phuongThucKM;
-    private double giaTriKM;
+    private Double phuongThucKM;
     private Boolean trangThaiKM;
 }

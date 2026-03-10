@@ -5,6 +5,7 @@ import DAL.DiaDiemDAL;
 import DAL.LichTrinhDAL;
 import DAL.PhuongTienDAL;
 import DAL.TourDAL;
+import DTO.CTCN_NQ;
 import DTO.DiaDiem;
 import DTO.LichTrinh;
 import DTO.PhuongTien;
@@ -93,7 +94,6 @@ public class LichTrinhPanel extends JPanel {
     private JCheckBox chkTrangThai; // Trạng thái hoạt động
 
     // Nút thao tác
-    private ActionButton btnThemMoi;
     private ActionButton btnCapNhat;
     private ActionButton btnXoa;
     private ActionButton btnLamMoi;
@@ -118,7 +118,7 @@ public class LichTrinhPanel extends JPanel {
     // KHỞI TẠO
     // =========================================================
 
-    public LichTrinhPanel() {
+    public LichTrinhPanel(CTCN_NQ ctnq) {
         // Khởi tạo kết nối DB
         Connection conn = new ConnectionDAL().getConnection();
         dal = new LichTrinhDAL(conn);
@@ -127,6 +127,14 @@ public class LichTrinhPanel extends JPanel {
         ptDal = new PhuongTienDAL(conn);
 
         xayDungGiaoDien();
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+        System.out.println(coQuyenSua);
+        System.out.println(coQuyenXoa);
+
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
         khoiTaoCombos();
         taiDuLieu(null);
         resetFormThemMoi();
@@ -219,7 +227,7 @@ public class LichTrinhPanel extends JPanel {
         });
 
         btnTimKiem = new ActionButton();
-        btnTimKiem.setText("🔍  Tìm kiếm");
+        btnTimKiem.setText("Tìm kiếm");
         btnTimKiem.setPreferredSize(new Dimension(120, 32));
         btnTimKiem.addActionListener(e -> taiDuLieu(txtTimKiem.getText()));
 
@@ -510,39 +518,33 @@ public class LichTrinhPanel extends JPanel {
     // ---------------------------------------------------------
 
     private JPanel xayDungPanelNut() {
-        JPanel panel = new JPanel(new GridLayout(2, 2, 6, 6));
+        JPanel panel = new JPanel(new GridLayout(1, 3, 6, 6));
         panel.setBackground(MAU_TRANG);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 new MatteBorder(1, 0, 0, 0, MAU_VIEN),
                 new EmptyBorder(10, 14, 12, 14)));
 
-        btnThemMoi = new ActionButton();
-        btnThemMoi.setText("➕  Thêm mới");
-        btnThemMoi.setPreferredSize(new Dimension(0, 36));
-        btnThemMoi.addActionListener(e -> xuLyThemMoi());
-
         btnCapNhat = new ActionButton();
-        btnCapNhat.setText("✏  Cập nhật");
+        btnCapNhat.setText("Cập nhật");
         btnCapNhat.setColorTop(new Color(39, 174, 96));
         btnCapNhat.setColorBottom(new Color(27, 124, 66));
         btnCapNhat.setPreferredSize(new Dimension(0, 36));
         btnCapNhat.addActionListener(e -> xuLyCapNhat());
 
         btnXoa = new ActionButton();
-        btnXoa.setText("🗑  Xóa");
+        btnXoa.setText("Xóa");
         btnXoa.setColorTop(new Color(192, 57, 43));
         btnXoa.setColorBottom(new Color(146, 43, 33));
         btnXoa.setPreferredSize(new Dimension(0, 36));
         btnXoa.addActionListener(e -> xuLyXoa());
 
         btnLamMoi = new ActionButton();
-        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setText("Làm mới");
         btnLamMoi.setColorTop(new Color(127, 140, 141));
         btnLamMoi.setColorBottom(new Color(99, 110, 114));
         btnLamMoi.setPreferredSize(new Dimension(0, 36));
         btnLamMoi.addActionListener(e -> lamMoiToanBo());
 
-        panel.add(btnThemMoi);
         panel.add(btnCapNhat);
         panel.add(btnXoa);
         panel.add(btnLamMoi);

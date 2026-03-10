@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.PhuongTienBUS;
+import DTO.CTCN_NQ;
 import DTO.PhuongTien;
 import GUI.Menu.ActionButton;
 import GUI.Menu.PaintComponent;
@@ -142,9 +143,23 @@ public class PhuongTienPanel extends JPanel {
     /**
      * Constructor mặc định — tự lấy kết nối DB qua ConnectionDAL.
      */
-    public PhuongTienPanel() {
+    public PhuongTienPanel(CTCN_NQ ctnq) {
         this.bus = new PhuongTienBUS();
         xayDungGiaoDien();
+
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemMoi.setVisible(coQuyenThem);
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
+
+        btnThemMoi.setEnabled(coQuyenThem);
+        btnCapNhat.setEnabled(coQuyenSua);
+        btnXoa.setEnabled(coQuyenXoa);
+
         taiDuLieu(null); // Tải toàn bộ danh sách ban đầu
         resetFormThemMoi(); // Sinh mã PT tự động ngay khi mở panel
     }
@@ -221,7 +236,7 @@ public class PhuongTienPanel extends JPanel {
 
         // Nút tìm kiếm — ActionButton chuẩn của dự án
         btnTimKiem = new ActionButton();
-        btnTimKiem.setText("🔍  Tìm kiếm");
+        btnTimKiem.setText("Tìm kiếm");
         btnTimKiem.setPreferredSize(new Dimension(120, 32));
         btnTimKiem.addActionListener(e -> taiDuLieu(txtTimKiem.getText()));
 
@@ -588,24 +603,24 @@ public class PhuongTienPanel extends JPanel {
 
         // Nút Thêm mới — màu xanh dương (ActionButton default)
         btnThemMoi = new ActionButton();
-        btnThemMoi.setText("＋  Thêm mới");
+        btnThemMoi.setText("Thêm mới");
         // actionButton default đã là blue gradient — không cần set màu
 
         // Nút Cập nhật — màu xanh lá
         btnCapNhat = new ActionButton();
-        btnCapNhat.setText("✎  Cập nhật");
+        btnCapNhat.setText("Cập nhật");
         btnCapNhat.setColorTop(new Color(39, 174, 96));
         btnCapNhat.setColorBottom(new Color(27, 124, 66));
 
         // Nút Xóa — màu đỏ (cảnh báo hành động không thể hoàn tác)
         btnXoa = new ActionButton();
-        btnXoa.setText("✖  Xóa");
+        btnXoa.setText("Xóa");
         btnXoa.setColorTop(new Color(231, 76, 60));
         btnXoa.setColorBottom(new Color(192, 57, 43));
 
         // Nút Làm mới — màu xám trung tính
         btnLamMoi = new ActionButton();
-        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setText("Làm mới");
         btnLamMoi.setColorTop(new Color(127, 140, 141));
         btnLamMoi.setColorBottom(new Color(99, 110, 114));
 
