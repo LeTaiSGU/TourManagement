@@ -14,4 +14,5 @@ public class KhuyenMaiDTO {
     private String tenKhuyenMai;
     private String phuongThucKM;
     private String moTa;
+    private Boolean trangThaiKM;
 }

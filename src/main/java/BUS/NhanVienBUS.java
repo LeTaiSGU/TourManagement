@@ -130,7 +130,7 @@ public class NhanVienBUS {
                 throw new SQLException("Thêm nhân viên thất bại.");
 
             // 2. Xác định nhóm quyền từ tên chức vụ (gán cố định)
-            NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+            NhomQuyen nq = timNhomQuyenChoChucVu(tenChucVu);
             String maNhomQuyen = nq.getMaNhomQuyen();
 
             // 3. Tạo tài khoản
@@ -183,7 +183,7 @@ public class NhanVienBUS {
 
             // 2. Cập nhật nhóm quyền trong tài khoản (nếu TK tồn tại)
             if (tkDAL.tonTai(nv.getMaNhanVien())) {
-                NhomQuyen nq = resolveNhomQuyen(tenChucVu);
+                NhomQuyen nq = timNhomQuyenChoChucVu(tenChucVu);
                 tkDAL.capNhatNhomQuyen(nv.getMaNhanVien(), nq.getMaNhomQuyen());
             }
 
@@ -221,16 +221,8 @@ public class NhanVienBUS {
             }
 
             String ketQua;
-            if (nvDAL.dangDuocSuDung(maNhanVien)) {
-                // Xóa mềm
-                nvDAL.doiTrangThai(maNhanVien, false);
-                ketQua = "XOA_MEM";
-            } else {
-                // Xóa cứng: xóa TK trước (FK constraint)
-                tkDAL.xoa(maNhanVien);
-                nvDAL.xoa(maNhanVien);
-                ketQua = "XOA_CUNG";
-            }
+            nvDAL.doiTrangThai(maNhanVien, false);
+            ketQua = "XOA_MEM";
 
             conn.commit();
             return ketQua;

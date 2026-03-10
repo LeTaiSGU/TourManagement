@@ -57,7 +57,7 @@ public class NhanVienDAL {
     public List<NhanVien> getAll() throws SQLException {
         List<NhanVien> ds = new ArrayList<>();
         String sql = "SELECT maNhanVien, tenNhanVien, gioiTinh, namSinh, diaChi, "
-                + "soDienThoai, maChucVu, trangThai FROM NHANVIEN ORDER BY maNhanVien";
+                + "soDienThoai, maChucVu, trangThai FROM NHANVIEN WHERE trangThai = 1 ORDER BY maNhanVien";
         try (PreparedStatement ps = conn.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
             while (rs.next())
@@ -71,7 +71,7 @@ public class NhanVienDAL {
         List<NhanVien> ds = new ArrayList<>();
         String sql = "SELECT maNhanVien, tenNhanVien, gioiTinh, namSinh, diaChi, "
                 + "soDienThoai, maChucVu, trangThai FROM NHANVIEN "
-                + "WHERE tenNhanVien LIKE ? OR maNhanVien LIKE ? ORDER BY maNhanVien";
+                + "WHERE trangThai = 1 AND (tenNhanVien LIKE ? OR maNhanVien LIKE ?) ORDER BY maNhanVien";
         String pat = "%" + (tuKhoa == null ? "" : tuKhoa.trim()) + "%";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setNString(1, pat);

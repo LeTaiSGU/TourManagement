@@ -205,9 +205,8 @@ public class MainGUI extends javax.swing.JFrame {
             return new NhanVienPanel();
             case "7": 
             return new KhachHangPanel();
-            case "9": // Khuyến mãi
-                // Chưa có panel tương ứng, hiển thị "đang phát triển"
-                return null;
+            case "9": 
+                return new KhuyenMaiPanel();
             case "8":
                 return new HoaDonPanel(account.getMaNhanVien());
             case "10":

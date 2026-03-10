@@ -86,8 +86,6 @@ public class NhanVienPanel extends JPanel {
     private JTextField txtNamSinh;
     private JComboBox<String> cboChucVu; // hiển thị tenChucVu
     private JLabel lblNhomQuyen; // read-only — tự cập nhật khi đổi chức vụ
-    private JCheckBox chkTrangThai;
-
     // Nút
     private ActionButton btnThemMoi;
     private ActionButton btnCapNhat;
@@ -197,7 +195,7 @@ public class NhanVienPanel extends JPanel {
 
     private ScrollPaneWin11 xayDungBang() {
         modelBang = new DefaultTableModel(
-                new String[] { "STT", "Mã NV", "Họ tên", "Giới tính", "Năm sinh", "Chức vụ", "Trạng thái" }, 0) {
+                new String[] { "STT", "Mã NV", "Họ tên", "Giới tính", "Năm sinh", "Chức vụ" }, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -221,9 +219,7 @@ public class NhanVienPanel extends JPanel {
         bangDuLieu.getColumnModel().getColumn(2).setPreferredWidth(180);
         bangDuLieu.getColumnModel().getColumn(3).setPreferredWidth(80);
         bangDuLieu.getColumnModel().getColumn(4).setPreferredWidth(75);
-        bangDuLieu.getColumnModel().getColumn(5).setPreferredWidth(160);
-        bangDuLieu.getColumnModel().getColumn(6).setPreferredWidth(110);
-        bangDuLieu.getColumnModel().getColumn(6).setMaxWidth(130);
+        bangDuLieu.getColumnModel().getColumn(5).setPreferredWidth(270);
 
         bangDuLieu.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -237,10 +233,6 @@ public class NhanVienPanel extends JPanel {
                 if (!sel)
                     setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
                 setHorizontalAlignment(col == 0 || col == 4 ? CENTER : LEFT);
-                if (col == 6 && v instanceof Boolean) {
-                    setText((Boolean) v ? "✔ Hoạt động" : "✘ Ngừng");
-                    setForeground((Boolean) v ? new Color(39, 174, 96) : new Color(192, 57, 43));
-                }
                 return this;
             }
         });
@@ -407,17 +399,6 @@ public class NhanVienPanel extends JPanel {
         panelNoiDung.add(lblNhomQuyen, gbc);
         gbc.insets = new Insets(4, 2, 4, 2);
 
-        // Trạng thái
-        row = addLabel(panelNoiDung, gbc, row, "Trạng thái");
-        chkTrangThai = new JCheckBox("Hoạt động");
-        chkTrangThai.setFont(new Font(FONT, Font.PLAIN, 13));
-        chkTrangThai.setForeground(MAU_CHU_TOI);
-        chkTrangThai.setBackground(MAU_TRANG);
-        chkTrangThai.setSelected(true);
-        gbc.gridx = 1;
-        gbc.gridy = row - 1;
-        panelNoiDung.add(chkTrangThai, gbc);
-
         // Khoảng đệm trước nút
         gbc.gridx = 0;
         gbc.gridy = row++;
@@ -545,7 +526,7 @@ public class NhanVienPanel extends JPanel {
                         modelBang.addRow(new Object[] {
                                 stt++, nv.getMaNhanVien(), nv.getTenNhanVien(),
                                 nv.getGioiTinh(), nv.getNamSinh(),
-                                tenCV, nv.isTrangThai()
+                                tenCV
                         });
                     }
                     lblTongSo.setText("Tổng: " + ds.size() + " bản ghi");
@@ -605,7 +586,6 @@ public class NhanVienPanel extends JPanel {
         String gioiTinh = (String) modelBang.getValueAt(row, 3);
         Object namSinh = modelBang.getValueAt(row, 4);
         String tenCV = (String) modelBang.getValueAt(row, 5);
-        Boolean trangThai = (Boolean) modelBang.getValueAt(row, 6);
 
         // Tìm maChucVu từ tenChucVu
         String maCV = "";
@@ -623,7 +603,7 @@ public class NhanVienPanel extends JPanel {
                 .gioiTinh(gioiTinh)
                 .namSinh(namSinh instanceof Integer ? (Integer) namSinh : 0)
                 .maChucVu(maCV)
-                .trangThai(Boolean.TRUE.equals(trangThai))
+                .trangThai(true)
                 .build();
 
         txtMaNV.setText(maNV);
@@ -633,7 +613,6 @@ public class NhanVienPanel extends JPanel {
         txtNamSinh.setText(namSinh != null ? namSinh.toString() : "");
         if (idxCV >= 0)
             cboChucVu.setSelectedIndex(idxCV);
-        chkTrangThai.setSelected(Boolean.TRUE.equals(trangThai));
         // Chú ý: diaChi và soDienThoai không có trong bảng → để trống (user tự nhập khi
         // cập nhật)
     }
@@ -651,7 +630,6 @@ public class NhanVienPanel extends JPanel {
         txtNamSinh.setText("");
         if (cboChucVu.getItemCount() > 0)
             cboChucVu.setSelectedIndex(0);
-        chkTrangThai.setSelected(true);
         bangDuLieu.clearSelection();
         txtTenNV.requestFocusInWindow();
     }
@@ -724,11 +702,7 @@ public class NhanVienPanel extends JPanel {
             return;
         try {
             String ketQua = bus.xoa(nvDangChon.getMaNhanVien());
-            if ("XOA_MEM".equals(ketQua)) {
-                hienThiThongBao("Nhân viên đang có hóa đơn liên quan.\nĐã vô hiệu hóa tài khoản thay vì xóa cứng.");
-            } else {
-                hienThiThongBao("Đã xóa nhân viên \"" + nvDangChon.getTenNhanVien() + "\" thành công.");
-            }
+            hienThiThongBao("Đã xóa nhân viên \"" + nvDangChon.getTenNhanVien() + "\" thành công.");
             taiDuLieu(null);
             resetFormThemMoi();
         } catch (Exception ex) {
@@ -780,7 +754,7 @@ public class NhanVienPanel extends JPanel {
                 .gioiTinh(gioiTinh)
                 .namSinh(namSinh)
                 .maChucVu(maCV)
-                .trangThai(chkTrangThai.isSelected())
+                .trangThai(true)
                 .build();
     }
 

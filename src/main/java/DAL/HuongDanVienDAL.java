@@ -19,7 +19,7 @@ public class HuongDanVienDAL {
 
     public List<HuongDanVien> getAllHuongDanVien() throws DaoException {
         List<HuongDanVien> list = new ArrayList();
-        String sql = "SELECT * FROM HUONGDANVIEN";
+        String sql = "SELECT * FROM HUONGDANVIEN WHERE trangThai = 1";
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
@@ -43,7 +43,7 @@ public class HuongDanVienDAL {
 
     public ArrayList<HuongDanVienDTO> getAllHDV() throws DaoException {
         ArrayList<HuongDanVienDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM HuongDanVien";
+        String sql = "SELECT * FROM HuongDanVien WHERE trangThai = 1";
 
         try (Connection con = conn.getConnection();
                 Statement st = con.createStatement();
@@ -118,7 +118,7 @@ public class HuongDanVienDAL {
 
     public ArrayList<HuongDanVienDTO> searchHuongDanVien(String keyword) throws DaoException {
         ArrayList<HuongDanVienDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM HuongDanVien WHERE tenHDV LIKE ? OR maHDV LIKE ?";
+        String sql = "SELECT * FROM HuongDanVien WHERE trangThai = 1 AND (tenHDV LIKE ? OR maHDV LIKE ?)";
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%");
@@ -137,7 +137,7 @@ public class HuongDanVienDAL {
     }
 
     public void deleteHuongDanVien(String maHDV) throws DaoException {
-        String sql = "DELETE FROM HuongDanVien WHERE maHDV = ?";
+        String sql = "UPDATE HuongDanVien SET trangThai = 0 WHERE maHDV = ?";
 
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {

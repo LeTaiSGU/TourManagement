@@ -11,7 +11,7 @@ public class KhachHangDAL {
 
     public ArrayList<KhachHangDTO> getAllKhachHang() throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang";
+        String sql = "SELECT * FROM KhachHang WHERE trangThai = 1";
         try (Connection con = conn.getConnection();
                 Statement stmt = con.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
@@ -71,7 +71,7 @@ public class KhachHangDAL {
     }
 
     public void deleteKhachHang(String maKhachHang) throws DaoException {
-        String sql = "DELETE FROM KhachHang WHERE maKhachHang = ?";
+        String sql = "UPDATE KhachHang SET trangThai = 0 WHERE maKhachHang = ?";
         try (Connection con = conn.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, maKhachHang);
             ps.executeUpdate();
@@ -98,7 +98,7 @@ public class KhachHangDAL {
 
     public ArrayList<KhachHangDTO> searchKhachHang(String keyword) throws DaoException {
         ArrayList<KhachHangDTO> list = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang WHERE tenKhachHang LIKE ? OR maKhachHang LIKE ?";
+        String sql = "SELECT * FROM KhachHang WHERE trangThai = 1 AND (tenKhachHang LIKE ? OR maKhachHang LIKE ?)";
         try (Connection con = conn.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, "%" + keyword + "%");
             ps.setString(2, "%" + keyword + "%");

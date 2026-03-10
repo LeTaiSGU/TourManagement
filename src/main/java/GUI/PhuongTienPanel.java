@@ -118,9 +118,6 @@ public class PhuongTienPanel extends JPanel {
     /** Ô mô tả (đa dòng) */
     private JTextArea txtaMoTa;
 
-    /** Checkbox trạng thái hoạt động */
-    private JCheckBox chkTrangThai;
-
     // --- Nút thao tác ---
 
     /** Nút Thêm mới — màu xanh dương mặc định của ActionButton */
@@ -278,7 +275,7 @@ public class PhuongTienPanel extends JPanel {
     private ScrollPaneWin11 xayDungBang() {
         // Model không cho chỉnh sửa cell
         modelBang = new DefaultTableModel(
-                new String[] { "STT", "Mã PT", "Tên phương tiện", "Mô tả", "Trạng thái" }, 0) {
+                new String[] { "STT", "Mã PT", "Tên phương tiện", "Mô tả" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Bảng chỉ đọc — chỉnh sửa qua form bên phải
@@ -302,9 +299,7 @@ public class PhuongTienPanel extends JPanel {
         bangDuLieu.getColumnModel().getColumn(1).setPreferredWidth(65); // Mã PT
         bangDuLieu.getColumnModel().getColumn(1).setMaxWidth(80);
         bangDuLieu.getColumnModel().getColumn(2).setPreferredWidth(160); // Tên
-        bangDuLieu.getColumnModel().getColumn(3).setPreferredWidth(260); // Mô tả
-        bangDuLieu.getColumnModel().getColumn(4).setPreferredWidth(100); // Trạng thái
-        bangDuLieu.getColumnModel().getColumn(4).setMaxWidth(120);
+        bangDuLieu.getColumnModel().getColumn(3).setPreferredWidth(460); // Mô tả
 
         // Renderer xen kẽ màu hàng + căn giữa cột STT và Trạng thái
         bangDuLieu.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -322,20 +317,13 @@ public class PhuongTienPanel extends JPanel {
                     setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
                 }
 
-                // Căn giữa cột STT và Trạng thái
-                if (col == 0 || col == 4) {
+                // Căn giữa cột STT
+                if (col == 0) {
                     setHorizontalAlignment(CENTER);
                 } else {
                     setHorizontalAlignment(LEFT);
                 }
 
-                // Hiển thị trạng thái dạng text
-                if (col == 4 && v instanceof Boolean) {
-                    setText((Boolean) v ? "✔ Hoạt động" : "✘ Ngừng");
-                    setForeground((Boolean) v
-                            ? new Color(39, 174, 96) // Xanh lá khi hoạt động
-                            : new Color(192, 57, 43)); // Đỏ khi ngừng
-                }
                 return this;
             }
         });
@@ -498,16 +486,6 @@ public class PhuongTienPanel extends JPanel {
         gbc.gridy = row - 1;
         panelNoiDung.add(scrollMoTa, gbc);
 
-        // --- Trạng thái ---
-        row = themDongForm(panelNoiDung, gbc, row, "Trạng thái");
-        chkTrangThai = new JCheckBox("Hoạt động");
-        chkTrangThai.setFont(new Font(FONT, Font.PLAIN, 13));
-        chkTrangThai.setForeground(MAU_CHU_TOI);
-        chkTrangThai.setBackground(MAU_TRANG);
-        chkTrangThai.setSelected(true); // Mặc định là hoạt động
-        gbc.gridx = 1;
-        gbc.gridy = row - 1;
-        panelNoiDung.add(chkTrangThai, gbc);
 
         // --- Khoảng cách trước nút ---
         gbc.gridx = 0;
@@ -660,8 +638,7 @@ public class PhuongTienPanel extends JPanel {
                                 stt++,
                                 pt.getMaPT(),
                                 pt.getTenPT(),
-                                pt.getMoTa(),
-                                pt.getTrangThai()
+                                pt.getMoTa()
                         });
                     }
                     lblTongSo.setText("Tổng: " + ds.size() + " bản ghi");
@@ -687,14 +664,13 @@ public class PhuongTienPanel extends JPanel {
         String maPT = (String) modelBang.getValueAt(row, 1);
         String tenPT = (String) modelBang.getValueAt(row, 2);
         String moTa = (String) modelBang.getValueAt(row, 3);
-        Boolean trangThai = (Boolean) modelBang.getValueAt(row, 4);
 
         // Lưu đối tượng hiện tại
         ptDangChon = PhuongTien.builder()
                 .maPT(maPT)
                 .tenPT(tenPT)
                 .moTa(moTa)
-                .trangThai(trangThai != null ? trangThai : true)
+                .trangThai(true)
                 .build();
 
         // Điền form
@@ -702,7 +678,6 @@ public class PhuongTienPanel extends JPanel {
         txtMaPT.setBackground(new Color(240, 243, 247)); // Giữ nền read-only khi edit
         txtTenPT.setText(tenPT);
         txtaMoTa.setText(moTa != null ? moTa : "");
-        chkTrangThai.setSelected(trangThai != null ? trangThai : true);
     }
 
     /**
@@ -722,7 +697,6 @@ public class PhuongTienPanel extends JPanel {
         txtMaPT.setBackground(new Color(240, 243, 247));
         txtTenPT.setText("");
         txtaMoTa.setText("");
-        chkTrangThai.setSelected(true);
         bangDuLieu.clearSelection();
         txtTenPT.requestFocusInWindow(); // Focus vào ô đầu tiên cần nhập
     }
@@ -806,12 +780,7 @@ public class PhuongTienPanel extends JPanel {
 
         try {
             String ketQua = bus.xoa(ptDangChon.getMaPT());
-            if ("XOA_MEM".equals(ketQua)) {
-                hienThiThongBao("Phương tiện đang được dùng trong lịch trình.\n"
-                        + "Đã vô hiệu hóa (không hiển thị khi đặt tour mới) thay vì xóa cứng.");
-            } else {
-                hienThiThongBao("Đã xóa phương tiện \"" + ptDangChon.getTenPT() + "\" thành công.");
-            }
+            hienThiThongBao("Đã xóa phương tiện \"" + ptDangChon.getTenPT() + "\" thành công.");
             taiDuLieu(null); // Tải lại bảng
             resetFormThemMoi(); // Reset form
         } catch (Exception ex) {
@@ -854,7 +823,7 @@ public class PhuongTienPanel extends JPanel {
                 .maPT(maPT)
                 .tenPT(tenPT)
                 .moTa(moTa.isEmpty() ? null : moTa)
-                .trangThai(chkTrangThai.isSelected())
+                .trangThai(true)
                 .build();
     }
 

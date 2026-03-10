@@ -72,6 +72,22 @@ public class DiaDiemBUS {
         }
     }
 
+    public String sinhMaMoi() throws BusException {
+        try {
+            return diaDiemDAL.sinhMaMoi();
+        } catch (DaoException e) {
+            throw new BusException("Loi sinh ma dia diem.");
+        }
+    }
+
+    public ArrayList<DiaDiem> searchDiaDiem(String keyword) throws BusException {
+        try {
+            return diaDiemDAL.searchDiaDiem(keyword);
+        } catch (DaoException e) {
+            throw new BusException("Loi tim kiem dia diem.");
+        }
+    }
+
     private void validateDiaDiem(DiaDiem diaDiem) throws BusException {
         if (diaDiem == null)
             throw new BusException("Dữ liệu địa điểm không hợp lệ.");
