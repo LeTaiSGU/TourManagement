@@ -223,16 +223,8 @@ public class NhanVienBUS {
             }
 
             String ketQua;
-            if (nvDAL.dangDuocSuDung(maNhanVien)) {
-                // Xóa mềm
-                nvDAL.doiTrangThai(maNhanVien, false);
-                ketQua = "XOA_MEM";
-            } else {
-                // Xóa cứng: xóa TK trước (FK constraint)
-                tkDAL.xoa(maNhanVien);
-                nvDAL.xoa(maNhanVien);
-                ketQua = "XOA_CUNG";
-            }
+            nvDAL.doiTrangThai(maNhanVien, false);
+            ketQua = "XOA_MEM";
 
             conn.commit();
             return ketQua;

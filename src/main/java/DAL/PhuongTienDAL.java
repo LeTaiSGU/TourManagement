@@ -48,7 +48,7 @@ public class PhuongTienDAL {
     }
 
     public List<PhuongTien> getAllPhuongTien() throws DaoException {
-        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN";
+        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN WHERE trangThai = 1";
         try {
             return withConnection(con -> {
                 List<PhuongTien> list = new ArrayList<>();
@@ -98,7 +98,7 @@ public class PhuongTienDAL {
     }
 
     public List<PhuongTien> getAll() throws SQLException {
-        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN ORDER BY maPT";
+        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN WHERE trangThai = 1 ORDER BY maPT";
         return withConnection(con -> {
             List<PhuongTien> ds = new ArrayList<>();
             try (PreparedStatement ps = con.prepareStatement(sql);
@@ -112,7 +112,7 @@ public class PhuongTienDAL {
     }
 
     public List<PhuongTien> timKiem(String tuKhoa) throws SQLException {
-        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN WHERE tenPT LIKE ? OR maPT LIKE ? ORDER BY maPT";
+        String sql = "SELECT maPT, tenPT, moTa, trangThai FROM PHUONGTIEN WHERE trangThai = 1 AND (tenPT LIKE ? OR maPT LIKE ?) ORDER BY maPT";
         String pattern = "%" + (tuKhoa == null ? "" : tuKhoa.trim()) + "%";
         return withConnection(con -> {
             List<PhuongTien> ds = new ArrayList<>();

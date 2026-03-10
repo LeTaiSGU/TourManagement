@@ -163,13 +163,8 @@ public class PhuongTienBUS {
         if (maPT == null || maPT.isBlank()) {
             throw new IllegalArgumentException("Mã phương tiện không được để trống.");
         }
-        if (dal.dangDuocSuDung(maPT)) {
-            // Không thể xóa cứng → xóa mềm (ẩn khỏi hoạt động)
-            dal.doiTrangThai(maPT, false);
-            return "XOA_MEM";
-        }
-        dal.xoa(maPT);
-        return "XOA_CUNG";
+        dal.doiTrangThai(maPT, false);
+        return "XOA_MEM";
     }
 
     // =========================================================

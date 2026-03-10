@@ -15,7 +15,7 @@ public class DiaDiemDAL {
 
     public List<DiaDiem> getAllDiaDiem() throws DaoException {
         List<DiaDiem> list = new ArrayList<>();
-        String sql = "SELECT * FROM DIADIEM";
+        String sql = "SELECT * FROM DIADIEM WHERE trangThai = 1";
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()) {
@@ -67,7 +67,7 @@ public class DiaDiemDAL {
 
     public ArrayList<DiaDiem> getAll() throws DaoException {
         ArrayList<DiaDiem> list = new ArrayList<>();
-        String sql = "SELECT * FROM DiaDiem";
+        String sql = "SELECT * FROM DiaDiem WHERE trangThai = 1";
 
         try (Connection con = conn.getConnection();
                 Statement st = con.createStatement();
@@ -125,7 +125,7 @@ public class DiaDiemDAL {
     }
 
     public void deleteDiaDiem(String maDiaDiem) throws DaoException {
-        String sql = "DELETE FROM DiaDiem WHERE maDiaDiem = ?";
+        String sql = "UPDATE DiaDiem SET trangThai = 0 WHERE maDiaDiem = ?";
 
         try (Connection con = conn.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
@@ -134,6 +134,46 @@ public class DiaDiemDAL {
         } catch (SQLException e) {
             throw new DaoException("Lỗi khi xóa địa điểm.", e);
         }
+    }
+
+    public String sinhMaMoi() throws DaoException {
+        String sql = "SELECT TOP 1 maDiaDiem FROM DiaDiem ORDER BY maDiaDiem DESC";
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String lastMa = rs.getString("maDiaDiem");
+                int num = Integer.parseInt(lastMa.replaceAll("[^0-9]", ""));
+                return String.format("DD%03d", num + 1);
+            }
+            return "DD001";
+        } catch (SQLException e) {
+            throw new DaoException("Loi sinh ma dia diem.", e);
+        }
+    }
+
+    public ArrayList<DiaDiem> searchDiaDiem(String keyword) throws DaoException {
+        ArrayList<DiaDiem> list = new ArrayList<>();
+        String sql = "SELECT * FROM DiaDiem WHERE trangThai = 1 AND (tenDiaDiem LIKE ? OR maDiaDiem LIKE ? OR quocGia LIKE ?)";
+        try (Connection con = conn.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+            String k = "%" + keyword + "%";
+            ps.setString(1, k); ps.setString(2, k); ps.setString(3, k);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(DiaDiem.builder()
+                        .maDiaDiem(rs.getString("maDiaDiem"))
+                        .tenDiaDiem(rs.getString("tenDiaDiem"))
+                        .anhDiaDiem(rs.getString("anhDiaDiem"))
+                        .quocGia(rs.getString("quocGia"))
+                        .moTa(rs.getString("moTa"))
+                        .trangThai(rs.getBoolean("trangThai"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Loi tim kiem dia diem.", e);
+        }
+        return list;
     }
 
     public String getAnhDiaDiem(String maDiaDiem) throws DaoException {

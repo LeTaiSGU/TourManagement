@@ -18,6 +18,22 @@ public class KhuyenMaiBUS {
         }
     }
 
+    public ArrayList<KhuyenMaiDTO> searchKhuyenMai(String keyword) throws BusException {
+        try {
+            return kmDAL.searchKhuyenMai(keyword);
+        } catch (Exception e) {
+            throw new BusException("Lỗi khi tìm kiếm khuyến mãi.", e);
+        }
+    }
+
+    public String sinhMaMoi() throws BusException {
+        try {
+            return kmDAL.sinhMaMoi();
+        } catch (Exception e) {
+            throw new BusException("Lỗi sinh mã khuyến mãi.", e);
+        }
+    }
+
     public void addKhuyenMai(KhuyenMaiDTO khuyenMai) throws BusException {
         validateKhuyenMai(khuyenMai);
         try {
@@ -55,15 +71,16 @@ public class KhuyenMaiBUS {
         if (isBlank(khuyenMai.getMoTa()))
             throw new BusException("Mô tả khuyến mãi không được để trống.");
         if (!isValidPhuongThucKM(khuyenMai.getPhuongThucKM()))
-            throw new BusException("Phương thức khuyến mãi không hợp lệ.");
+            throw new BusException("Giá trị khuyến mãi không hợp lệ (phải là số > 0).");
     }
 
     private boolean isBlank(String str) {
         return str == null || str.trim().isEmpty();
     }
 
-    private boolean isValidPhuongThucKM(String phuongThucKM) {
-        return phuongThucKM.equals("Giảm giá") || phuongThucKM.equals("Tặng quà");
+    private boolean isValidPhuongThucKM(String val) {
+        try { return Double.parseDouble(val) > 0; }
+        catch (NumberFormatException e) { return false; }
     }
 
     public ArrayList<KhuyenMai> getGiaTriKhuyenMai() throws BusException {
