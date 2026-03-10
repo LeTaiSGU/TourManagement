@@ -11,7 +11,7 @@ public class KhachHangBUS {
         try {
             return khachHangDAL.getAllKhachHang();
         } catch (Exception e) {
-            throw new BusException("Lỗi khi lấy danh sách khách hàng.", e);
+            throw new BusException("Lỗi khi lấy danh sách khách hàng: " + e.getMessage(), e);
         }
     }
     public void addKhachHang(KhachHangDTO kh) throws BusException {
@@ -50,7 +50,7 @@ public class KhachHangBUS {
         try {
             return khachHangDAL.searchKhachHang(keyword);
         } catch (Exception e) {
-            throw new BusException("Lỗi khi tìm kiếm khách hàng.", e);
+            throw new BusException("Lỗi khi tìm kiếm khách hàng: " + e.getMessage(), e);
         }
     }
     public void validateKhachHang(KhachHangDTO kh) throws BusException {

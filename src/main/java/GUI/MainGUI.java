@@ -149,9 +149,6 @@ public class MainGUI extends javax.swing.JFrame {
         } catch (BusException e) {
             JOptionPane.showMessageDialog(null, "Lỗi: " + e.getMessage());
         }
-        for (CTCN_NQ ct : ctcnnq) {
-            System.out.println(ct.getMaCN() + "\n");
-        }
         menu1.initData(ctcnnq);
         menu1.addEventMenu(new EventMenu() {
             @Override
@@ -209,11 +206,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return new NhanVienPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN008")).findFirst().orElse(null));
             case "7": // Khách hàng
-                return new KhachHangPanel();
+                return new KhachHangPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN004")).findFirst().orElse(null));
             case "9": // Khuyến mãi
                 return new KhuyenMaiPanel();
             case "8":
-                return new HoaDonPanel(account.getMaNhanVien());
+                return new HoaDonPanel(
+                        account.getMaNhanVien(),
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN011")).findFirst().orElse(null));
             case "10":
                 return new PhanQuyenPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN012")).findFirst().orElse(null),

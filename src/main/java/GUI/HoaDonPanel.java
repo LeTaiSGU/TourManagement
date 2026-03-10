@@ -4,6 +4,7 @@ import BUS.CTHDBUS;
 import BUS.HoaDonBUS;
 import BUS.TourBUS;
 import BUS.KhuyenMaiBUS;
+import DTO.CTCN_NQ;
 import DTO.CTHD;
 import DTO.HoaDon;
 import DTO.Tour;
@@ -18,6 +19,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.Normalizer;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -39,10 +41,41 @@ public class HoaDonPanel extends javax.swing.JPanel {
 
     Color headerColor = Color.decode("#18306F");
 
-    public HoaDonPanel(String manv) {
+    public HoaDonPanel(String manv, CTCN_NQ quyenCN011) {
         this.manv = manv;
         initComponents();
         initGUI();
+
+        String chiTiet = (quyenCN011 != null && quyenCN011.getChiTiet() != null) ? quyenCN011.getChiTiet() : "";
+        applyPanelPermissions(chiTiet);
+    }
+
+    private void applyPanelPermissions(String chiTiet) {
+        String detailRaw = (chiTiet != null) ? chiTiet : "";
+        String detail = normalizeText(chiTiet);
+        boolean coQuyenDatVe = detailRaw.contains("Đặt vé") || detail.contains("dat ve");
+        boolean coQuyenThanhToanHuy = detailRaw.contains("Thanh toán + hủy")
+                || detail.contains("thanh toan + huy")
+                || (detail.contains("thanh toan") && detail.contains("huy"));
+
+        tabbedPaneQLDatVe.removeAll();
+        if (coQuyenDatVe) {
+            tabbedPaneQLDatVe.addTab("Đặt vé", tabDatVe);
+        }
+        if (coQuyenThanhToanHuy) {
+            tabbedPaneQLDatVe.addTab("Quản lý hóa đơn", tabQLHD);
+        }
+    }
+
+    private String normalizeText(String input) {
+        if (input == null) {
+            return "";
+        }
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .replaceAll("\\s+", " ")
+                .toLowerCase()
+                .trim();
     }
 
     public void initGUI() {
@@ -73,7 +106,7 @@ public class HoaDonPanel extends javax.swing.JPanel {
         menuItemHoanTien.setVisible(false);
 
         autoXuLyVeDaHoanTat();
-        System.out.println(thue);
+        // System.out.println(thue);
     }
 
     public void setTxtEditable() {

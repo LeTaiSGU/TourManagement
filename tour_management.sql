@@ -362,3 +362,14 @@ INSERT INTO CTHD (maHoaDon, maTour) VALUES
 ('HD002', 'T004'),
 ('HD003', 'T003'),
 ('HD003', 'T005');
+
+UPDATE DiaDiem SET anhDiaDiem = 'thanglong.jpg'          WHERE maDiaDiem = 'DD001'; -- Hà Nội
+UPDATE DiaDiem SET anhDiaDiem = 'HCM.jpg'                WHERE maDiaDiem = 'DD002'; -- TP. Hồ Chí Minh
+UPDATE DiaDiem SET anhDiaDiem = 'cauvang.jpg'            WHERE maDiaDiem = 'DD003'; -- Đà Nẵng
+UPDATE DiaDiem SET anhDiaDiem = 'biennhatrang.jpg'       WHERE maDiaDiem = 'DD004'; -- Nha Trang
+UPDATE DiaDiem SET anhDiaDiem = 'quangtruonglamvien.jpg' WHERE maDiaDiem = 'DD005'; -- Đà Lạt
+UPDATE DiaDiem SET anhDiaDiem = 'chuathienmu.jpg'        WHERE maDiaDiem = 'DD006'; -- Huế
+UPDATE DiaDiem SET anhDiaDiem = 'bienphuquoc.jpg'        WHERE maDiaDiem = 'DD007'; -- Phú Quốc
+UPDATE DiaDiem SET anhDiaDiem = 'chonoi.jpg'             WHERE maDiaDiem = 'DD008'; -- Cần Thơ
+UPDATE DiaDiem SET anhDiaDiem = 'vinhhalong.jpg'         WHERE maDiaDiem = 'DD009'; -- Hạ Long
+UPDATE DiaDiem SET anhDiaDiem = 'nuifansipan.jpg'        WHERE maDiaDiem = 'DD010'; -- Sa Pa

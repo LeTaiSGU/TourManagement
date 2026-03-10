@@ -724,6 +724,16 @@ public class TourPanel extends javax.swing.JPanel {
                     .trangThai(true)
                     .build();
 
+            int xacNhanThem = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc muốn thêm tour này không?",
+                    "Xác nhận thêm tour",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (xacNhanThem != JOptionPane.YES_OPTION) {
+                return;
+            }
+
             if (tourBUS.insertTour(tour)) {
                 DefaultTableModel modelLichTrinh = (DefaultTableModel) tbLichtrinh.getModel();
                 for (int i = 0; i < modelLichTrinh.getRowCount(); i++) {
@@ -816,6 +826,17 @@ public class TourPanel extends javax.swing.JPanel {
                     .soLuongVe(Integer.parseInt(txtSoLuongVe.getText().trim()))
                     .soLuongMin(Integer.parseInt(txtSoLuongMin.getText().trim()))
                     .build();
+
+            int xacNhanSua = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc muốn sửa tour này không?",
+                    "Xác nhận sửa tour",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (xacNhanSua != JOptionPane.YES_OPTION) {
+                return;
+            }
+
             if (tourBUS.editTour(tour)) {
                 lichTrinhBUS.dropLichTrinh(tour.getMaTour());
                 DefaultTableModel modelLichTrinh = (DefaultTableModel) tbLichtrinh.getModel();

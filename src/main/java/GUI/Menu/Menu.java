@@ -110,7 +110,8 @@ public class Menu extends javax.swing.JPanel {
 
     public void initData(List<CTCN_NQ> ctcnnq) {
         for (CTCN_NQ ct : ctcnnq) {
-            switch (ct.getMaCN()) {
+            String maCN = (ct != null && ct.getMaCN() != null) ? ct.getMaCN().trim() : "";
+            switch (maCN) {
                 case "CN001":
                     listMenu.addItem(new Model_Menu("1", "Tour", Model_Menu.MenuType.MENU));
                     break;
