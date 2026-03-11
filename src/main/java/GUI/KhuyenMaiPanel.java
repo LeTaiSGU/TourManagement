@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.KhuyenMaiBUS;
+import DTO.CTCN_NQ;
 import DTO.KhuyenMaiDTO;
 import Exception.BusException;
 import GUI.Menu.ActionButton;
@@ -66,25 +67,36 @@ public class KhuyenMaiPanel extends JPanel {
     private ActionButton btnXoa;
     private ActionButton btnLamMoi;
 
-    public KhuyenMaiPanel() {
+    public KhuyenMaiPanel(CTCN_NQ ctnq) {
         this.bus = new KhuyenMaiBUS();
         xayDungGiaoDien();
         taiDuLieu(null);
         resetFormThemMoi();
+
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemMoi.setVisible(coQuyenThem);
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
     }
 
     // ─── Discount formatting ─────────────────────────────────────────────────
 
     /**
      * phuongThucKM stores a raw number string:
-     *   < 1  → percentage  (e.g. "0.1" → "10%")
-     *   >= 1 → fixed deduct (e.g. "500000" → "-500,000đ")
+     * < 1 → percentage (e.g. "0.1" → "10%")
+     * >= 1 → fixed deduct (e.g. "500000" → "-500,000đ")
      */
     static String formatGiaTri(String raw) {
-        if (raw == null || raw.isBlank()) return "";
+        if (raw == null || raw.isBlank())
+            return "";
         try {
             double v = Double.parseDouble(raw);
-            if (v <= 0) return raw;
+            if (v <= 0)
+                return raw;
             if (v < 1) {
                 double pct = v * 100;
                 return (pct == Math.floor(pct)) ? (int) pct + "%" : String.format("%.1f%%", pct);
@@ -98,7 +110,10 @@ public class KhuyenMaiPanel extends JPanel {
 
     private void capNhatXemTruoc() {
         String text = txtGiaTri.getText().trim();
-        if (text.isEmpty()) { lblXemTruoc.setText(" "); return; }
+        if (text.isEmpty()) {
+            lblXemTruoc.setText(" ");
+            return;
+        }
         try {
             double v = Double.parseDouble(text);
             if (v <= 0) {
@@ -148,7 +163,8 @@ public class KhuyenMaiPanel extends JPanel {
         txtTimKiem.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) taiDuLieu(txtTimKiem.getText());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    taiDuLieu(txtTimKiem.getText());
             }
         });
         btnTimKiem = new ActionButton();
@@ -178,9 +194,11 @@ public class KhuyenMaiPanel extends JPanel {
 
     private ScrollPaneWin11 xayDungBang() {
         modelBang = new DefaultTableModel(
-                new String[]{"STT", "Mã KM", "Tên khuyến mãi", "Giá trị", "Mô tả"}, 0) {
+                new String[] { "STT", "Mã KM", "Tên khuyến mãi", "Giá trị", "Mô tả" }, 0) {
             @Override
-            public boolean isCellEditable(int r, int c) { return false; }
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         bangDuLieu = new JTable(modelBang);
         bangDuLieu.setFont(new Font(FONT, Font.PLAIN, 13));
@@ -206,12 +224,15 @@ public class KhuyenMaiPanel extends JPanel {
                 setFont(new Font(FONT, Font.PLAIN, 13));
                 setForeground(MAU_CHU_TOI);
                 setBorder(new EmptyBorder(0, 8, 0, 8));
-                if (!sel) setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
+                if (!sel)
+                    setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
                 setHorizontalAlignment(col == 0 ? CENTER : LEFT);
                 if (col == 3 && v != null) {
                     String s = v.toString();
-                    if (s.contains("%")) setForeground(new Color(39, 174, 96));
-                    else if (s.startsWith("-")) setForeground(new Color(192, 57, 43));
+                    if (s.contains("%"))
+                        setForeground(new Color(39, 174, 96));
+                    else if (s.startsWith("-"))
+                        setForeground(new Color(192, 57, 43));
                 }
                 return this;
             }
@@ -245,7 +266,8 @@ public class KhuyenMaiPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = bangDuLieu.getSelectedRow();
-                if (row >= 0) dienFormTuHang(row);
+                if (row >= 0)
+                    dienFormTuHang(row);
             }
         });
         ScrollPaneWin11 scroll = new ScrollPaneWin11();
@@ -274,10 +296,13 @@ public class KhuyenMaiPanel extends JPanel {
         lblTieuDe.setFont(new Font(FONT, Font.BOLD, 13));
         lblTieuDe.setForeground(MAU_CHINH);
         lblTieuDe.setBorder(new MatteBorder(0, 0, 1, 0, MAU_VIEN));
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(0, 2, 10, 2);
         panelNoiDung.add(lblTieuDe, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Mã khuyến mãi *");
         txtMaKM = new JTextField();
@@ -285,24 +310,36 @@ public class KhuyenMaiPanel extends JPanel {
         txtMaKM.setEditable(false);
         txtMaKM.setBackground(new Color(240, 243, 247));
         styleInput(txtMaKM);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtMaKM, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtMaKM, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Tên khuyến mãi *");
         txtTenKM = new JTextField();
         txtTenKM.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtTenKM);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtTenKM, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtTenKM, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Giá trị KM * (VD: 0.1 = 10%  /  500000 = -500,000đ)");
         txtGiaTri = new JTextField();
         txtGiaTri.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtGiaTri);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtGiaTri, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtGiaTri, gbc);
+        gbc.gridwidth = 1;
         txtGiaTri.addKeyListener(new KeyAdapter() {
-            @Override public void keyReleased(KeyEvent e) { capNhatXemTruoc(); }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                capNhatXemTruoc();
+            }
         });
 
         // Live preview
@@ -310,20 +347,28 @@ public class KhuyenMaiPanel extends JPanel {
         lblXemTruoc.setFont(new Font(FONT, Font.ITALIC, 12));
         lblXemTruoc.setForeground(new Color(39, 174, 96));
         lblXemTruoc.setBorder(new EmptyBorder(0, 4, 2, 0));
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(0, 2, 4, 2);
         panelNoiDung.add(lblXemTruoc, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Mô tả *");
         txtMoTa = new JTextField();
         txtMoTa.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtMoTa);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtMoTa, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtMoTa, gbc);
+        gbc.gridwidth = 1;
 
         JPanel panelNut = xayDungPanelNut();
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(12, 0, 0, 0);
         panelNoiDung.add(panelNut, gbc);
 
@@ -336,10 +381,13 @@ public class KhuyenMaiPanel extends JPanel {
         JLabel lbl = new JLabel(ten);
         lbl.setFont(new Font(FONT, Font.PLAIN, 11));
         lbl.setForeground(MAU_CHU_PHU);
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(8, 2, 1, 2);
         panel.add(lbl, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
         return row + 1;
     }
 
@@ -352,19 +400,28 @@ public class KhuyenMaiPanel extends JPanel {
     private JPanel xayDungPanelNut() {
         JPanel panel = new JPanel(new GridLayout(2, 2, 6, 6));
         panel.setBackground(MAU_TRANG);
-        btnThemMoi = new ActionButton(); btnThemMoi.setText("＋  Thêm mới");
-        btnCapNhat = new ActionButton(); btnCapNhat.setText("✎  Cập nhật");
-        btnCapNhat.setColorTop(new Color(39, 174, 96)); btnCapNhat.setColorBottom(new Color(27, 124, 66));
-        btnXoa = new ActionButton(); btnXoa.setText("✖  Xóa");
-        btnXoa.setColorTop(new Color(231, 76, 60)); btnXoa.setColorBottom(new Color(192, 57, 43));
-        btnLamMoi = new ActionButton(); btnLamMoi.setText("⟳  Làm mới");
-        btnLamMoi.setColorTop(new Color(127, 140, 141)); btnLamMoi.setColorBottom(new Color(99, 110, 114));
+        btnThemMoi = new ActionButton();
+        btnThemMoi.setText("＋  Thêm mới");
+        btnCapNhat = new ActionButton();
+        btnCapNhat.setText("✎  Cập nhật");
+        btnCapNhat.setColorTop(new Color(39, 174, 96));
+        btnCapNhat.setColorBottom(new Color(27, 124, 66));
+        btnXoa = new ActionButton();
+        btnXoa.setText("✖  Xóa");
+        btnXoa.setColorTop(new Color(231, 76, 60));
+        btnXoa.setColorBottom(new Color(192, 57, 43));
+        btnLamMoi = new ActionButton();
+        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setColorTop(new Color(127, 140, 141));
+        btnLamMoi.setColorBottom(new Color(99, 110, 114));
         btnThemMoi.addActionListener(e -> xuLyThemMoi());
         btnCapNhat.addActionListener(e -> xuLyCapNhat());
         btnXoa.addActionListener(e -> xuLyXoa());
         btnLamMoi.addActionListener(e -> lamMoiToanBo());
-        panel.add(btnThemMoi); panel.add(btnCapNhat);
-        panel.add(btnXoa); panel.add(btnLamMoi);
+        panel.add(btnThemMoi);
+        panel.add(btnCapNhat);
+        panel.add(btnXoa);
+        panel.add(btnLamMoi);
         return panel;
     }
 
@@ -376,8 +433,10 @@ public class KhuyenMaiPanel extends JPanel {
             @Override
             protected ArrayList<KhuyenMaiDTO> doInBackground() throws Exception {
                 return (tuKhoa == null || tuKhoa.isBlank())
-                        ? bus.getAll() : bus.searchKhuyenMai(tuKhoa);
+                        ? bus.getAll()
+                        : bus.searchKhuyenMai(tuKhoa);
             }
+
             @Override
             protected void done() {
                 try {
@@ -385,12 +444,12 @@ public class KhuyenMaiPanel extends JPanel {
                     modelBang.setRowCount(0);
                     int stt = 1;
                     for (KhuyenMaiDTO km : ds) {
-                        modelBang.addRow(new Object[]{
-                            stt++,
-                            km.getMaKhuyenMai(),
-                            km.getTenKhuyenMai(),
-                            formatGiaTri(km.getPhuongThucKM()),
-                            km.getMoTa()
+                        modelBang.addRow(new Object[] {
+                                stt++,
+                                km.getMaKhuyenMai(),
+                                km.getTenKhuyenMai(),
+                                formatGiaTri(km.getPhuongThucKM()),
+                                km.getMoTa()
                         });
                     }
                     lblTongSo.setText("Tổng: " + ds.size() + " bản ghi");
@@ -407,7 +466,8 @@ public class KhuyenMaiPanel extends JPanel {
         String ten = (String) modelBang.getValueAt(row, 2);
         String moTa = (String) modelBang.getValueAt(row, 4);
 
-        // phuongThucKM (raw numeric) is not in the table model display (it's formatted).
+        // phuongThucKM (raw numeric) is not in the table model display (it's
+        // formatted).
         // Re-fetch via BUS using the mã.
         kmDangChon = KhuyenMaiDTO.builder()
                 .maKhuyenMai(ma).tenKhuyenMai(ten)
@@ -418,25 +478,36 @@ public class KhuyenMaiPanel extends JPanel {
         txtMoTa.setText(moTa != null ? moTa : "");
 
         new SwingWorker<Double, Void>() {
-            @Override protected Double doInBackground() throws Exception {
+            @Override
+            protected Double doInBackground() throws Exception {
                 return bus.getGiaTriKMByMaKM(ma);
             }
-            @Override protected void done() {
+
+            @Override
+            protected void done() {
                 try {
                     double v = get();
                     String raw = v > 0 ? String.valueOf(v) : "";
                     kmDangChon.setPhuongThucKM(raw);
                     txtGiaTri.setText(raw);
                     capNhatXemTruoc();
-                } catch (Exception ignored) { txtGiaTri.setText(""); }
+                } catch (Exception ignored) {
+                    txtGiaTri.setText("");
+                }
             }
         }.execute();
     }
 
     private void resetFormThemMoi() {
         kmDangChon = null;
-        try { txtMaKM.setText(bus.sinhMaMoi()); } catch (Exception e) { txtMaKM.setText("KM---"); }
-        txtTenKM.setText(""); txtGiaTri.setText(""); txtMoTa.setText("");
+        try {
+            txtMaKM.setText(bus.sinhMaMoi());
+        } catch (Exception e) {
+            txtMaKM.setText("KM---");
+        }
+        txtTenKM.setText("");
+        txtGiaTri.setText("");
+        txtMoTa.setText("");
         lblXemTruoc.setText(" ");
         bangDuLieu.clearSelection();
         txtTenKM.requestFocusInWindow();
@@ -446,40 +517,59 @@ public class KhuyenMaiPanel extends JPanel {
 
     private void xuLyThemMoi() {
         KhuyenMaiDTO km = docDuLieuForm();
-        if (km == null) return;
+        if (km == null)
+            return;
         try {
             bus.addKhuyenMai(km);
             hienThiThongBao("Thêm khuyến mãi \"" + km.getTenKhuyenMai() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Thêm thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Thêm thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyCapNhat() {
-        if (kmDangChon == null) { hienThiLoi("Vui lòng chọn một khuyến mãi để cập nhật."); return; }
+        if (kmDangChon == null) {
+            hienThiLoi("Vui lòng chọn một khuyến mãi để cập nhật.");
+            return;
+        }
         KhuyenMaiDTO km = docDuLieuForm();
-        if (km == null) return;
+        if (km == null)
+            return;
         try {
             bus.updateKhuyenMai(km);
             hienThiThongBao("Cập nhật khuyến mãi \"" + km.getTenKhuyenMai() + "\" thành công.");
             taiDuLieu(txtTimKiem.getText());
-        } catch (BusException ex) { hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage()); }
+        } catch (BusException ex) {
+            hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyXoa() {
-        if (kmDangChon == null) { hienThiLoi("Vui lòng chọn một khuyến mãi để xóa."); return; }
+        if (kmDangChon == null) {
+            hienThiLoi("Vui lòng chọn một khuyến mãi để xóa.");
+            return;
+        }
         int xacNhan = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc muốn xóa khuyến mãi \"" + kmDangChon.getTenKhuyenMai() + "\" không?",
                 "Xác nhận xóa", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (xacNhan != JOptionPane.YES_OPTION) return;
+        if (xacNhan != JOptionPane.YES_OPTION)
+            return;
         try {
             bus.deleteKhuyenMai(kmDangChon.getMaKhuyenMai());
             hienThiThongBao("Đã xóa khuyến mãi \"" + kmDangChon.getTenKhuyenMai() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Xóa thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Xóa thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void lamMoiToanBo() {
-        txtTimKiem.setText(""); taiDuLieu(null); resetFormThemMoi();
+        txtTimKiem.setText("");
+        taiDuLieu(null);
+        resetFormThemMoi();
     }
 
     private KhuyenMaiDTO docDuLieuForm() {
@@ -488,20 +578,37 @@ public class KhuyenMaiPanel extends JPanel {
         String giaTriStr = txtGiaTri.getText().trim();
         String moTa = txtMoTa.getText().trim();
 
-        if (ten.isEmpty()) { hienThiLoi("Tên khuyến mãi không được để trống."); txtTenKM.requestFocusInWindow(); return null; }
-        if (giaTriStr.isEmpty()) { hienThiLoi("Giá trị khuyến mãi không được để trống.\nVD: 0.1 = 10%  /  500000 = -500,000đ"); txtGiaTri.requestFocusInWindow(); return null; }
+        if (ten.isEmpty()) {
+            hienThiLoi("Tên khuyến mãi không được để trống.");
+            txtTenKM.requestFocusInWindow();
+            return null;
+        }
+        if (giaTriStr.isEmpty()) {
+            hienThiLoi("Giá trị khuyến mãi không được để trống.\nVD: 0.1 = 10%  /  500000 = -500,000đ");
+            txtGiaTri.requestFocusInWindow();
+            return null;
+        }
         try {
             double v = Double.parseDouble(giaTriStr);
-            if (v <= 0) { hienThiLoi("Giá trị khuyến mãi phải lớn hơn 0."); txtGiaTri.requestFocusInWindow(); return null; }
+            if (v <= 0) {
+                hienThiLoi("Giá trị khuyến mãi phải lớn hơn 0.");
+                txtGiaTri.requestFocusInWindow();
+                return null;
+            }
         } catch (NumberFormatException e) {
             hienThiLoi("Giá trị khuyến mãi phải là số.\nVD: 0.1 = 10%  /  500000 = -500,000đ");
-            txtGiaTri.requestFocusInWindow(); return null;
+            txtGiaTri.requestFocusInWindow();
+            return null;
         }
-        if (moTa.isEmpty()) { hienThiLoi("Mô tả không được để trống."); txtMoTa.requestFocusInWindow(); return null; }
+        if (moTa.isEmpty()) {
+            hienThiLoi("Mô tả không được để trống.");
+            txtMoTa.requestFocusInWindow();
+            return null;
+        }
 
         return KhuyenMaiDTO.builder()
                 .maKhuyenMai(ma).tenKhuyenMai(ten)
-                .phuongThucKM(giaTriStr)   // raw number stored in phuongThucKM column
+                .phuongThucKM(giaTriStr) // raw number stored in phuongThucKM column
                 .moTa(moTa).trangThaiKM(true).build();
     }
 

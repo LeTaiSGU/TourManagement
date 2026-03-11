@@ -165,15 +165,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         // Click logo → hiển thị Dashboard (ThongKePanel), không thuộc menu item nào
         menu1.setLogoClickAction(() -> {
-            lbCN.setText("  Dashboard");
-            lbCN.setIcon(null);
-            mainSide.removeAll();
-            mainSide.setLayout(new java.awt.BorderLayout());
-            mainSide.add(new ThongKePanel(), java.awt.BorderLayout.CENTER);
-            mainSide.revalidate();
-            mainSide.repaint();
-            currentPanel = null;
-            // currentPanelIndex = -1;
+            showDashboardPanel();
         });
 
         lbMenuDrop.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -182,6 +174,21 @@ public class MainGUI extends javax.swing.JFrame {
                 toggleMenuDrop();
             }
         });
+
+        // Mở sẵn Dashboard khi vừa vào MainGUI.
+        showDashboardPanel();
+    }
+
+    private void showDashboardPanel() {
+        lbCN.setText("  Dashboard");
+        lbCN.setIcon(null);
+        mainSide.removeAll();
+        mainSide.setLayout(new java.awt.BorderLayout());
+        mainSide.add(new ThongKePanel(), java.awt.BorderLayout.CENTER);
+        mainSide.revalidate();
+        mainSide.repaint();
+        currentPanel = null;
+        currentPanelKey = null;
     }
 
     private javax.swing.JPanel createPanel(String menuKey) {
@@ -196,12 +203,14 @@ public class MainGUI extends javax.swing.JFrame {
                 return new LichTrinhPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN002")).findFirst().orElse(null));
             case "3":
-                return new DiaDiemPanel();
+                return new DiaDiemPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN003")).findFirst().orElse(null));
             case "4":
                 return new PhuongTienPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN009")).findFirst().orElse(null));
             case "5": // Hướng dẫn viên
-                return new HuongDanVienPanel();
+                return new HuongDanVienPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN006")).findFirst().orElse(null));
             case "6": // Nhân viên
                 return new NhanVienPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN008")).findFirst().orElse(null));
@@ -209,7 +218,8 @@ public class MainGUI extends javax.swing.JFrame {
                 return new KhachHangPanel(
                         ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN004")).findFirst().orElse(null));
             case "9": // Khuyến mãi
-                return new KhuyenMaiPanel();
+                return new KhuyenMaiPanel(
+                        ctcnnq.stream().filter(ct -> ct.getMaCN().equals("CN007")).findFirst().orElse(null));
             case "8":
                 return new HoaDonPanel(
                         account.getMaNhanVien(),

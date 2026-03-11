@@ -10,6 +10,7 @@ import Service.EmailService;
 import Service.PDFService;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -97,8 +98,13 @@ public class HoaDonBUS {
                         + "<p>Mã hóa đơn: " + maHD + "</p>"
                         + "<p>Quý khách vui lòng nhấn vào file đính kèm để xác nhận chi tiết nội dung thanh toán.</p>";
 
-            EmailService.sendEmail(hd.getEmail(), "Xác nhận hóa đơn", noidung, filePath);
-
+            CompletableFuture.runAsync(() -> {
+                try {
+                    EmailService.sendEmail(hd.getEmail(), "Xác nhận hóa đơn", noidung, filePath);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusException("Lỗi khi gửi email!");
@@ -115,8 +121,13 @@ public class HoaDonBUS {
                     + "<p>Mã hóa đơn: " + maHD + "</p>"
                     + "<p>Quý khách vui lòng nhấn vào file đính kèm để xem chi tiết nội dung hủy và hoàn tiền.</p>";
 
-            EmailService.sendEmail(hd.getEmail(), "Xác nhận hủy tour", content, filePath);
-
+            CompletableFuture.runAsync(() -> {
+                try {
+                    EmailService.sendEmail(hd.getEmail(), "Xác nhận hủy tour", content, filePath);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             throw new BusException("Lỗi khi gửi email!");

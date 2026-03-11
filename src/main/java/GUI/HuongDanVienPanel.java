@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.HuongDanVienBUS;
+import DTO.CTCN_NQ;
 import DTO.HuongDanVienDTO;
 import Exception.BusException;
 import GUI.Menu.ActionButton;
@@ -55,11 +56,20 @@ public class HuongDanVienPanel extends JPanel {
     private ActionButton btnXoa;
     private ActionButton btnLamMoi;
 
-    public HuongDanVienPanel() {
+    public HuongDanVienPanel(CTCN_NQ ctnq) {
         this.bus = new HuongDanVienBUS();
         xayDungGiaoDien();
         taiDuLieu(null);
         resetFormThemMoi();
+
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemMoi.setVisible(coQuyenThem);
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
     }
 
     private void xayDungGiaoDien() {
@@ -94,7 +104,8 @@ public class HuongDanVienPanel extends JPanel {
         txtTimKiem.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) taiDuLieu(txtTimKiem.getText());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    taiDuLieu(txtTimKiem.getText());
             }
         });
         btnTimKiem = new ActionButton();
@@ -124,10 +135,13 @@ public class HuongDanVienPanel extends JPanel {
 
     private ScrollPaneWin11 xayDungBang() {
         modelBang = new DefaultTableModel(
-                new String[]{"STT", "Mã HDV", "Tên HDV", "Giới tính", "Năm sinh",
-                        "Chuyên môn", "Số ĐT"}, 0) {
+                new String[] { "STT", "Mã HDV", "Tên HDV", "Giới tính", "Năm sinh",
+                        "Chuyên môn", "Số ĐT" },
+                0) {
             @Override
-            public boolean isCellEditable(int r, int c) { return false; }
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         bangDuLieu = new JTable(modelBang);
         bangDuLieu.setFont(new Font(FONT, Font.PLAIN, 13));
@@ -155,7 +169,8 @@ public class HuongDanVienPanel extends JPanel {
                 setFont(new Font(FONT, Font.PLAIN, 13));
                 setForeground(MAU_CHU_TOI);
                 setBorder(new EmptyBorder(0, 8, 0, 8));
-                if (!sel) setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
+                if (!sel)
+                    setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
                 setHorizontalAlignment(col == 0 || col == 4 ? CENTER : LEFT);
                 return this;
             }
@@ -189,7 +204,8 @@ public class HuongDanVienPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = bangDuLieu.getSelectedRow();
-                if (row >= 0) dienFormTuHang(row);
+                if (row >= 0)
+                    dienFormTuHang(row);
             }
         });
         ScrollPaneWin11 scroll = new ScrollPaneWin11();
@@ -218,10 +234,13 @@ public class HuongDanVienPanel extends JPanel {
         lblTieuDe.setFont(new Font(FONT, Font.BOLD, 13));
         lblTieuDe.setForeground(MAU_CHINH);
         lblTieuDe.setBorder(new MatteBorder(0, 0, 1, 0, MAU_VIEN));
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(0, 2, 10, 2);
         panelNoiDung.add(lblTieuDe, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Mã HDV *");
         txtMaHDV = new JTextField();
@@ -229,46 +248,66 @@ public class HuongDanVienPanel extends JPanel {
         txtMaHDV.setEditable(false);
         txtMaHDV.setBackground(new Color(240, 243, 247));
         styleInput(txtMaHDV);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtMaHDV, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtMaHDV, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Tên hướng dẫn viên *");
         txtTenHDV = new JTextField();
         txtTenHDV.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtTenHDV);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtTenHDV, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtTenHDV, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Giới tính");
-        cboGioiTinh = new JComboBox<>(new String[]{"Nam", "Nữ", "Khác"});
+        cboGioiTinh = new JComboBox<>(new String[] { "Nam", "Nữ", "Khác" });
         cboGioiTinh.setFont(new Font(FONT, Font.PLAIN, 13));
         cboGioiTinh.setPreferredSize(new Dimension(0, 32));
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(cboGioiTinh, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(cboGioiTinh, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Năm sinh *");
         txtNamSinh = new JTextField();
         txtNamSinh.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtNamSinh);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtNamSinh, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtNamSinh, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Chuyên môn *");
         txtChuyenMon = new JTextField();
         txtChuyenMon.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtChuyenMon);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtChuyenMon, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtChuyenMon, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Số điện thoại *");
         txtSoDienThoai = new JTextField();
         txtSoDienThoai.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtSoDienThoai);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtSoDienThoai, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtSoDienThoai, gbc);
+        gbc.gridwidth = 1;
 
         JPanel panelNut = xayDungPanelNut();
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(12, 0, 0, 0);
         panelNoiDung.add(panelNut, gbc);
 
@@ -281,10 +320,13 @@ public class HuongDanVienPanel extends JPanel {
         JLabel lbl = new JLabel(ten);
         lbl.setFont(new Font(FONT, Font.PLAIN, 12));
         lbl.setForeground(MAU_CHU_PHU);
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(8, 2, 1, 2);
         panel.add(lbl, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
         return row + 1;
     }
 
@@ -297,19 +339,28 @@ public class HuongDanVienPanel extends JPanel {
     private JPanel xayDungPanelNut() {
         JPanel panel = new JPanel(new GridLayout(2, 2, 6, 6));
         panel.setBackground(MAU_TRANG);
-        btnThemMoi = new ActionButton(); btnThemMoi.setText("＋  Thêm mới");
-        btnCapNhat = new ActionButton(); btnCapNhat.setText("✎  Cập nhật");
-        btnCapNhat.setColorTop(new Color(39, 174, 96)); btnCapNhat.setColorBottom(new Color(27, 124, 66));
-        btnXoa = new ActionButton(); btnXoa.setText("✖  Xóa");
-        btnXoa.setColorTop(new Color(231, 76, 60)); btnXoa.setColorBottom(new Color(192, 57, 43));
-        btnLamMoi = new ActionButton(); btnLamMoi.setText("⟳  Làm mới");
-        btnLamMoi.setColorTop(new Color(127, 140, 141)); btnLamMoi.setColorBottom(new Color(99, 110, 114));
+        btnThemMoi = new ActionButton();
+        btnThemMoi.setText("＋  Thêm mới");
+        btnCapNhat = new ActionButton();
+        btnCapNhat.setText("✎  Cập nhật");
+        btnCapNhat.setColorTop(new Color(39, 174, 96));
+        btnCapNhat.setColorBottom(new Color(27, 124, 66));
+        btnXoa = new ActionButton();
+        btnXoa.setText("✖  Xóa");
+        btnXoa.setColorTop(new Color(231, 76, 60));
+        btnXoa.setColorBottom(new Color(192, 57, 43));
+        btnLamMoi = new ActionButton();
+        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setColorTop(new Color(127, 140, 141));
+        btnLamMoi.setColorBottom(new Color(99, 110, 114));
         btnThemMoi.addActionListener(e -> xuLyThemMoi());
         btnCapNhat.addActionListener(e -> xuLyCapNhat());
         btnXoa.addActionListener(e -> xuLyXoa());
         btnLamMoi.addActionListener(e -> lamMoiToanBo());
-        panel.add(btnThemMoi); panel.add(btnCapNhat);
-        panel.add(btnXoa); panel.add(btnLamMoi);
+        panel.add(btnThemMoi);
+        panel.add(btnCapNhat);
+        panel.add(btnXoa);
+        panel.add(btnLamMoi);
         return panel;
     }
 
@@ -319,8 +370,10 @@ public class HuongDanVienPanel extends JPanel {
             @Override
             protected ArrayList<HuongDanVienDTO> doInBackground() throws Exception {
                 return (tuKhoa == null || tuKhoa.isBlank())
-                        ? bus.getAllHDV() : bus.searchHuongDanVien(tuKhoa);
+                        ? bus.getAllHDV()
+                        : bus.searchHuongDanVien(tuKhoa);
             }
+
             @Override
             protected void done() {
                 try {
@@ -328,10 +381,10 @@ public class HuongDanVienPanel extends JPanel {
                     modelBang.setRowCount(0);
                     int stt = 1;
                     for (HuongDanVienDTO hdv : ds) {
-                        modelBang.addRow(new Object[]{
-                            stt++, hdv.getMaHDV(), hdv.getTenHDV(),
-                            hdv.getGioiTinh(), hdv.getNamSinh(),
-                            hdv.getChuyenMon(), hdv.getSoDienThoai()
+                        modelBang.addRow(new Object[] {
+                                stt++, hdv.getMaHDV(), hdv.getTenHDV(),
+                                hdv.getGioiTinh(), hdv.getNamSinh(),
+                                hdv.getChuyenMon(), hdv.getSoDienThoai()
                         });
                     }
                     lblTongSo.setText("Tổng: " + ds.size() + " bản ghi");
@@ -364,9 +417,15 @@ public class HuongDanVienPanel extends JPanel {
 
     private void resetFormThemMoi() {
         hdvDangChon = null;
-        try { txtMaHDV.setText(bus.sinhMaMoi()); } catch (Exception e) { txtMaHDV.setText("HDV---"); }
-        txtTenHDV.setText(""); cboGioiTinh.setSelectedIndex(0);
-        txtNamSinh.setText(""); txtChuyenMon.setText("");
+        try {
+            txtMaHDV.setText(bus.sinhMaMoi());
+        } catch (Exception e) {
+            txtMaHDV.setText("HDV---");
+        }
+        txtTenHDV.setText("");
+        cboGioiTinh.setSelectedIndex(0);
+        txtNamSinh.setText("");
+        txtChuyenMon.setText("");
         txtSoDienThoai.setText("");
         bangDuLieu.clearSelection();
         txtTenHDV.requestFocusInWindow();
@@ -374,40 +433,59 @@ public class HuongDanVienPanel extends JPanel {
 
     private void xuLyThemMoi() {
         HuongDanVienDTO hdv = docDuLieuForm();
-        if (hdv == null) return;
+        if (hdv == null)
+            return;
         try {
             bus.addHuongDanVien(hdv);
             hienThiThongBao("Thêm hướng dẫn viên \"" + hdv.getTenHDV() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Thêm thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Thêm thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyCapNhat() {
-        if (hdvDangChon == null) { hienThiLoi("Vui lòng chọn một hướng dẫn viên để cập nhật."); return; }
+        if (hdvDangChon == null) {
+            hienThiLoi("Vui lòng chọn một hướng dẫn viên để cập nhật.");
+            return;
+        }
         HuongDanVienDTO hdv = docDuLieuForm();
-        if (hdv == null) return;
+        if (hdv == null)
+            return;
         try {
             bus.updateHuongDanVien(hdv);
             hienThiThongBao("Cập nhật hướng dẫn viên \"" + hdv.getTenHDV() + "\" thành công.");
             taiDuLieu(txtTimKiem.getText());
-        } catch (BusException ex) { hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage()); }
+        } catch (BusException ex) {
+            hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyXoa() {
-        if (hdvDangChon == null) { hienThiLoi("Vui lòng chọn một hướng dẫn viên để xóa."); return; }
+        if (hdvDangChon == null) {
+            hienThiLoi("Vui lòng chọn một hướng dẫn viên để xóa.");
+            return;
+        }
         int xacNhan = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc muốn xóa hướng dẫn viên \"" + hdvDangChon.getTenHDV() + "\" không?",
                 "Xác nhận xóa", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (xacNhan != JOptionPane.YES_OPTION) return;
+        if (xacNhan != JOptionPane.YES_OPTION)
+            return;
         try {
             bus.deleteHuongDanVien(hdvDangChon.getMaHDV());
             hienThiThongBao("Đã xóa hướng dẫn viên \"" + hdvDangChon.getTenHDV() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Xóa thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Xóa thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void lamMoiToanBo() {
-        txtTimKiem.setText(""); taiDuLieu(null); resetFormThemMoi();
+        txtTimKiem.setText("");
+        taiDuLieu(null);
+        resetFormThemMoi();
     }
 
     private HuongDanVienDTO docDuLieuForm() {
@@ -417,12 +495,29 @@ public class HuongDanVienPanel extends JPanel {
         String namSinhStr = txtNamSinh.getText().trim();
         String chuyenMon = txtChuyenMon.getText().trim();
         String sdt = txtSoDienThoai.getText().trim();
-        if (tenHDV.isEmpty()) { hienThiLoi("Tên hướng dẫn viên không được để trống."); txtTenHDV.requestFocusInWindow(); return null; }
+        if (tenHDV.isEmpty()) {
+            hienThiLoi("Tên hướng dẫn viên không được để trống.");
+            txtTenHDV.requestFocusInWindow();
+            return null;
+        }
         int namSinh;
-        try { namSinh = Integer.parseInt(namSinhStr); }
-        catch (NumberFormatException e) { hienThiLoi("Năm sinh phải là số nguyên (VD: 1990)."); txtNamSinh.requestFocusInWindow(); return null; }
-        if (chuyenMon.isEmpty()) { hienThiLoi("Chuyên môn không được để trống."); txtChuyenMon.requestFocusInWindow(); return null; }
-        if (sdt.isEmpty()) { hienThiLoi("Số điện thoại không được để trống."); txtSoDienThoai.requestFocusInWindow(); return null; }
+        try {
+            namSinh = Integer.parseInt(namSinhStr);
+        } catch (NumberFormatException e) {
+            hienThiLoi("Năm sinh phải là số nguyên (VD: 1990).");
+            txtNamSinh.requestFocusInWindow();
+            return null;
+        }
+        if (chuyenMon.isEmpty()) {
+            hienThiLoi("Chuyên môn không được để trống.");
+            txtChuyenMon.requestFocusInWindow();
+            return null;
+        }
+        if (sdt.isEmpty()) {
+            hienThiLoi("Số điện thoại không được để trống.");
+            txtSoDienThoai.requestFocusInWindow();
+            return null;
+        }
         return HuongDanVienDTO.builder()
                 .maHDV(maHDV).tenHDV(tenHDV).gioiTinh(gioiTinh)
                 .namSinh(namSinh).chuyenMon(chuyenMon).soDienThoai(sdt).build();

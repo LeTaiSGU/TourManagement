@@ -3,6 +3,7 @@ package BUS;
 import DAL.CTHDDAL;
 import DAL.HoaDonDAL;
 import DAL.KhachHangDAL;
+import DAL.KhuyenMaiDAL;
 import DAL.TourDAL;
 import DTO.CTHD;
 import DTO.HoaDon;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class CTHDBUS {
+    KhuyenMaiDAL kmDAL = new KhuyenMaiDAL();
     CTHDDAL cthddal = new CTHDDAL();
     KhachHangDAL khachHangDAL = new KhachHangDAL();
     HoaDonDAL hddal = new HoaDonDAL();
@@ -169,11 +171,25 @@ public class CTHDBUS {
                     System.out.println("[DEBUG] khong tim thay CTHD co maTour = " + maTour + " trong maHD = "
                             + hd.getMaHoaDon());
                 } else {
+                    double gtKhuyemai = 0;
                     double tongTien = tourDAL.getGiaTour(maTour) * cthdHoanTien.getSoLuongVe();
                     double thuePhanHoan = tongTien + (tongTien * 0.1);
-                    // if (hd.getMaKhachHang() == null){
-
-                    // } // tru gia khuyen mai ra la xong
+                    if (hd.getMaKhachHang() != null) {
+                        try {
+                            gtKhuyemai = kmDAL.getGiaTriKMByMaKM(hd.getMaKhachHang());
+                        } catch (DaoException e) {
+                            e.printStackTrace();
+                            throw new BusException("Lỗi khi lấy giá trị khuyến mãi!");
+                        }
+                    }
+                    if (gtKhuyemai > 1) {
+                        tongTien = tongTien - gtKhuyemai;
+                        thuePhanHoan = thuePhanHoan - tongTien;
+                    }
+                    if (thuePhanHoan < 1) {
+                        double tienKM = tongTien * gtKhuyemai;
+                        thuePhanHoan = thuePhanHoan - tienKM;
+                    }
                     String tienHoan = String.format("%,.0f", thuePhanHoan);
                     String maHD = hd.getMaHoaDon();
                     hddal.updateHoaDonHuyDoCongTy(maHD, tongTien);

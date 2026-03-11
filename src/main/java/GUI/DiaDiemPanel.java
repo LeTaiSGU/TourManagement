@@ -1,6 +1,7 @@
 package GUI;
 
 import BUS.DiaDiemBUS;
+import DTO.CTCN_NQ;
 import DTO.DiaDiem;
 import Exception.BusException;
 import GUI.Menu.ActionButton;
@@ -66,11 +67,20 @@ public class DiaDiemPanel extends JPanel {
     private ActionButton btnXoa;
     private ActionButton btnLamMoi;
 
-    public DiaDiemPanel() {
+    public DiaDiemPanel(CTCN_NQ ctnq) {
         this.bus = new DiaDiemBUS();
         xayDungGiaoDien();
         taiDuLieu(null);
         resetFormThemMoi();
+
+        String chiTiet = (ctnq != null && ctnq.getChiTiet() != null) ? ctnq.getChiTiet() : "";
+        boolean coQuyenThem = chiTiet.contains("Thêm");
+        boolean coQuyenSua = chiTiet.contains("Sửa");
+        boolean coQuyenXoa = chiTiet.contains("Xóa");
+
+        btnThemMoi.setVisible(coQuyenThem);
+        btnCapNhat.setVisible(coQuyenSua);
+        btnXoa.setVisible(coQuyenXoa);
     }
 
     private void xayDungGiaoDien() {
@@ -105,7 +115,8 @@ public class DiaDiemPanel extends JPanel {
         txtTimKiem.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) taiDuLieu(txtTimKiem.getText());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    taiDuLieu(txtTimKiem.getText());
             }
         });
         btnTimKiem = new ActionButton();
@@ -188,9 +199,11 @@ public class DiaDiemPanel extends JPanel {
 
     private ScrollPaneWin11 xayDungBang() {
         modelBang = new DefaultTableModel(
-                new String[]{"STT", "Mã", "Tên địa điểm", "Quốc gia", "Ảnh", "Mô tả"}, 0) {
+                new String[] { "STT", "Mã", "Tên địa điểm", "Quốc gia", "Ảnh", "Mô tả" }, 0) {
             @Override
-            public boolean isCellEditable(int r, int c) { return false; }
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         bangDuLieu = new JTable(modelBang);
         bangDuLieu.setFont(new Font(FONT, Font.PLAIN, 13));
@@ -217,7 +230,8 @@ public class DiaDiemPanel extends JPanel {
                 setFont(new Font(FONT, Font.PLAIN, 13));
                 setForeground(MAU_CHU_TOI);
                 setBorder(new EmptyBorder(0, 8, 0, 8));
-                if (!sel) setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
+                if (!sel)
+                    setBackground(row % 2 == 0 ? MAU_TRANG : MAU_HANG_XEN);
                 setHorizontalAlignment(col == 0 ? CENTER : LEFT);
                 return this;
             }
@@ -251,7 +265,8 @@ public class DiaDiemPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = bangDuLieu.getSelectedRow();
-                if (row >= 0) dienFormTuHang(row);
+                if (row >= 0)
+                    dienFormTuHang(row);
             }
         });
         ScrollPaneWin11 scroll = new ScrollPaneWin11();
@@ -280,10 +295,13 @@ public class DiaDiemPanel extends JPanel {
         lblTieuDe.setFont(new Font(FONT, Font.BOLD, 13));
         lblTieuDe.setForeground(MAU_CHINH);
         lblTieuDe.setBorder(new MatteBorder(0, 0, 1, 0, MAU_VIEN));
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(0, 2, 10, 2);
         panelNoiDung.add(lblTieuDe, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Mã địa điểm *");
         txtMaDiaDiem = new JTextField();
@@ -291,29 +309,41 @@ public class DiaDiemPanel extends JPanel {
         txtMaDiaDiem.setEditable(false);
         txtMaDiaDiem.setBackground(new Color(240, 243, 247));
         styleInput(txtMaDiaDiem);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtMaDiaDiem, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtMaDiaDiem, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Tên địa điểm *");
         txtTenDiaDiem = new JTextField();
         txtTenDiaDiem.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtTenDiaDiem);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtTenDiaDiem, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtTenDiaDiem, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Quốc gia *");
         txtQuocGia = new JTextField();
         txtQuocGia.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtQuocGia);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtQuocGia, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtQuocGia, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Mô tả *");
         txtMoTa = new JTextField();
         txtMoTa.setFont(new Font(FONT, Font.PLAIN, 13));
         styleInput(txtMoTa);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(txtMoTa, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(txtMoTa, gbc);
+        gbc.gridwidth = 1;
 
         row = addLabel(panelNoiDung, gbc, row, "Ảnh địa điểm *");
         // txtAnhDiaDiem + Chon button in a nested panel
@@ -332,11 +362,16 @@ public class DiaDiemPanel extends JPanel {
         btnChonAnh.addActionListener(e -> chonAnhDiaDiem());
         panelChonAnh.add(txtAnhDiaDiem, BorderLayout.CENTER);
         panelChonAnh.add(btnChonAnh, BorderLayout.EAST);
-        gbc.gridx = 0; gbc.gridy = row++; gbc.gridwidth = 2;
-        panelNoiDung.add(panelChonAnh, gbc); gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        panelNoiDung.add(panelChonAnh, gbc);
+        gbc.gridwidth = 1;
 
         JPanel panelNut = xayDungPanelNut();
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(12, 0, 0, 0);
         panelNoiDung.add(panelNut, gbc);
 
@@ -349,10 +384,13 @@ public class DiaDiemPanel extends JPanel {
         JLabel lbl = new JLabel(ten);
         lbl.setFont(new Font(FONT, Font.PLAIN, 12));
         lbl.setForeground(MAU_CHU_PHU);
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(8, 2, 1, 2);
         panel.add(lbl, gbc);
-        gbc.insets = new Insets(4, 2, 4, 2); gbc.gridwidth = 1;
+        gbc.insets = new Insets(4, 2, 4, 2);
+        gbc.gridwidth = 1;
         return row + 1;
     }
 
@@ -365,19 +403,28 @@ public class DiaDiemPanel extends JPanel {
     private JPanel xayDungPanelNut() {
         JPanel panel = new JPanel(new GridLayout(2, 2, 6, 6));
         panel.setBackground(MAU_TRANG);
-        btnThemMoi = new ActionButton(); btnThemMoi.setText("＋  Thêm mới");
-        btnCapNhat = new ActionButton(); btnCapNhat.setText("✎  Cập nhật");
-        btnCapNhat.setColorTop(new Color(39, 174, 96)); btnCapNhat.setColorBottom(new Color(27, 124, 66));
-        btnXoa = new ActionButton(); btnXoa.setText("✖  Xóa");
-        btnXoa.setColorTop(new Color(231, 76, 60)); btnXoa.setColorBottom(new Color(192, 57, 43));
-        btnLamMoi = new ActionButton(); btnLamMoi.setText("⟳  Làm mới");
-        btnLamMoi.setColorTop(new Color(127, 140, 141)); btnLamMoi.setColorBottom(new Color(99, 110, 114));
+        btnThemMoi = new ActionButton();
+        btnThemMoi.setText("＋  Thêm mới");
+        btnCapNhat = new ActionButton();
+        btnCapNhat.setText("✎  Cập nhật");
+        btnCapNhat.setColorTop(new Color(39, 174, 96));
+        btnCapNhat.setColorBottom(new Color(27, 124, 66));
+        btnXoa = new ActionButton();
+        btnXoa.setText("✖  Xóa");
+        btnXoa.setColorTop(new Color(231, 76, 60));
+        btnXoa.setColorBottom(new Color(192, 57, 43));
+        btnLamMoi = new ActionButton();
+        btnLamMoi.setText("⟳  Làm mới");
+        btnLamMoi.setColorTop(new Color(127, 140, 141));
+        btnLamMoi.setColorBottom(new Color(99, 110, 114));
         btnThemMoi.addActionListener(e -> xuLyThemMoi());
         btnCapNhat.addActionListener(e -> xuLyCapNhat());
         btnXoa.addActionListener(e -> xuLyXoa());
         btnLamMoi.addActionListener(e -> lamMoiToanBo());
-        panel.add(btnThemMoi); panel.add(btnCapNhat);
-        panel.add(btnXoa); panel.add(btnLamMoi);
+        panel.add(btnThemMoi);
+        panel.add(btnCapNhat);
+        panel.add(btnXoa);
+        panel.add(btnLamMoi);
         return panel;
     }
 
@@ -389,8 +436,10 @@ public class DiaDiemPanel extends JPanel {
             @Override
             protected ArrayList<DiaDiem> doInBackground() throws Exception {
                 return (tuKhoa == null || tuKhoa.isBlank())
-                        ? bus.getAllDiaDiem() : bus.searchDiaDiem(tuKhoa);
+                        ? bus.getAllDiaDiem()
+                        : bus.searchDiaDiem(tuKhoa);
             }
+
             @Override
             protected void done() {
                 try {
@@ -398,10 +447,10 @@ public class DiaDiemPanel extends JPanel {
                     modelBang.setRowCount(0);
                     int stt = 1;
                     for (DiaDiem dd : ds) {
-                        modelBang.addRow(new Object[]{
-                            stt++, dd.getMaDiaDiem(), dd.getTenDiaDiem(),
-                            dd.getQuocGia(), dd.getAnhDiaDiem(),
-                            dd.getMoTa()
+                        modelBang.addRow(new Object[] {
+                                stt++, dd.getMaDiaDiem(), dd.getTenDiaDiem(),
+                                dd.getQuocGia(), dd.getAnhDiaDiem(),
+                                dd.getMoTa()
                         });
                     }
                     lblTongSo.setText("Tổng: " + ds.size() + " bản ghi");
@@ -443,15 +492,22 @@ public class DiaDiemPanel extends JPanel {
             protected BufferedImage doInBackground() throws Exception {
                 // Try classpath first (works at runtime)
                 URL url = getClass().getResource("/image/diadiem/" + tenAnh);
-                if (url != null) return ImageIO.read(url);
+                if (url != null)
+                    return ImageIO.read(url);
                 // Fallback: filesystem path for development
                 File f = new File("src/main/resources/image/diadiem/" + tenAnh);
-                if (f.exists()) return ImageIO.read(f);
+                if (f.exists())
+                    return ImageIO.read(f);
                 return null;
             }
+
             @Override
             protected void done() {
-                try { anhHienTai = get(); } catch (Exception ignored) { anhHienTai = null; }
+                try {
+                    anhHienTai = get();
+                } catch (Exception ignored) {
+                    anhHienTai = null;
+                }
                 panelHinhAnh.repaint();
             }
         }.execute();
@@ -459,9 +515,15 @@ public class DiaDiemPanel extends JPanel {
 
     private void resetFormThemMoi() {
         ddDangChon = null;
-        try { txtMaDiaDiem.setText(bus.sinhMaMoi()); } catch (Exception e) { txtMaDiaDiem.setText("DD---"); }
-        txtTenDiaDiem.setText(""); txtQuocGia.setText("");
-        txtAnhDiaDiem.setText(""); txtMoTa.setText("");
+        try {
+            txtMaDiaDiem.setText(bus.sinhMaMoi());
+        } catch (Exception e) {
+            txtMaDiaDiem.setText("DD---");
+        }
+        txtTenDiaDiem.setText("");
+        txtQuocGia.setText("");
+        txtAnhDiaDiem.setText("");
+        txtMoTa.setText("");
         anhHienTai = null;
         lblTenAnhOverlay.setText("");
         panelHinhAnh.repaint();
@@ -486,9 +548,14 @@ public class DiaDiemPanel extends JPanel {
                 protected BufferedImage doInBackground() throws Exception {
                     return ImageIO.read(selected);
                 }
+
                 @Override
                 protected void done() {
-                    try { anhHienTai = get(); } catch (Exception ignored) { anhHienTai = null; }
+                    try {
+                        anhHienTai = get();
+                    } catch (Exception ignored) {
+                        anhHienTai = null;
+                    }
                     panelHinhAnh.repaint();
                 }
             }.execute();
@@ -501,7 +568,8 @@ public class DiaDiemPanel extends JPanel {
             if (url != null && "file".equals(url.getProtocol())) {
                 return new File(url.toURI());
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         File f = new File("src/main/resources/image/diadiem");
         return f.exists() ? f : new File(".");
     }
@@ -510,40 +578,59 @@ public class DiaDiemPanel extends JPanel {
 
     private void xuLyThemMoi() {
         DiaDiem dd = docDuLieuForm();
-        if (dd == null) return;
+        if (dd == null)
+            return;
         try {
             bus.addDiaDiem(dd);
             hienThiThongBao("Thêm địa điểm \"" + dd.getTenDiaDiem() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Thêm thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Thêm thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyCapNhat() {
-        if (ddDangChon == null) { hienThiLoi("Vui lòng chọn một địa điểm để cập nhật."); return; }
+        if (ddDangChon == null) {
+            hienThiLoi("Vui lòng chọn một địa điểm để cập nhật.");
+            return;
+        }
         DiaDiem dd = docDuLieuForm();
-        if (dd == null) return;
+        if (dd == null)
+            return;
         try {
             bus.updateDiaDiem(dd);
             hienThiThongBao("Cập nhật địa điểm \"" + dd.getTenDiaDiem() + "\" thành công.");
             taiDuLieu(txtTimKiem.getText());
-        } catch (BusException ex) { hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage()); }
+        } catch (BusException ex) {
+            hienThiLoi("Cập nhật thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void xuLyXoa() {
-        if (ddDangChon == null) { hienThiLoi("Vui lòng chọn một địa điểm để xóa."); return; }
+        if (ddDangChon == null) {
+            hienThiLoi("Vui lòng chọn một địa điểm để xóa.");
+            return;
+        }
         int xacNhan = JOptionPane.showConfirmDialog(this,
                 "Bạn có chắc muốn xóa địa điểm \"" + ddDangChon.getTenDiaDiem() + "\" không?",
                 "Xác nhận xóa", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        if (xacNhan != JOptionPane.YES_OPTION) return;
+        if (xacNhan != JOptionPane.YES_OPTION)
+            return;
         try {
             bus.deleteDiaDiem(ddDangChon.getMaDiaDiem());
             hienThiThongBao("Đã xóa địa điểm \"" + ddDangChon.getTenDiaDiem() + "\" thành công.");
-            taiDuLieu(null); resetFormThemMoi();
-        } catch (BusException ex) { hienThiLoi("Xóa thất bại:\n" + ex.getMessage()); }
+            taiDuLieu(null);
+            resetFormThemMoi();
+        } catch (BusException ex) {
+            hienThiLoi("Xóa thất bại:\n" + ex.getMessage());
+        }
     }
 
     private void lamMoiToanBo() {
-        txtTimKiem.setText(""); taiDuLieu(null); resetFormThemMoi();
+        txtTimKiem.setText("");
+        taiDuLieu(null);
+        resetFormThemMoi();
     }
 
     private DiaDiem docDuLieuForm() {
@@ -552,10 +639,25 @@ public class DiaDiemPanel extends JPanel {
         String quocGia = txtQuocGia.getText().trim();
         String anh = txtAnhDiaDiem.getText().trim();
         String moTa = txtMoTa.getText().trim();
-        if (ten.isEmpty()) { hienThiLoi("Tên địa điểm không được để trống."); txtTenDiaDiem.requestFocusInWindow(); return null; }
-        if (quocGia.isEmpty()) { hienThiLoi("Quốc gia không được để trống."); txtQuocGia.requestFocusInWindow(); return null; }
-        if (anh.isEmpty()) { hienThiLoi("Vui lòng chọn ảnh địa điểm."); return null; }
-        if (moTa.isEmpty()) { hienThiLoi("Mô tả không được để trống."); txtMoTa.requestFocusInWindow(); return null; }
+        if (ten.isEmpty()) {
+            hienThiLoi("Tên địa điểm không được để trống.");
+            txtTenDiaDiem.requestFocusInWindow();
+            return null;
+        }
+        if (quocGia.isEmpty()) {
+            hienThiLoi("Quốc gia không được để trống.");
+            txtQuocGia.requestFocusInWindow();
+            return null;
+        }
+        if (anh.isEmpty()) {
+            hienThiLoi("Vui lòng chọn ảnh địa điểm.");
+            return null;
+        }
+        if (moTa.isEmpty()) {
+            hienThiLoi("Mô tả không được để trống.");
+            txtMoTa.requestFocusInWindow();
+            return null;
+        }
         return DiaDiem.builder()
                 .maDiaDiem(ma).tenDiaDiem(ten).quocGia(quocGia)
                 .anhDiaDiem(anh).moTa(moTa).build();
